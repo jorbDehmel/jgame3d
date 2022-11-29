@@ -9,8 +9,8 @@ main.out:	demo.o points.o
 demo.o:	demo.cpp
 	$(STEM) -c demo.cpp -o demo.o
 
-points.o:	points.cpp
+points.o:	points.cpp points.hpp
 	$(STEM) -c points.cpp -o points.o
 
 pclean:
-	rm -f bin/*.out objs/*
+	rm -f *.out *.o

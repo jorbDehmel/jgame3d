@@ -68,6 +68,31 @@ void rotate(Polygon2D &poly, double degree, BasicPoint about)
     return;
 }
 
+void rotate(Polygon2D &poly, double degree)
+{
+    BasicPoint about = poly.points[0];
+
+    move(poly, BasicPoint(-about.x, -about.y));
+
+    double newX, newY;
+
+    double c = cos(degree);
+    double s = sin(degree);
+
+    for (int i = 0; i < poly.points.size(); i++)
+    {
+        newX = (c * poly.points[i].x) + (-s * poly.points[i].y);
+        newY = (s * poly.points[i].x) + (c * poly.points[i].y);
+
+        poly.points[i].x = newX;
+        poly.points[i].y = newY;
+    }
+
+    move(poly, about);
+
+    return;
+}
+
 /////////////////////////////////////////
 
 RenderWindow::RenderWindow(int h, int w, int rt, void (*update)(SDL_Renderer *), SDL_WindowFlags windowFlags)

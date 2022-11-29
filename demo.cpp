@@ -1,4 +1,5 @@
 #include "points.hpp"
+#include "keys.hpp"
 
 using namespace std;
 
@@ -9,6 +10,7 @@ Polygon2D *poly;
 
 //////////////////////////////////////////////////
 
+double rotVel;
 void update(SDL_Renderer *rend)
 {
     if (wind->key(27))
@@ -22,7 +24,27 @@ void update(SDL_Renderer *rend)
     SDL_SetRenderDrawColor(rend, 255, 255, 255, 255);
     SDL_RenderDrawLinesF(rend, *poly);
 
-    rotate(*poly, .01, BasicPoint(256, 256));
+    if (wind->key(keys::leftArrow))
+    {
+        if (rotVel > -1)
+            rotVel -= 0.01;
+    }
+    else if (wind->key(keys::rightArrow))
+    {
+        if (rotVel < 1)
+            rotVel += 0.01;
+    }
+    else if (rotVel < -0.01)
+    {
+        rotVel += .001;
+    }
+    else if (rotVel > 0.01)
+    {
+        rotVel -= .001;
+    }
+
+    rotate(*poly, rotVel);
+
     return;
 }
 
@@ -30,6 +52,8 @@ void update(SDL_Renderer *rend)
 
 int main()
 {
+    rotVel = 0;
+
     BasicPoint points[4] = {BasicPoint(256, 200), BasicPoint(200, 200), BasicPoint(230, 270), BasicPoint(270, 270)};
     poly = new Polygon2D(points, 4);
 
