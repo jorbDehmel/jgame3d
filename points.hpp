@@ -43,7 +43,7 @@ void rotate(Polygon2D &poly, double degree, BasicPoint about);
 class RenderWindow
 {
 public:
-    RenderWindow(int h, int w, int rt, void (*update)(),
+    RenderWindow(int h, int w, int rt, void (*update)(SDL_Renderer *),
                  SDL_WindowFlags windowFlags);
     ~RenderWindow();
 
@@ -59,7 +59,7 @@ public:
 
     SDL_Window *wind;
     SDL_Renderer *rend;
-    void (*updateFunc)();
+    void (*updateFunc)(SDL_Renderer *);
 
     int refreshTime;
     bool isRunning;

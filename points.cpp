@@ -70,7 +70,7 @@ void rotate(Polygon2D &poly, double degree, BasicPoint about)
 
 /////////////////////////////////////////
 
-RenderWindow::RenderWindow(int h, int w, int rt, void (*update)(), SDL_WindowFlags windowFlags)
+RenderWindow::RenderWindow(int h, int w, int rt, void (*update)(SDL_Renderer *), SDL_WindowFlags windowFlags)
 {
     SDL_Init(SDL_INIT_EVERYTHING);
 
@@ -95,7 +95,6 @@ void RenderWindow::scanEvents()
 {
     mouseState = SDL_BUTTON(SDL_GetRelativeMouseState(&mouseX, &mouseY));
 
-    int size;
     keys.clear();
 
     SDL_Event event;
@@ -124,7 +123,7 @@ void RenderWindow::runFrame()
 {
     prevTicks = SDL_GetTicks();
 
-    updateFunc();
+    updateFunc(rend);
     SDL_RenderPresent(rend);
 
     passed = SDL_GetTicks() - prevTicks;

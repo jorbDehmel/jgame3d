@@ -9,18 +9,18 @@ Polygon2D *poly;
 
 //////////////////////////////////////////////////
 
-void update()
+void update(SDL_Renderer *rend)
 {
     if (wind->key(27))
     {
         wind->isRunning = false;
     }
 
-    SDL_SetRenderDrawColor(wind->rend, 0, 0, 0, 0);
-    SDL_RenderClear(wind->rend);
+    SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
+    SDL_RenderClear(rend);
 
-    SDL_SetRenderDrawColor(wind->rend, 255, 255, 255, 255);
-    SDL_RenderDrawLinesF(wind->rend, *poly);
+    SDL_SetRenderDrawColor(rend, 255, 255, 255, 255);
+    SDL_RenderDrawLinesF(rend, *poly);
 
     rotate(*poly, .01, BasicPoint(256, 256));
     return;
