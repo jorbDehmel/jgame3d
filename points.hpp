@@ -1,0 +1,73 @@
+#ifndef POINTS_H
+#define POINTS_H
+
+#include <SDL2/SDL.h>
+
+#include <vector>
+#include <cassert>
+#include <iostream>
+#include <cmath>
+#include <set>
+
+using namespace std;
+
+/////////////////////////////////////////
+
+class BasicPoint
+{
+public:
+    BasicPoint() : x(0), y(0){};
+    BasicPoint(double xIn, double yIn) : x(xIn), y(yIn){};
+    double x, y;
+};
+
+/////////////////////////////////////////
+
+class Polygon2D
+{
+public:
+    Polygon2D(BasicPoint pointsIn[], int num);
+    SDL_FPoint *SDLify();
+
+    vector<BasicPoint> points;
+};
+
+/////////////////////////////////////////
+
+int SDL_RenderDrawLinesF(SDL_Renderer *renderer, Polygon2D &polygon);
+void move(Polygon2D &poly, BasicPoint by);
+void rotate(Polygon2D &poly, double degree, BasicPoint about);
+
+/////////////////////////////////////////
+
+class RenderWindow
+{
+public:
+    RenderWindow(int h, int w, int rt, void (*update)(),
+                 SDL_WindowFlags windowFlags);
+    ~RenderWindow();
+
+    void scanEvents();
+    void runFrame();
+    void mainLoop();
+    void kill();
+
+    bool key(int k) const;
+
+    set<Uint8> keys;
+    int mouseX, mouseY, mouseState;
+
+    SDL_Window *wind;
+    SDL_Renderer *rend;
+    void (*updateFunc)();
+
+    int refreshTime;
+    bool isRunning;
+
+    int passed;
+    int prevTicks;
+};
+
+/////////////////////////////////////////
+
+#endif
