@@ -13,6 +13,10 @@ using namespace std;
 
 /////////////////////////////////////////
 
+double modulo(const double &a, const double &b);
+
+/////////////////////////////////////////
+
 class BasicPoint
 {
 public:
@@ -29,6 +33,10 @@ public:
     Polygon2D(BasicPoint pointsIn[], int num);
     SDL_FPoint *SDLify();
 
+    void operator+=(Polygon2D &other);
+
+    double rotation;
+    BasicPoint basis;
     vector<BasicPoint> points;
 };
 

@@ -2,6 +2,29 @@
 
 /////////////////////////////////////////
 
+double modulo(const double &a, const double &b)
+{
+    double out = a;
+    if (a < 0)
+    {
+        while (out + b < 0)
+        {
+            out += b;
+        }
+    }
+    else
+    {
+        while (out - b > 0)
+        {
+            out -= b;
+        }
+    }
+
+    return out;
+}
+
+/////////////////////////////////////////
+
 Polygon2D::Polygon2D(BasicPoint pointsIn[], int num)
 {
     for (int i = 0; i < num; i++)
@@ -28,9 +51,23 @@ SDL_FPoint *Polygon2D::SDLify()
     return out;
 }
 
+void Polygon2D::operator+=(Polygon2D &other)
+{
+    for (auto point : other.points)
+    {
+        points.push_back(point);
+    }
+    return;
+}
+
 int SDL_RenderDrawLinesF(SDL_Renderer *renderer, Polygon2D &polygon)
 {
-    return SDL_RenderDrawLinesF(renderer, polygon.SDLify(), polygon.points.size() + 1);
+    Polygon2D temp(polygon);
+
+    rotate(temp, polygon.rotation);
+    move(temp, polygon.basis);
+
+    return SDL_RenderDrawLinesF(renderer, temp.SDLify(), temp.points.size() + 1);
 }
 
 /////////////////////////////////////////
