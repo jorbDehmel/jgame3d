@@ -42,7 +42,8 @@ public:
 
 /////////////////////////////////////////
 
-int SDL_RenderDrawLinesF(SDL_Renderer *renderer, Polygon2D &polygon);
+int SDL_RenderDrawLinesF(SDL_Renderer *renderer, const Polygon2D &polygon);
+void crossDrawLines(SDL_Renderer *renderer, const Polygon2D &polygon);
 void move(Polygon2D &poly, BasicPoint by);
 void rotate(Polygon2D &poly, double degree, BasicPoint about);
 void rotate(Polygon2D &poly, double degree);

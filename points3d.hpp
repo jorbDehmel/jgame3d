@@ -19,7 +19,7 @@ class Polygon3D
 {
 public:
     Polygon3D(Point3D pointsIn[], int num);
-    SDL_FPoint *SDLify();
+    SDL_FPoint *SDLify() const;
 
     void operator+=(Polygon3D &other);
 
@@ -30,10 +30,50 @@ public:
 
 /////////////////////////////////////////
 
-int SDL_RenderDrawLinesF(SDL_Renderer *renderer, Polygon3D &polygon);
-void move(Polygon3D &poly, Point3D by);
-void rotate(Polygon3D &poly, double dx, double dy, double dz);
+int SDL_RenderDrawLinesF(SDL_Renderer *renderer, const Polygon3D polygon);
+void crossDrawLines(SDL_Renderer *renderer, const Polygon3D &polygon);
+Polygon3D move(const Polygon3D poly);
+Polygon3D rotate(const Polygon3D poly);
 void rotatePoint(Point3D &p, double dx, double dy, double dz);
+
+/////////////////////////////////////////
+
+class GameSpace
+{
+public:
+    GameSpace(int height, int width, int rt, void (*updateFunc)(vector<Polygon3D> &),
+              SDL_WindowFlags windowFlag);
+    ~GameSpace();
+
+    void runFrame();
+    void scanEvents();
+    void kill();
+
+    bool key(int k) const;
+
+    void mainLoop();
+
+    void addPolygon(Polygon3D);
+    void removePolygon(Polygon3D *);
+    void removePolygons(bool (*checkingFunction)(const Polygon3D &));
+
+protected:
+    void updateWrapper(SDL_Renderer *);
+
+    SDL_Window *wind;
+    SDL_Renderer *rend;
+    vector<Polygon3D> polygons;
+
+    set<Uint8> keys;
+    int mouseX, mouseY, mouseState;
+
+    void (*update)(vector<Polygon3D> &);
+
+    int refreshTime;
+    bool isRunning;
+    int passed;
+    int prevTicks;
+};
 
 /////////////////////////////////////////
 

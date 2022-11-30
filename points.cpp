@@ -60,7 +60,7 @@ void Polygon2D::operator+=(Polygon2D &other)
     return;
 }
 
-int SDL_RenderDrawLinesF(SDL_Renderer *renderer, Polygon2D &polygon)
+int SDL_RenderDrawLinesF(SDL_Renderer *renderer, const Polygon2D &polygon)
 {
     Polygon2D temp(polygon);
 
@@ -68,6 +68,25 @@ int SDL_RenderDrawLinesF(SDL_Renderer *renderer, Polygon2D &polygon)
     move(temp, polygon.basis);
 
     return SDL_RenderDrawLinesF(renderer, temp.SDLify(), temp.points.size() + 1);
+}
+
+void crossDrawLines(SDL_Renderer *renderer, const Polygon2D &polygon)
+{
+    SDL_FPoint a, b;
+    for (int i = 0; i < polygon.points.size(); i++)
+    {
+        for (int j = i; j < polygon.points.size(); j++)
+        {
+            a.x = polygon.points[i].x;
+            a.y = polygon.points[i].y;
+
+            b.x = polygon.points[j].x;
+            b.y = polygon.points[j].y;
+
+            SDL_RenderDrawLineF(renderer, a.x, a.y, b.x, b.y);
+        }
+    }
+    return;
 }
 
 /////////////////////////////////////////
