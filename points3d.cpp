@@ -182,6 +182,8 @@ GameSpace::~GameSpace()
     kill();
 }
 
+/////////////////////////////////////////
+
 void GameSpace::runFrame()
 {
     prevTicks = SDL_GetTicks();

@@ -176,8 +176,6 @@ void RenderWindow::scanEvents()
 {
     mouseState = SDL_BUTTON(SDL_GetRelativeMouseState(&mouseX, &mouseY));
 
-    keys.clear();
-
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
