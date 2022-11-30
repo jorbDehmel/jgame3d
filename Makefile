@@ -7,29 +7,35 @@ STEM = $(CC) $(ARGS) $(DEPS)
 
 #########################
 
-demo.out:	demo.o points.o points3d.o
-	$(STEM) demo.o points.o points3d.o -o demo.out
+bin/demo.out:	build/demo.o build/points.o build/points3d.o
+	$(STEM) build/demo.o build/points.o build/points3d.o -o bin/demo.out
 
-ship.out:	ship.o points.o
-	$(STEM) points.o ship.o -o ship.out
-
-#########################
-
-ship.o:	demos/ship.cpp
-	$(STEM) -c demos/ship.cpp -o ship.o
-
-demo.o:	demos/demo3d.cpp
-	$(STEM) -c demos/demo3d.cpp -o demo.o
+bin/ship.out:	build/ship.o build/points.o
+	$(STEM) build/points.o build/ship.o -o bin/ship.out
 
 #########################
 
-points3d.o:	points3d.cpp points3d.hpp
-	$(STEM) -c points3d.cpp -o points3d.o
+build/ship.o:	demos/ship.cpp
+	$(STEM) -c demos/ship.cpp -o build/ship.o
 
-points.o:	points.cpp points.hpp
-	$(STEM) -c points.cpp -o points.o
+build/demo.o:	demos/demo3d.cpp
+	$(STEM) -c demos/demo3d.cpp -o build/demo.o
 
 #########################
+
+build/points3d.o:	jgame3D/points3d.cpp jgame3D/points3d.hpp
+	$(STEM) -c jgame3D/points3d.cpp -o build/points3d.o
+
+build/points.o:	jgame3D/points.cpp jgame3D/points.hpp
+	$(STEM) -c jgame3D/points.cpp -o build/points.o
+
+#########################
+
+clean:
+	rm -f *.o
+	rm -f build/*
 
 pclean:
 	rm -f *.out *.o
+	rm -f bin/*
+	rm -f build/*

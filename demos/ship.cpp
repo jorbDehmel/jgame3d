@@ -1,5 +1,4 @@
-#include "../points.hpp"
-#include "../keys.hpp"
+#include "../jgame3D/points.hpp"
 
 using namespace std;
 

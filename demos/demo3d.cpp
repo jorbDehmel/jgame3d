@@ -1,5 +1,5 @@
-#include "../points3d.hpp"
-#include "../keys.hpp"
+#include "../jgame3D/points3d.hpp"
+#include "../jgame3D/keys.hpp"
 
 #include <vector>
 using namespace std;
