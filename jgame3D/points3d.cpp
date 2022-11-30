@@ -2,8 +2,7 @@
 
 /////////////////////////////////////////
 
-#define FOV_SCALAR 1
-const Point3D horizon(256, 256, 512);
+int FOV_SCALAR = 1;
 
 /////////////////////////////////////////
 
@@ -16,7 +15,7 @@ Polygon3D::Polygon3D(Point3D pointsIn[], int num)
     return;
 }
 
-SDL_FPoint *Polygon3D::SDLify() const
+SDL_FPoint *Polygon3D::SDLify(Point3D &horizon) const
 {
     assert(points.size() >= 1);
 
@@ -51,7 +50,7 @@ void Polygon3D::operator+=(Polygon3D &other)
 
 /////////////////////////////////////////
 
-int SDL_RenderDrawLinesF(SDL_Renderer *renderer, const Polygon3D polygon)
+int SDL_RenderDrawLinesF(SDL_Renderer *renderer, const Polygon3D polygon, Point3D &horizon)
 {
     if (polygon.basis.z > horizon.z)
     {
@@ -61,10 +60,10 @@ int SDL_RenderDrawLinesF(SDL_Renderer *renderer, const Polygon3D polygon)
     Polygon3D temp = rotate(polygon);
     temp = move(temp);
 
-    return SDL_RenderDrawLinesF(renderer, temp.SDLify(), temp.points.size() + 1);
+    return SDL_RenderDrawLinesF(renderer, temp.SDLify(horizon), temp.points.size() + 1);
 }
 
-void crossDrawLines(SDL_Renderer *renderer, const Polygon3D &polygon)
+void crossDrawLines(SDL_Renderer *renderer, const Polygon3D &polygon, Point3D &horizon)
 {
     if (polygon.basis.z > horizon.z)
     {
@@ -74,7 +73,7 @@ void crossDrawLines(SDL_Renderer *renderer, const Polygon3D &polygon)
     temp = move(temp);
 
     SDL_FPoint a, b;
-    auto points = temp.SDLify();
+    auto points = temp.SDLify(horizon);
 
     for (int i = 0; i < temp.points.size(); i++)
     {
@@ -161,14 +160,18 @@ void rotatePoint(Point3D &p, double dx = 0, double dy = 0, double dz = 0)
 
 /////////////////////////////////////////
 
-GameSpace::GameSpace(int h, int w, int rt, void (*updateFunc)(vector<Polygon3D> &), SDL_WindowFlags windowFlags)
+GameSpace::GameSpace(int h, int w, int rt, void (*updateFunc)(vector<Polygon3D *> &), SDL_WindowFlags windowFlags)
 {
     SDL_Init(SDL_INIT_EVERYTHING);
+
+    horizon.x = w / 2;
+    horizon.y = h / 2;
+    horizon.z = w;
 
     isRunning = true;
     assert(SDL_CreateWindowAndRenderer(w, h, windowFlags, &wind, &rend) == 0);
     refreshTime = rt;
-    updateFunc = update;
+    update = updateFunc;
 
     prevTicks = SDL_GetTicks();
 
@@ -192,7 +195,7 @@ void GameSpace::runFrame()
 
     for (int i = 0; i < polygons.size(); i++)
     {
-        SDL_RenderDrawLinesF(rend, polygons[i]);
+        SDL_RenderDrawLinesF(rend, *polygons[i], horizon);
     }
 
     SDL_RenderPresent(rend);
@@ -200,6 +203,7 @@ void GameSpace::runFrame()
     passed = SDL_GetTicks() - prevTicks;
     if (refreshTime - passed > 0)
     {
+        // cout << "Calculations took " << passed << " ms\n";
         SDL_Delay(refreshTime - passed);
     }
 
@@ -217,8 +221,6 @@ void GameSpace::kill()
 void GameSpace::scanEvents()
 {
     mouseState = SDL_BUTTON(SDL_GetRelativeMouseState(&mouseX, &mouseY));
-
-    keys.clear();
 
     SDL_Event event;
     while (SDL_PollEvent(&event))
@@ -259,7 +261,7 @@ void GameSpace::mainLoop()
     return;
 }
 
-void GameSpace::addPolygon(Polygon3D p)
+void GameSpace::addPolygon(Polygon3D *p)
 {
     polygons.push_back(p);
     return;
@@ -269,7 +271,7 @@ void GameSpace::removePolygon(Polygon3D *p)
 {
     for (int i = 0; i < polygons.size(); i++)
     {
-        if (&polygons[i] == p)
+        if (polygons[i] == p)
         {
             polygons.erase(polygons.begin() + i);
             return;
@@ -278,13 +280,13 @@ void GameSpace::removePolygon(Polygon3D *p)
     return;
 }
 
-void GameSpace::removePolygons(bool (*checkingFunction)(const Polygon3D &))
+void GameSpace::removePolygons(bool (*checkingFunction)(const Polygon3D *))
 {
-    for (auto i = polygons.begin(); i != polygons.end(); i++)
+    for (int i = 0; i < polygons.size(); i++)
     {
-        if (checkingFunction(*i))
+        if (checkingFunction(polygons[i]))
         {
-            polygons.erase(i);
+            polygons.erase(polygons.begin() + i);
         }
     }
     return;

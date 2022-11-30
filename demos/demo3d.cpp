@@ -6,57 +6,52 @@ using namespace std;
 
 //////////////////////////////////////////////////
 
-RenderWindow *wind;
+GameSpace *space;
 Polygon3D *poly;
+unsigned char r, g, b;
 
 //////////////////////////////////////////////////
 
 #define stepSize 1
-void update(SDL_Renderer *rend)
+void update(vector<Polygon3D *> &polys)
 {
-    SDL_Delay(10);
 
-    if (wind->key(27))
+    if (space->key(27))
     {
-        wind->isRunning = false;
+        space->isRunning = false;
     }
 
-    if (wind->key(keys::leftArrow))
+    if (space->key(keys::leftArrow))
     {
         poly->basis.x -= stepSize;
     }
-
-    if (wind->key(keys::rightArrow))
+    else if (space->key(keys::rightArrow))
     {
         poly->basis.x += stepSize;
     }
 
-    if (wind->key(keys::upArrow))
+    if (space->key(keys::upArrow))
     {
         poly->basis.y -= stepSize;
     }
-
-    if (wind->key(keys::downArrow))
+    else if (space->key(keys::downArrow))
     {
         poly->basis.y += stepSize;
     }
 
-    if (wind->key(keys::w))
+    if (space->key(keys::w))
     {
         poly->basis.z += stepSize;
     }
-
-    if (wind->key(keys::s))
+    else if (space->key(keys::s))
     {
         poly->basis.z -= stepSize;
     }
 
-    SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
-    SDL_RenderClear(rend);
+    SDL_SetRenderDrawColor(space->rend, 0, 0, 0, 255);
+    SDL_RenderClear(space->rend);
 
-    SDL_SetRenderDrawColor(rend, 255, 0, 0, 255);
-
-    crossDrawLines(rend, *poly);
+    SDL_SetRenderDrawColor(space->rend, 255, 255, 255, 255);
 
     poly->rotationX += .01;
     poly->rotationY += .01;
@@ -77,16 +72,23 @@ int main()
                         Point3D(32, -32, 32),
                         Point3D(32, 32, 32),
                         Point3D(-32, 32, 32)};
+
     poly = new Polygon3D(points, 8);
     poly->basis = Point3D(128, 128, 128);
 
-    poly->rotationX = .5;
-    poly->rotationY = poly->rotationZ = 0;
+    r = g = b = 255;
 
-    wind = new RenderWindow(512, 512, 0, update, SDL_WINDOW_OPENGL);
-    wind->mainLoop();
+    poly->rotationX = poly->rotationY = poly->rotationZ = 0;
 
-    delete wind;
+    space = new GameSpace(512, 512, 8, update, SDL_WINDOW_OPENGL);
+
+    space->horizon.x = 256;
+    space->horizon.y = 480;
+    space->horizon.z = 1028;
+
+    space->addPolygon(poly);
+    space->mainLoop();
+
     delete poly;
 
     return 0;
