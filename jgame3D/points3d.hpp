@@ -19,21 +19,50 @@ class Polygon3D
 {
 public:
     Polygon3D(Point3D pointsIn[], int num);
-    SDL_FPoint *SDLify(Point3D &horizon) const;
 
+    SDL_FPoint *SDLify(Point3D &horizon) const;
     void operator+=(Polygon3D &other);
+    void render(SDL_Renderer *rend, Point3D &horizon);
+    void renderCross(SDL_Renderer *rend, Point3D &horizon);
 
     double rotationX, rotationY, rotationZ;
     Point3D basis;
+
     vector<Point3D> points;
 };
 
 /////////////////////////////////////////
 
-int SDL_RenderDrawLinesF(SDL_Renderer *renderer, const Polygon3D polygon, Point3D &horizon);
-void crossDrawLines(SDL_Renderer *renderer, const Polygon3D &polygon, Point3D &horizon);
+class Object : public Polygon3D
+{
+public:
+    SDL_FPoint *SDLify(Point3D &horizon) const;
+    void operator+=(Polygon3D &other);
+    void render(SDL_Renderer *rend, Point3D &horizon);
+    void renderCross(SDL_Renderer *rend, Point3D &horizon);
+
+    double rotationX, rotationY, rotationZ;
+    Point3D basis;
+
+    vector<Polygon3D> shapes;
+};
+
+/////////////////////////////////////////
+
+/*
+int render(SDL_Renderer *renderer, const __Renderable polygon, Point3D &horizon);
+void crossRender(SDL_Renderer *renderer, const __Renderable &polygon, Point3D &horizon);
+
+int render(SDL_Renderer *renderer, const Object polygon, Point3D &horizon);
+void crossRender(SDL_Renderer *renderer, const Object &polygon, Point3D &horizon);
+*/
+
 Polygon3D move(const Polygon3D poly);
 Polygon3D rotate(const Polygon3D poly);
+
+Object move(const Object poly);
+Object rotate(const Object poly);
+
 void rotatePoint(Point3D &p, double dx, double dy, double dz);
 
 /////////////////////////////////////////

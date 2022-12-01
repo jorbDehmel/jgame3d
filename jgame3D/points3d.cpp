@@ -50,26 +50,31 @@ void Polygon3D::operator+=(Polygon3D &other)
 
 /////////////////////////////////////////
 
-int SDL_RenderDrawLinesF(SDL_Renderer *renderer, const Polygon3D polygon, Point3D &horizon)
+void Polygon3D::render(SDL_Renderer *renderer, Point3D &horizon)
 {
-    if (polygon.basis.z > horizon.z)
-    {
-        return 0;
-    }
+    cout << "Polygon render called\n";
 
-    Polygon3D temp = rotate(polygon);
-    temp = move(temp);
-
-    return SDL_RenderDrawLinesF(renderer, temp.SDLify(horizon), temp.points.size() + 1);
-}
-
-void crossDrawLines(SDL_Renderer *renderer, const Polygon3D &polygon, Point3D &horizon)
-{
-    if (polygon.basis.z > horizon.z)
+    if (basis.z > horizon.z || basis.z < 0)
     {
         return;
     }
-    Polygon3D temp = rotate(polygon);
+
+    Polygon3D temp = rotate(*this);
+    temp = move(temp);
+
+    SDL_RenderDrawLinesF(renderer, temp.SDLify(horizon), temp.points.size() + 1);
+
+    return;
+}
+
+void Polygon3D::renderCross(SDL_Renderer *renderer, Point3D &horizon)
+{
+    if (basis.z > horizon.z || basis.z < 0)
+    {
+        return;
+    }
+
+    Polygon3D temp = rotate(*this);
     temp = move(temp);
 
     SDL_FPoint a, b;
@@ -91,14 +96,47 @@ void crossDrawLines(SDL_Renderer *renderer, const Polygon3D &polygon, Point3D &h
     return;
 }
 
+void Object::render(SDL_Renderer *renderer, Point3D &horizon)
+{
+    for (int i = 0; i < shapes.size(); i++)
+    {
+        shapes[i].render(renderer, horizon);
+    }
+
+    return;
+}
+
+void Object::renderCross(SDL_Renderer *renderer, Point3D &horizon)
+{
+    for (int i = 0; i < shapes.size(); i++)
+    {
+        shapes[i].renderCross(renderer, horizon);
+    }
+
+    return;
+}
+
+///////////////////////////////////////////////////////////////
+
 Polygon3D move(const Polygon3D poly)
 {
     Polygon3D out = poly;
-    for (int i = 0; i < poly.points.size(); i++)
+    for (int i = 0; i < out.points.size(); i++)
     {
         out.points[i].x += poly.basis.x;
         out.points[i].y += poly.basis.y;
         out.points[i].z += poly.basis.z;
+    }
+    return out;
+}
+
+Object move(const Object obj)
+{
+    Object out = obj;
+    for (int i = 0; i < out.shapes.size(); i++)
+    {
+        out.shapes[i].basis = obj.basis;
+        move(out.shapes[i]);
     }
     return out;
 }
@@ -122,6 +160,22 @@ Polygon3D rotate(const Polygon3D p)
 
     return out;
 }
+
+Object rotate(const Object obj)
+{
+    Object out = obj;
+    for (int i = 0; i < out.shapes.size(); i++)
+    {
+        out.shapes[i].rotationX = obj.rotationX;
+        out.shapes[i].rotationY = obj.rotationY;
+        out.shapes[i].rotationZ = obj.rotationZ;
+
+        rotate(out.shapes[i]);
+    }
+    return out;
+}
+
+///////////////////////////////////////////////////////////////
 
 void rotatePoint(Point3D &p, double dx = 0, double dy = 0, double dz = 0)
 {
@@ -195,7 +249,7 @@ void GameSpace::runFrame()
 
     for (int i = 0; i < polygons.size(); i++)
     {
-        SDL_RenderDrawLinesF(rend, *polygons[i], horizon);
+        polygons[i]->renderCross(rend, horizon);
     }
 
     SDL_RenderPresent(rend);

@@ -53,9 +53,9 @@ void update(vector<Polygon3D *> &polys)
 
     SDL_SetRenderDrawColor(space->rend, 255, 255, 255, 255);
 
-    poly->rotationX += .01;
-    poly->rotationY += .01;
-    poly->rotationZ += .01;
+    poly->rotationX += .001;
+    poly->rotationY += .001;
+    poly->rotationZ += .001;
 
     return;
 }
@@ -66,12 +66,12 @@ int main()
 {
     Point3D points[] = {Point3D(-32, -32, -32),
                         Point3D(32, -32, -32),
-                        Point3D(32, 32, -32),
                         Point3D(-32, 32, -32),
+                        Point3D(32, 32, -32),
                         Point3D(-32, -32, 32),
                         Point3D(32, -32, 32),
-                        Point3D(32, 32, 32),
-                        Point3D(-32, 32, 32)};
+                        Point3D(-32, 32, 32),
+                        Point3D(32, 32, 32)};
 
     poly = new Polygon3D(points, 8);
     poly->basis = Point3D(128, 128, 128);
@@ -80,10 +80,10 @@ int main()
 
     poly->rotationX = poly->rotationY = poly->rotationZ = 0;
 
-    space = new GameSpace(512, 512, 8, update, SDL_WINDOW_OPENGL);
+    space = new GameSpace(512, 512, 4, update, SDL_WINDOW_OPENGL);
 
     space->horizon.x = 256;
-    space->horizon.y = 480;
+    space->horizon.y = 256;
     space->horizon.z = 1028;
 
     space->addPolygon(poly);
