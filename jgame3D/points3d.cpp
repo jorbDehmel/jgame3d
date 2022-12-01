@@ -15,9 +15,26 @@ Polygon3D::Polygon3D(Point3D pointsIn[], int num)
     return;
 }
 
-SDL_FPoint *Polygon3D::SDLify(Point3D &horizon) const
+SDL_FPoint *Polygon3D::SDLify(Point3D &horizon)
 {
     assert(points.size() >= 1);
+
+    min = max = points[0];
+    for (Point3D p : points)
+    {
+        if (p.x < min.x)
+            min.x = p.x;
+        if (p.x > max.x)
+            max.x = p.x;
+        if (p.y < min.y)
+            min.y = p.y;
+        if (p.y > max.y)
+            max.y = p.y;
+        if (p.z < min.z)
+            min.z = p.z;
+        if (p.z > max.z)
+            max.z = p.z;
+    }
 
     SDL_FPoint *out = new SDL_FPoint[points.size() + 1];
 
@@ -33,6 +50,7 @@ SDL_FPoint *Polygon3D::SDLify(Point3D &horizon) const
         out[i].x += horizon.x;
         out[i].y += horizon.y;
     }
+
     out[points.size()].x = out[0].x;
     out[points.size()].y = out[0].y;
 
@@ -98,9 +116,23 @@ void Polygon3D::renderCross(SDL_Renderer *renderer, Point3D &horizon)
 
 void Object::render(SDL_Renderer *renderer, Point3D &horizon)
 {
+    min = max = shapes[0].min;
     for (int i = 0; i < shapes.size(); i++)
     {
         shapes[i].render(renderer, horizon);
+
+        if (shapes[i].min.x < min.x)
+            min.x = shapes[i].min.x;
+        if (shapes[i].max.x > max.x)
+            max.x = shapes[i].max.x;
+        if (shapes[i].min.y < min.y)
+            min.y = shapes[i].min.y;
+        if (shapes[i].max.y > max.y)
+            max.y = shapes[i].max.y;
+        if (shapes[i].min.z < min.z)
+            min.z = shapes[i].min.z;
+        if (shapes[i].max.z > max.z)
+            max.z = shapes[i].max.z;
     }
 
     return;
