@@ -8,7 +8,7 @@
 class Point3D
 {
 public:
-    Point3D() {}
+    Point3D() { x = y = z = 0; }
     Point3D(double xIn, double yIn, double zIn) : x(xIn), y(yIn), z(zIn) {}
 
     Point3D operator=(Point3D other)
@@ -23,17 +23,18 @@ public:
 
 Point3D operator+(const Point3D &a, const Point3D &b);
 Point3D operator-(const Point3D &a, const Point3D &b);
+Point3D operator*(const Point3D &a, const double b);
 
 /////////////////////////////////////////
 
 class Polygon3D
 {
 public:
-    Polygon3D() {}
+    Polygon3D();
+    Polygon3D(const Polygon3D &other);
     Polygon3D(Point3D pointsIn[], int num);
 
     SDL_FPoint *SDLify(Point3D &horizon);
-    void operator+=(Polygon3D &other);
     void render(SDL_Renderer *rend, Point3D &horizon);
     void renderCross(SDL_Renderer *rend, Point3D &horizon);
 

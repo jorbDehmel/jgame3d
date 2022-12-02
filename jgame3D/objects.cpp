@@ -5,17 +5,16 @@
 Object::Object()
 {
     shapes.clear();
-    min = max = basis = Point3D(0, 0, 0);
+    basis.x = basis.y = basis.z = 0;
+    min = max = basis;
     rotationX = rotationY = rotationZ = 0;
 }
 
 void Object::add(Polygon3D other)
 {
-    cout << "Before: " << other.points[0].x << '\t' << other.points[0].y << '\t' << other.points[0].z << '\n';
-    Polygon3D temp = move(rotate(other));
-    cout << "After: " << other.points[0].x << '\t' << other.points[0].y << '\t' << other.points[0].z << "\n\n";
-
-    shapes.push_back(other);
+    Polygon3D temp = rotate(other);
+    temp = move(temp);
+    shapes.push_back(temp);
 }
 
 void Object::render(SDL_Renderer *renderer, Point3D &horizon)

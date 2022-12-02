@@ -1,4 +1,5 @@
 #include "points3d.hpp"
+#include <cassert>
 
 /////////////////////////////////////////
 
@@ -25,6 +26,15 @@ Point3D operator-(const Point3D &a, const Point3D &b)
     return out;
 }
 
+Point3D operator*(const Point3D &a, const double b)
+{
+    Point3D out = a;
+    out.x *= b;
+    out.y *= b;
+    out.z *= b;
+    return out;
+}
+
 /////////////////////////////////////////
 
 Polygon3D::Polygon3D(Point3D pointsIn[], int num)
@@ -33,7 +43,35 @@ Polygon3D::Polygon3D(Point3D pointsIn[], int num)
     {
         points.push_back(pointsIn[i]);
     }
+    basis.x = basis.y = basis.z = 0;
+    rotationX = 0;
+    rotationY = 0;
+    rotationZ = 0;
     return;
+}
+
+Polygon3D::Polygon3D(const Polygon3D &other)
+{
+    basis = other.basis;
+    max = other.max;
+    min = other.min;
+    rotationX = other.rotationX;
+    rotationY = other.rotationY;
+    rotationZ = other.rotationZ;
+
+    points.clear();
+    for (auto p : other.points)
+    {
+        points.push_back(p);
+    }
+}
+
+Polygon3D::Polygon3D()
+{
+    basis.x = basis.y = basis.z = 0;
+    max = min = basis;
+    points.clear();
+    rotationX = rotationY = rotationZ = 0;
 }
 
 SDL_FPoint *Polygon3D::SDLify(Point3D &horizon)
@@ -78,21 +116,10 @@ SDL_FPoint *Polygon3D::SDLify(Point3D &horizon)
     return out;
 }
 
-void Polygon3D::operator+=(Polygon3D &other)
-{
-    for (auto point : other.points)
-    {
-        points.push_back(point);
-    }
-    return;
-}
-
 /////////////////////////////////////////
 
 void Polygon3D::render(SDL_Renderer *renderer, Point3D &horizon)
 {
-    cout << "Polygon render called\n";
-
     if (basis.z > (horizon.z * Z_CUTOFF_SCALAR) || basis.z < 0)
     {
         return;
@@ -151,20 +178,16 @@ Polygon3D move(const Polygon3D poly)
 
 Polygon3D rotate(const Polygon3D p)
 {
-    Polygon3D out = p;
+    Polygon3D out(p);
 
-    out.basis.x = 0;
-    out.basis.y = 0;
-    out.basis.z = 0;
-    out = move(out);
-
+    // Rotate each point
     for (int i = 0; i < out.points.size(); i++)
     {
         rotatePoint(out.points[i], out.rotationX, out.rotationY, out.rotationZ);
     }
 
+    // For some reason the basis doesn't copy over
     out.basis = p.basis;
-    out = move(out);
 
     return out;
 }
@@ -173,12 +196,18 @@ Polygon3D rotate(const Polygon3D p)
 
 void rotatePoint(Point3D &p, double dx = 0, double dy = 0, double dz = 0)
 {
-    double s, c;
-    double x, y, z;
+    double s = 0, c = 0;
+    double x = p.x, y = p.y, z = p.z;
 
+    // p.x = p.y = p.z = -1;
+
+    // cout << "Rotations: " << dx << '\t' << dy << '\t' << dz << '\n';
     if (dx != 0)
     {
         s = sin(dx), c = cos(dx);
+        assert(s == s);
+        assert(c == c);
+
         x = p.x, y = p.y, z = p.z;
 
         p.y = (c * y) - (s * z);
@@ -188,6 +217,9 @@ void rotatePoint(Point3D &p, double dx = 0, double dy = 0, double dz = 0)
     if (dy != 0)
     {
         s = sin(dy), c = cos(dy);
+        assert(s == s);
+        assert(c == c);
+
         x = p.x, y = p.y, z = p.z;
 
         p.x = (c * x) + (s * z);
@@ -197,11 +229,16 @@ void rotatePoint(Point3D &p, double dx = 0, double dy = 0, double dz = 0)
     if (dz != 0)
     {
         s = sin(dz), c = cos(dz);
+        assert(s == s);
+        assert(c == c);
+
         x = p.x, y = p.y, z = p.z;
 
         p.x = (c * x) - (s * y);
         p.y = (s * x) + (c * y);
     }
+
+    // cout << "rotational output: " << p.x << '\t' << p.y << '\t' << p.z << '\n';
 
     return;
 }
