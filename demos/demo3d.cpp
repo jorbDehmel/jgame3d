@@ -1,6 +1,7 @@
 #include "../jgame3D/points3d.hpp"
 #include "../jgame3D/keys.hpp"
 #include "../jgame3D/objects.hpp"
+#include "../jgame3D/textures.hpp"
 
 #include <vector>
 using namespace std;
@@ -37,8 +38,7 @@ void update(vector<Object *> &polygons)
 
     SDL_SetRenderDrawColor(space->rend, 0, 0, 0, 255);
     SDL_RenderClear(space->rend);
-
-    SDL_SetRenderDrawColor(space->rend, r, g, b, 255);
+    SDL_SetRenderDrawColor(space->rend, 255, 255, 255, 255);
 
     poly->rotationX += .001;
     poly->rotationY += .001;
@@ -105,23 +105,11 @@ void createCube(Object &obj)
 
 int main()
 {
-    Point3D points[] = {Point3D(-32, -32, -32),
-                        Point3D(32, -32, -32),
-                        Point3D(-32, 32, -32),
-                        Point3D(32, 32, -32),
-                        Point3D(-32, -32, 32),
-                        Point3D(32, -32, 32),
-                        Point3D(-32, 32, 32),
-                        Point3D(32, 32, 32)};
-
     r = g = b = 255;
 
     Object poly;
     poly.basis = Point3D(256, 256, 256);
-    poly.rotationX = poly.rotationY = poly.rotationZ = 0;
     createCube(poly);
-
-    // poly.shapes.push_back(Polygon3D(points, 8));
 
     space = new GameSpace(512, 512, 4, update, SDL_WINDOW_OPENGL);
 
@@ -130,6 +118,7 @@ int main()
     space->horizon.z = 512;
 
     space->addPolygon(&poly);
+
     space->mainLoop();
 
     return 0;

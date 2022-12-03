@@ -23,6 +23,12 @@ double modulo(const double &a, const double &b)
     return out;
 }
 
+ostream &operator<<(ostream &stream, const BasicPoint &point)
+{
+    stream << "(" << point.x << ", " << point.y << ")";
+    return stream;
+}
+
 /////////////////////////////////////////
 
 Polygon2D::Polygon2D(BasicPoint pointsIn[], int num)
@@ -40,11 +46,24 @@ SDL_FPoint *Polygon2D::SDLify()
 
     SDL_FPoint *out = new SDL_FPoint[points.size() + 1];
 
+    min = max = points[0];
     for (int i = 0; i < points.size(); i++)
     {
+        if (points[i].x < min.x)
+            min.x = points[i].x;
+        if (points[i].x > max.x)
+            max.x = points[i].x;
+        if (points[i].y < min.y)
+            min.y = points[i].y;
+        if (points[i].y > max.y)
+            max.y = points[i].y;
+
         out[i].x = points[i].x;
         out[i].y = points[i].y;
     }
+
+    cout << "Min: " << min << "\nMax: " << max << '\n';
+
     out[points.size()].x = points[0].x;
     out[points.size()].y = points[0].y;
 

@@ -66,14 +66,14 @@ bool isTouching(const Polygon3D &a, const Polygon3D &b)
 
 bool isPointWithin(const Point3D &p, const Object &b)
 {
-    Object temp = move(rotate(b));
+    Object temp = b;
 
     return (p.x >= temp.min.x && p.x <= temp.max.x) && (p.y >= temp.min.y && p.y <= temp.max.y) && (p.z >= temp.min.z && p.z <= temp.max.z);
 }
 
 bool isPolygonWithin(const Polygon3D &poly, const Object &obj)
 {
-    Object temp = move(rotate(obj));
+    Object temp = obj;
 
     double minX, maxX, minY, maxY, minZ, maxZ;
     minX = maxX = temp.shapes[0].points[0].x;

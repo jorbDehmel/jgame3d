@@ -27,18 +27,26 @@ public:
     double x, y;
 };
 
+ostream &operator<<(ostream &stream, const BasicPoint &point);
+
 /////////////////////////////////////////
 
 class Polygon2D
 {
 public:
+    Polygon2D()
+    {
+        rotation = 0;
+        basis = min = max = BasicPoint(0, 0);
+        points.clear();
+    }
     Polygon2D(BasicPoint pointsIn[], int num);
     SDL_FPoint *SDLify();
 
     void operator+=(Polygon2D &other);
 
     double rotation;
-    BasicPoint basis;
+    BasicPoint basis, min, max;
     vector<BasicPoint> points;
 };
 
