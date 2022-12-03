@@ -11,42 +11,38 @@ Sprite3D::Sprite3D(Object &o, vector<SDL_Surface *> &t)
     }
 }
 
-void fillPolygon(SDL_Renderer *rend, const Polygon2D &p, const unsigned int color)
+void fillPolygon(SDL_Renderer *rend, Polygon2D &p, const unsigned int color)
 {
-    // cout << "Filling polygon\n";
     SDL_SetRenderDrawColor(rend, ((unsigned char *)&color)[0], ((unsigned char *)&color)[1], ((unsigned char *)&color)[2], ((unsigned char *)&color)[3]);
 
     double X1, X2, Y1, Y2;
 
     vector<double> xValues;
 
-    // cout << "Iterating over y\n";
+    p.SDLify();
     for (int y = p.min.y; y < p.max.y; y++)
     {
-
         xValues.clear();
-        for (int i = 0; i + 1 < p.points.size(); i++)
+        for (int i = 0; i < p.points.size(); i++)
         {
-            if (p.points[i].y < y && p.points[i + 1].y < y)
+            if (p.points[i].y < y && p.points[(i + 1) % (p.points.size() - 1)].y < y)
                 continue;
-            else if (p.points[i].y > y && p.points[i + 1].y > y)
+            else if (p.points[i].y > y && p.points[(i + 1) % (p.points.size() - 1)].y > y)
                 continue;
 
             X1 = p.points[i].x;
             Y1 = p.points[i].y;
-            X2 = p.points[i + 1].x;
-            Y2 = p.points[i + 1].y;
+            X2 = p.points[(i + 1) % (p.points.size() - 1)].x;
+            Y2 = p.points[(i + 1) % (p.points.size() - 1)].y;
 
             xValues.push_back(y * ((X2 - X1) / (Y2 - Y1)) + ((-Y1 * (X2 - X1) / (Y2 - Y1)) + X1));
         }
         sort(xValues.begin(), xValues.end());
 
-        // cout << "Created lines\n";
-
         // Draw line segments
         for (int i = 0; i + 1 < xValues.size(); i += 2)
         {
-            // cout << "Drawing line between " << xValues[i] << " and " << xValues[i + 1] << " along y = " << y << '\n';
+            cout << "Drawing line between " << xValues[i] << " and " << xValues[i + 1] << " along y = " << y << '\n';
             SDL_RenderDrawLineF(rend, xValues[i], y, xValues[i + 1], y);
         }
     }

@@ -16,7 +16,7 @@ public:
     vector<SDL_Surface *> textures;
 };
 
-void fillPolygon(SDL_Renderer *rend, const Polygon2D &p, const unsigned int color);
+void fillPolygon(SDL_Renderer *rend, Polygon2D &p, const unsigned int color);
 void fillPolygon(SDL_Renderer *rend, Polygon3D &p, const unsigned int color, Point3D horizon); // This MUST run in order(n)!
 
 void mapSurface(SDL_Renderer *rend, const SDL_Surface *surface, const Polygon2D &p);

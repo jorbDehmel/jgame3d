@@ -91,16 +91,21 @@ int SDL_RenderDrawLinesF(SDL_Renderer *renderer, const Polygon2D &polygon)
 
 void crossDrawLines(SDL_Renderer *renderer, const Polygon2D &polygon)
 {
-    SDL_FPoint a, b;
-    for (int i = 0; i < polygon.points.size(); i++)
-    {
-        for (int j = i; j < polygon.points.size(); j++)
-        {
-            a.x = polygon.points[i].x;
-            a.y = polygon.points[i].y;
+    Polygon2D temp(polygon);
 
-            b.x = polygon.points[j].x;
-            b.y = polygon.points[j].y;
+    rotate(temp, polygon.rotation);
+    move(temp, polygon.basis);
+
+    SDL_FPoint a, b;
+    for (int i = 0; i < temp.points.size(); i++)
+    {
+        for (int j = i; j < temp.points.size(); j++)
+        {
+            a.x = temp.points[i].x;
+            a.y = temp.points[i].y;
+
+            b.x = temp.points[j].x;
+            b.y = temp.points[j].y;
 
             SDL_RenderDrawLineF(renderer, a.x, a.y, b.x, b.y);
         }
