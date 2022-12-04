@@ -3,7 +3,7 @@
 
 /////////////////////////////////////////
 
-int FOV_SCALAR = 1;
+int FOV_SCALAR = 500;
 int Z_CUTOFF_SCALAR = 50;
 
 /////////////////////////////////////////
@@ -103,8 +103,8 @@ SDL_FPoint *Polygon3D::SDLify(Point3D &horizon)
         out[i].y = points[i].y - horizon.y;
 
         // Calculate
-        out[i].x *= 1 + (horizon.z / (points[i].z * FOV_SCALAR));
-        out[i].y *= 1 + (horizon.z / (points[i].z * FOV_SCALAR));
+        out[i].x *= (FOV_SCALAR / points[i].z);
+        out[i].y *= (FOV_SCALAR / points[i].z);
 
         out[i].x += horizon.x;
         out[i].y += horizon.y;

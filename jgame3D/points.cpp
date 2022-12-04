@@ -62,7 +62,7 @@ SDL_FPoint *Polygon2D::SDLify()
         out[i].y = points[i].y;
     }
 
-    cout << "Min: " << min << "\nMax: " << max << '\n';
+    // cout << "Min: " << min << "\nMax: " << max << '\n';
 
     out[points.size()].x = points[0].x;
     out[points.size()].y = points[0].y;
@@ -230,6 +230,7 @@ void RenderWindow::runFrame()
     SDL_RenderPresent(rend);
 
     passed = SDL_GetTicks() - prevTicks;
+    // cout << "(Frame refresh took " << passed << " ms)\n";
     if (refreshTime - passed > 0)
     {
         SDL_Delay(refreshTime - passed);
