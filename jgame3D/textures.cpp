@@ -15,41 +15,46 @@ void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, const unsigned int color)
 {
     Polygon2D p = poly;
 
-    rotate(p, p.rotation, p.basis);
+    rotate(p, p.rotation);
     move(p, p.basis);
+    p.SDLify();
 
     SDL_SetRenderDrawColor(rend, ((unsigned char *)&color)[0], ((unsigned char *)&color)[1], ((unsigned char *)&color)[2], ((unsigned char *)&color)[3]);
 
     double X1, X2, Y1, Y2;
-
     vector<double> xValues;
 
-    p.SDLify();
-    for (int y = p.min.y; y < p.max.y; y++)
+    for (double y = p.min.y; y < p.max.y; y++)
     {
         xValues.clear();
         for (int i = 0; i < p.points.size(); i++)
         {
-            // if (p.points[i].y < y && p.points[(i + 1) % (p.points.size() - 1)].y < y)
-            //     continue;
-            // else if (p.points[i].y > y && p.points[(i + 1) % (p.points.size() - 1)].y > y)
-            //     continue;
-
             X1 = p.points[i].x;
             Y1 = p.points[i].y;
-            X2 = p.points[(i + 1) % (p.points.size() - 1)].x;
-            Y2 = p.points[(i + 1) % (p.points.size() - 1)].y;
+            X2 = p.points[(i + 1) % (p.points.size())].x;
+            Y2 = p.points[(i + 1) % (p.points.size())].y;
 
-            xValues.push_back(y * ((X2 - X1) / (Y2 - Y1)) - (Y1 * (X2 - X1) / (Y2 - Y1)) + X1);
+            if (Y1 < y && Y2 < y)
+                continue;
+            else if (Y1 > y && Y2 > y)
+                continue;
+
+            if (Y1 == Y2 || X1 == X2)
+                continue;
+
+            xValues.push_back(y * ((X2 - X1) / (Y2 - Y1)) - Y1 * ((X2 - X1) / (Y2 - Y1)) + X1);
         }
+
+        if (xValues.size() == 0)
+            continue;
 
         sort(xValues.begin(), xValues.end());
 
         // Draw line segments
         for (int i = 0; i < xValues.size(); i += 2)
         {
-            cout << "Drawing line between " << xValues[i] << " and " << xValues[(i + 1) % (xValues.size() - 1)] << " along y = " << y << '\n';
-            SDL_RenderDrawLineF(rend, xValues[i], y, xValues[(i + 1) % (xValues.size() - 1)], y);
+            // cout << "Drawing line between " << xValues[i] << " and " << xValues[(i + 1) % (xValues.size() - 1)] << " along y = " << y << '\n';
+            SDL_RenderDrawLineF(rend, xValues[i], y, xValues[(i + 1) % (xValues.size())], y);
         }
     }
 
