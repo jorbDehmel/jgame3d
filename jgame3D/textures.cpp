@@ -71,8 +71,8 @@ void fillPolygon(SDL_Renderer *rend, Polygon3D &p, const unsigned int color, Poi
     {
         basicPoints[i].x = SDLpoints[i].x;
         basicPoints[i].y = SDLpoints[i].y;
-        cout << SDLpoints[i].x << '\t' << SDLpoints[i].y << '\n';
-        cout << basicPoints[i] << '\n';
+        // cout << SDLpoints[i].x << '\t' << SDLpoints[i].y << '\n';
+        // cout << basicPoints[i] << '\n';
     }
 
     Polygon2D polygon(basicPoints, (int)p.points.size());

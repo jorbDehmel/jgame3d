@@ -7,6 +7,9 @@ STEM = $(CC) $(ARGS) $(DEPS)
 
 #########################
 
+bin/cube.out:	build/cube.o build/jgame3d.a
+	$(STEM) build/cube.o build/jgame3d.a -o bin/cube.out
+
 bin/fill.out:	build/fill.o build/jgame3d.a
 	$(STEM) build/fill.o build/jgame3d.a -o bin/fill.out
 
@@ -17,6 +20,9 @@ bin/ship.out:	build/ship.o build/points.o
 	$(STEM) build/points.o build/ship.o -o bin/ship.out
 
 #########################
+
+build/cube.o:	demos/cubeDemo.cpp
+	$(STEM) -c demos/cubeDemo.cpp -o build/cube.o
 
 build/fill.o:	demos/fillDemo.cpp
 	$(STEM) -c demos/fillDemo.cpp -o build/fill.o

@@ -86,17 +86,11 @@ void GameSpace::runFrame()
 
     update(polygons);
 
-    for (int i = 0; i < polygons.size(); i++)
-    {
-        polygons[i]->renderCross(rend, horizon);
-    }
-
     SDL_RenderPresent(rend);
 
     passed = SDL_GetTicks() - prevTicks;
     if (refreshTime - passed > 0)
     {
-        // cout << "Calculations took " << passed << " ms\n";
         SDL_Delay(refreshTime - passed);
     }
 
