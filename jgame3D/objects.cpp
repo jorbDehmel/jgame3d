@@ -8,23 +8,37 @@ Object::Object()
     basis.x = basis.y = basis.z = 0;
     min = max = basis;
     rotationX = rotationY = rotationZ = 0;
+
+    return;
 }
 
 void Object::add(Polygon3D other)
 {
     Polygon3D temp = rotate(other);
     temp = move(temp);
+
+    temp.basis = basis;
+    temp.rotationX = rotationX;
+    temp.rotationY = rotationY;
+    temp.rotationZ = rotationZ;
+
     shapes.push_back(temp);
+
+    return;
 }
 
 void Object::render(SDL_Renderer *renderer, Point3D &horizon)
 {
-    Polygon3D temp;
     for (int i = 0; i < shapes.size(); i++)
     {
-        temp = shapes[i];
-        temp.render(renderer, horizon);
+        shapes[i].basis = basis;
+        shapes[i].rotationX = rotationX;
+        shapes[i].rotationY = rotationY;
+        shapes[i].rotationZ = rotationZ;
+
+        shapes[i].render(renderer, horizon);
     }
+    return;
 }
 
 void Object::renderCross(SDL_Renderer *renderer, Point3D &horizon)
@@ -39,6 +53,23 @@ void Object::renderCross(SDL_Renderer *renderer, Point3D &horizon)
 
         shapes[i].renderCross(renderer, horizon);
     }
+    return;
+}
+
+void Object::fill(SDL_Renderer *rend, vector<Uint32> &colors, Point3D &horizon)
+{
+    Polygon3D temp;
+    for (int i = 0; i < shapes.size(); i++)
+    {
+        shapes[i].basis = basis;
+        shapes[i].rotationX = rotationX;
+        shapes[i].rotationY = rotationY;
+        shapes[i].rotationZ = rotationZ;
+
+        fillPolygon(rend, shapes[i], colors[i], horizon);
+    }
+
+    return;
 }
 
 Object move(const Object obj)

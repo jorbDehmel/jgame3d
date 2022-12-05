@@ -2,6 +2,7 @@
 #define OBJECTS_H
 
 #include "points3d.hpp"
+#include "textures.hpp"
 
 class Object
 {
@@ -11,6 +12,8 @@ public:
 
     void render(SDL_Renderer *rend, Point3D &horizon);
     void renderCross(SDL_Renderer *rend, Point3D &horizon);
+
+    void fill(SDL_Renderer *rend, vector<Uint32> &colors, Point3D &horizon);
 
     double rotationX, rotationY, rotationZ;
     Point3D basis, min, max;

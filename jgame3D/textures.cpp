@@ -1,16 +1,6 @@
 #include "textures.hpp"
 #include <algorithm>
 
-Sprite3D::Sprite3D(Object &o, vector<SDL_Surface *> &t)
-{
-    obj = o;
-    textures.clear();
-    for (int i = 0; i < t.size(); i++)
-    {
-        textures.push_back(t[i]);
-    }
-}
-
 void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, const unsigned int color)
 {
     Polygon2D p = poly;
@@ -68,13 +58,15 @@ void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, const unsigned int color)
 
 void fillPolygon(SDL_Renderer *rend, Polygon3D &poly, const unsigned int color, Point3D horizon)
 {
-    if (poly.basis.z > horizon.z || poly.basis.z < 0)
-    {
-        return;
-    }
-
     Polygon3D p = rotate(poly);
     p = move(p);
+
+    if (p.basis.z > horizon.z || p.basis.z < 0)
+    {
+        // cout << poly.basis.x << '\t' << poly.basis.y << '\t' << poly.basis.z << '\n';
+        // cout << "skipping\n";
+        return;
+    }
 
     // Convert to Polygon2D
     Polygon2D toFill = p.project(horizon);

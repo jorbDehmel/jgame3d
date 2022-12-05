@@ -10,6 +10,13 @@ using namespace std;
 
 GameSpace *space;
 unsigned char r, g, b;
+vector<Uint32> colors = {
+    0xff'00'00'ff,
+    0x00'ff'00'ff,
+    0x00'00'ff'ff,
+    0xff'ff'00'ff,
+    0xff'00'ff'ff,
+    0x00'ff'ff'ff};
 
 //////////////////////////////////////////////////
 
@@ -39,12 +46,7 @@ void update(vector<Object *> &polygons)
     SDL_SetRenderDrawColor(space->rend, 0, 0, 0, 255);
     SDL_RenderClear(space->rend);
 
-    fillPolygon(space->rend, polygons[0]->shapes[0], 0xff'00'00'ff, space->horizon);
-    fillPolygon(space->rend, polygons[0]->shapes[1], 0x00'ff'00'ff, space->horizon);
-    fillPolygon(space->rend, polygons[0]->shapes[2], 0x00'00'ff'ff, space->horizon);
-    fillPolygon(space->rend, polygons[0]->shapes[3], 0xff'ff'00'ff, space->horizon);
-    fillPolygon(space->rend, polygons[0]->shapes[4], 0xff'00'ff'ff, space->horizon);
-    fillPolygon(space->rend, polygons[0]->shapes[5], 0xff'ff'ff'ff, space->horizon);
+    poly->fill(space->rend, colors, space->horizon);
 
     poly->rotationX += .001;
     poly->rotationY += .001;
@@ -60,8 +62,8 @@ void createCube(Object &obj)
     Point3D tbSquare[4] = {
         Point3D(0, 64, 0),
         Point3D(64, 64, 0),
-        Point3D(0, 0, 0),
-        Point3D(64, 0, 0)};
+        Point3D(64, 0, 0),
+        Point3D(0, 0, 0)};
 
     Polygon3D top(tbSquare, 4);
     top.basis = Point3D(-32, -32, 32);
@@ -74,8 +76,8 @@ void createCube(Object &obj)
     Point3D lrSquare[4] = {
         Point3D(0, 0, 0),
         Point3D(0, 64, 0),
-        Point3D(0, 0, 64),
-        Point3D(0, 64, 64)};
+        Point3D(0, 64, 64),
+        Point3D(0, 0, 64)};
 
     Polygon3D right(lrSquare, 4);
     right.basis = Point3D(32, -32, -32);
@@ -88,8 +90,8 @@ void createCube(Object &obj)
     Point3D fbSquare[4] = {
         Point3D(0, 0, 0),
         Point3D(64, 0, 0),
-        Point3D(0, 0, 64),
-        Point3D(64, 0, 64)};
+        Point3D(64, 0, 64),
+        Point3D(0, 0, 64)};
 
     Polygon3D front(fbSquare, 4);
     front.basis = Point3D(-32, 32, -32);

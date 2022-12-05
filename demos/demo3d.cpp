@@ -41,6 +41,8 @@ void update(vector<Object *> &polygons)
     SDL_SetRenderDrawColor(space->rend, 255, 255, 255, 255);
     polygons[0]->renderCross(space->rend, space->horizon);
 
+    // fillPolygon(space->rend, polygons[0]->shapes[0], 0xff'ff'ff'ff, space->horizon);
+
     poly->rotationX += .001;
     poly->rotationY += .001;
     poly->rotationZ += .001;
