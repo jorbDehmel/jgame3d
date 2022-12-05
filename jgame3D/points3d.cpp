@@ -6,6 +6,9 @@
 int FOV_SCALAR = 500;
 int Z_CUTOFF_SCALAR = 50;
 
+int horizonX = 256;
+int horizonY = 256;
+
 /////////////////////////////////////////
 
 Point3D operator+(const Point3D &a, const Point3D &b)
@@ -74,7 +77,7 @@ Polygon3D::Polygon3D()
     rotationX = rotationY = rotationZ = 0;
 }
 
-Polygon2D Polygon3D::project(Point3D &horizon)
+Polygon2D Polygon3D::project()
 {
     assert(points.size() >= 1);
 
@@ -99,15 +102,15 @@ Polygon2D Polygon3D::project(Point3D &horizon)
 
     for (int i = 0; i < points.size(); i++)
     {
-        out[i].x = points[i].x - horizon.x;
-        out[i].y = points[i].y - horizon.y;
+        out[i].x = points[i].x - horizonX;
+        out[i].y = points[i].y - horizonY;
 
         // Calculate
         out[i].x *= (FOV_SCALAR / points[i].z);
         out[i].y *= (FOV_SCALAR / points[i].z);
 
-        out[i].x += horizon.x;
-        out[i].y += horizon.y;
+        out[i].x += horizonX;
+        out[i].y += horizonY;
     }
 
     out[points.size()].x = out[0].x;
@@ -120,9 +123,9 @@ Polygon2D Polygon3D::project(Point3D &horizon)
 
 /////////////////////////////////////////
 
-void Polygon3D::render(SDL_Renderer *renderer, Point3D &horizon)
+void Polygon3D::render(SDL_Renderer *renderer)
 {
-    if (basis.z > (horizon.z * Z_CUTOFF_SCALAR) || basis.z < 0)
+    if (basis.z > (Z_CUTOFF_SCALAR) || basis.z < 0)
     {
         return;
     }
@@ -130,14 +133,14 @@ void Polygon3D::render(SDL_Renderer *renderer, Point3D &horizon)
     Polygon3D temp = rotate(*this);
     temp = move(temp);
 
-    temp.project(horizon).render(renderer);
+    temp.project().render(renderer);
 
     return;
 }
 
-void Polygon3D::renderCross(SDL_Renderer *renderer, Point3D &horizon)
+void Polygon3D::renderCross(SDL_Renderer *renderer)
 {
-    if (basis.z > (horizon.z * Z_CUTOFF_SCALAR) || basis.z < 0)
+    if (basis.z > (Z_CUTOFF_SCALAR) || basis.z < 0)
     {
         return;
     }
@@ -145,7 +148,7 @@ void Polygon3D::renderCross(SDL_Renderer *renderer, Point3D &horizon)
     Polygon3D temp = rotate(*this);
     temp = move(temp);
 
-    temp.project(horizon).renderCross(renderer);
+    temp.project().renderCross(renderer);
 
     return;
 }

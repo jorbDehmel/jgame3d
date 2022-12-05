@@ -27,7 +27,7 @@ void Object::add(Polygon3D other)
     return;
 }
 
-void Object::render(SDL_Renderer *renderer, Point3D &horizon)
+void Object::render(SDL_Renderer *renderer)
 {
     for (int i = 0; i < shapes.size(); i++)
     {
@@ -36,12 +36,12 @@ void Object::render(SDL_Renderer *renderer, Point3D &horizon)
         shapes[i].rotationY = rotationY;
         shapes[i].rotationZ = rotationZ;
 
-        shapes[i].render(renderer, horizon);
+        shapes[i].render(renderer);
     }
     return;
 }
 
-void Object::renderCross(SDL_Renderer *renderer, Point3D &horizon)
+void Object::renderCross(SDL_Renderer *renderer)
 {
     // outpoly = globalmove(globalrotate(polymove(polyrotat(polygon))))
     for (int i = 0; i < shapes.size(); i++)
@@ -51,12 +51,12 @@ void Object::renderCross(SDL_Renderer *renderer, Point3D &horizon)
         shapes[i].rotationY = rotationY;
         shapes[i].rotationZ = rotationZ;
 
-        shapes[i].renderCross(renderer, horizon);
+        shapes[i].renderCross(renderer);
     }
     return;
 }
 
-void Object::fill(SDL_Renderer *rend, vector<Uint32> &colors, Point3D &horizon)
+void Object::fill(SDL_Renderer *rend, vector<Uint32> &colors)
 {
     Polygon3D temp;
     for (int i = 0; i < shapes.size(); i++)
@@ -66,7 +66,7 @@ void Object::fill(SDL_Renderer *rend, vector<Uint32> &colors, Point3D &horizon)
         shapes[i].rotationY = rotationY;
         shapes[i].rotationZ = rotationZ;
 
-        fillPolygon(rend, shapes[i], colors[i], horizon);
+        fillPolygon(rend, shapes[i], colors[i]);
     }
 
     return;
@@ -87,10 +87,6 @@ Object rotate(const Object obj)
 GameSpace::GameSpace(int h, int w, int rt, void (*updateFunc)(vector<Object *> &), SDL_WindowFlags windowFlags)
 {
     SDL_Init(SDL_INIT_EVERYTHING);
-
-    horizon.x = w / 2;
-    horizon.y = h / 2;
-    horizon.z = w;
 
     isRunning = true;
     assert(SDL_CreateWindowAndRenderer(w, h, windowFlags, &wind, &rend) == 0);

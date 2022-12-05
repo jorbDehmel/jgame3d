@@ -34,9 +34,9 @@ public:
     Polygon3D(const Polygon3D &other);
     Polygon3D(Point3D pointsIn[], int num);
 
-    Polygon2D project(Point3D &horizon);
-    void render(SDL_Renderer *rend, Point3D &horizon);
-    void renderCross(SDL_Renderer *rend, Point3D &horizon);
+    Polygon2D project();
+    void render(SDL_Renderer *rend);
+    void renderCross(SDL_Renderer *rend);
 
     double rotationX, rotationY, rotationZ;
     Point3D basis, min, max;

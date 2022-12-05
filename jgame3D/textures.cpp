@@ -56,20 +56,13 @@ void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, const unsigned int color)
     return;
 }
 
-void fillPolygon(SDL_Renderer *rend, Polygon3D &poly, const unsigned int color, Point3D horizon)
+void fillPolygon(SDL_Renderer *rend, Polygon3D &poly, const unsigned int color)
 {
     Polygon3D p = rotate(poly);
     p = move(p);
 
-    if (p.basis.z > horizon.z || p.basis.z < 0)
-    {
-        // cout << poly.basis.x << '\t' << poly.basis.y << '\t' << poly.basis.z << '\n';
-        // cout << "skipping\n";
-        return;
-    }
-
     // Convert to Polygon2D
-    Polygon2D toFill = p.project(horizon);
+    Polygon2D toFill = p.project();
     fillPolygon(rend, toFill, color);
 
     return;

@@ -9,14 +9,13 @@ using namespace std;
 //////////////////////////////////////////////////
 
 GameSpace *space;
-unsigned char r, g, b;
 vector<Uint32> colors = {
-    0xff'00'00'ff,
-    0x00'ff'00'ff,
-    0x00'00'ff'ff,
-    0xff'ff'00'ff,
-    0xff'00'ff'ff,
-    0x00'ff'ff'ff};
+    0x02'02'02'ff,
+    0x04'04'04'ff,
+    0x08'08'08'ff,
+    0x0f'0f'0f'ff,
+    0x2f'2f'2f'ff,
+    0x8f'8f'8f'ff};
 
 //////////////////////////////////////////////////
 
@@ -46,7 +45,7 @@ void update(vector<Object *> &polygons)
     SDL_SetRenderDrawColor(space->rend, 0, 0, 0, 255);
     SDL_RenderClear(space->rend);
 
-    poly->fill(space->rend, colors, space->horizon);
+    poly->fill(space->rend, colors);
 
     poly->rotationX += .001;
     poly->rotationY += .001;
@@ -113,17 +112,12 @@ void createCube(Object &obj)
 
 int main()
 {
-    r = g = b = 255;
-
     Object poly;
     poly.basis = Point3D(256, 256, 256);
     createCube(poly);
 
     space = new GameSpace(512, 512, 0, update, SDL_WINDOW_OPENGL);
-
-    space->horizon.x = 256;
-    space->horizon.y = 256;
-    space->horizon.z = 512;
+    SDL_RenderSetScale(space->rend, 2, 2);
 
     space->addPolygon(&poly);
 

@@ -10,10 +10,10 @@ public:
     Object();
     void add(Polygon3D other);
 
-    void render(SDL_Renderer *rend, Point3D &horizon);
-    void renderCross(SDL_Renderer *rend, Point3D &horizon);
+    void render(SDL_Renderer *rend);
+    void renderCross(SDL_Renderer *rend);
 
-    void fill(SDL_Renderer *rend, vector<Uint32> &colors, Point3D &horizon);
+    void fill(SDL_Renderer *rend, vector<Uint32> &colors);
 
     double rotationX, rotationY, rotationZ;
     Point3D basis, min, max;
@@ -48,8 +48,6 @@ public:
     void removePolygons(bool (*checkingFunction)(const Object *));
 
     SDL_Renderer *rend;
-
-    Point3D horizon;
 
     SDL_Window *wind;
     vector<Object *> polygons;
