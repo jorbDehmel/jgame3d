@@ -2,27 +2,6 @@
 
 /////////////////////////////////////////
 
-double modulo(const double &a, const double &b)
-{
-    double out = a;
-    if (a < 0)
-    {
-        while (out + b < 0)
-        {
-            out += b;
-        }
-    }
-    else
-    {
-        while (out - b > 0)
-        {
-            out -= b;
-        }
-    }
-
-    return out;
-}
-
 ostream &operator<<(ostream &stream, const BasicPoint &point)
 {
     stream << "(" << point.x << ", " << point.y << ")";
@@ -79,22 +58,22 @@ void Polygon2D::operator+=(Polygon2D &other)
     return;
 }
 
-int SDL_RenderDrawLinesF(SDL_Renderer *renderer, const Polygon2D &polygon)
+int Polygon2D::render(SDL_Renderer *renderer)
 {
-    Polygon2D temp(polygon);
+    Polygon2D temp(*this);
 
-    rotate(temp, polygon.rotation);
-    move(temp, polygon.basis);
+    rotate(temp, temp.rotation);
+    move(temp, temp.basis);
 
     return SDL_RenderDrawLinesF(renderer, temp.SDLify(), temp.points.size() + 1);
 }
 
-void crossDrawLines(SDL_Renderer *renderer, const Polygon2D &polygon)
+void Polygon2D::renderCross(SDL_Renderer *renderer)
 {
-    Polygon2D temp(polygon);
+    Polygon2D temp(*this);
 
-    rotate(temp, polygon.rotation);
-    move(temp, polygon.basis);
+    rotate(temp, temp.rotation);
+    move(temp, temp.basis);
 
     SDL_FPoint a, b;
     for (int i = 0; i < temp.points.size(); i++)

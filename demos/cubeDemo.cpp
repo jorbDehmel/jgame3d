@@ -117,7 +117,7 @@ int main()
     poly.basis = Point3D(256, 256, 256);
     createCube(poly);
 
-    space = new GameSpace(512, 512, 4, update, SDL_WINDOW_OPENGL);
+    space = new GameSpace(512, 512, 0, update, SDL_WINDOW_OPENGL);
 
     space->horizon.x = 256;
     space->horizon.y = 256;

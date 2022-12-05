@@ -74,7 +74,7 @@ Polygon3D::Polygon3D()
     rotationX = rotationY = rotationZ = 0;
 }
 
-SDL_FPoint *Polygon3D::SDLify(Point3D &horizon)
+Polygon2D Polygon3D::project(Point3D &horizon)
 {
     assert(points.size() >= 1);
 
@@ -95,7 +95,7 @@ SDL_FPoint *Polygon3D::SDLify(Point3D &horizon)
             max.z = p.z;
     }
 
-    SDL_FPoint *out = new SDL_FPoint[points.size() + 1];
+    BasicPoint *out = new BasicPoint[points.size() + 1];
 
     for (int i = 0; i < points.size(); i++)
     {
@@ -113,7 +113,9 @@ SDL_FPoint *Polygon3D::SDLify(Point3D &horizon)
     out[points.size()].x = out[0].x;
     out[points.size()].y = out[0].y;
 
-    return out;
+    Polygon2D p(out, points.size());
+
+    return p;
 }
 
 /////////////////////////////////////////
@@ -128,7 +130,7 @@ void Polygon3D::render(SDL_Renderer *renderer, Point3D &horizon)
     Polygon3D temp = rotate(*this);
     temp = move(temp);
 
-    SDL_RenderDrawLinesF(renderer, temp.SDLify(horizon), temp.points.size() + 1);
+    temp.project(horizon).render(renderer);
 
     return;
 }
@@ -143,22 +145,8 @@ void Polygon3D::renderCross(SDL_Renderer *renderer, Point3D &horizon)
     Polygon3D temp = rotate(*this);
     temp = move(temp);
 
-    SDL_FPoint a, b;
-    auto points = temp.SDLify(horizon);
+    temp.project(horizon).renderCross(renderer);
 
-    for (int i = 0; i < temp.points.size(); i++)
-    {
-        for (int j = i; j < temp.points.size(); j++)
-        {
-            a.x = points[i].x;
-            a.y = points[i].y;
-
-            b.x = points[j].x;
-            b.y = points[j].y;
-
-            SDL_RenderDrawLineF(renderer, a.x, a.y, b.x, b.y);
-        }
-    }
     return;
 }
 

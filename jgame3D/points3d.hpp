@@ -34,7 +34,7 @@ public:
     Polygon3D(const Polygon3D &other);
     Polygon3D(Point3D pointsIn[], int num);
 
-    SDL_FPoint *SDLify(Point3D &horizon);
+    Polygon2D project(Point3D &horizon);
     void render(SDL_Renderer *rend, Point3D &horizon);
     void renderCross(SDL_Renderer *rend, Point3D &horizon);
 

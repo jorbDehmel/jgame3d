@@ -11,7 +11,7 @@ main:
 	mkdir -p build bin
 	make bin/jgame3d.a
 
-bin/jgame3d.a:	build/points3d.o build/points.o build/objects.o build/collisions.o build/textures.o
+bin/jgame3d.a:	build/points3d.o build/points.o build/objects.o build/textures.o
 	ar -rc bin/jgame3d.a build/*.o
 
 build/points3d.o:	points3d.cpp points3d.hpp
@@ -22,9 +22,6 @@ build/points.o:	points.cpp points.hpp
 
 build/objects.o:	objects.cpp objects.hpp
 	$(STEM) -c objects.cpp -o build/objects.o
-
-build/collisions.o:	collisions.cpp collisions.hpp
-	$(STEM) -c collisions.cpp -o build/collisions.o
 
 build/textures.o:	textures.cpp textures.hpp
 	$(STEM) -c textures.cpp -o build/textures.o

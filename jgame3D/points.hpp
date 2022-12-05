@@ -45,6 +45,9 @@ public:
 
     void operator+=(Polygon2D &other);
 
+    int render(SDL_Renderer *renderer);
+    void renderCross(SDL_Renderer *renderer);
+
     double rotation;
     BasicPoint basis, min, max;
     vector<BasicPoint> points;
@@ -52,8 +55,6 @@ public:
 
 /////////////////////////////////////////
 
-int SDL_RenderDrawLinesF(SDL_Renderer *renderer, const Polygon2D &polygon);
-void crossDrawLines(SDL_Renderer *renderer, const Polygon2D &polygon);
 void move(Polygon2D &poly, BasicPoint by);
 void rotate(Polygon2D &poly, double degree, BasicPoint about);
 void rotate(Polygon2D &poly, double degree);

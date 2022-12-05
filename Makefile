@@ -13,8 +13,8 @@ bin/cube.out:	build/cube.o build/jgame3d.a
 bin/fill.out:	build/fill.o build/jgame3d.a
 	$(STEM) build/fill.o build/jgame3d.a -o bin/fill.out
 
-bin/demo.out:	build/demo.o build/points.o build/points3d.o build/objects.o build/textures.o build/collisions.o
-	$(STEM) build/demo.o build/points.o build/points3d.o build/objects.o build/collisions.o build/textures.o -o bin/demo.out
+bin/demo.out:	build/demo.o build/points.o build/points3d.o build/objects.o build/textures.o
+	$(STEM) build/demo.o build/points.o build/points3d.o build/objects.o build/textures.o -o bin/demo.out
 
 bin/ship.out:	build/ship.o build/points.o
 	$(STEM) build/points.o build/ship.o -o bin/ship.out
@@ -35,7 +35,7 @@ build/demo.o:	demos/demo3d.cpp
 
 #########################
 
-build/jgame3d.a:	build/points3d.o build/points.o build/objects.o build/collisions.o build/textures.o
+build/jgame3d.a:	build/points3d.o build/points.o build/objects.o build/textures.o
 	ar -rc build/jgame3d.a build/*.o
 
 build/points3d.o:	jgame3D/points3d.cpp jgame3D/points3d.hpp
@@ -46,9 +46,6 @@ build/points.o:	jgame3D/points.cpp jgame3D/points.hpp
 
 build/objects.o:	jgame3D/objects.cpp jgame3D/objects.hpp
 	$(STEM) -c jgame3D/objects.cpp -o build/objects.o
-
-build/collisions.o:	jgame3D/collisions.cpp jgame3D/collisions.hpp
-	$(STEM) -c jgame3D/collisions.cpp -o build/collisions.o
 
 build/textures.o:	jgame3D/textures.cpp jgame3D/textures.hpp
 	$(STEM) -c jgame3D/textures.cpp -o build/textures.o

@@ -89,6 +89,7 @@ void GameSpace::runFrame()
     SDL_RenderPresent(rend);
 
     passed = SDL_GetTicks() - prevTicks;
+    cout << "Update took " << passed << " ms\n";
     if (refreshTime - passed > 0)
     {
         SDL_Delay(refreshTime - passed);

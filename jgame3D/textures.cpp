@@ -24,7 +24,7 @@ void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, const unsigned int color)
     double X1, X2, Y1, Y2;
     vector<double> xValues;
 
-    for (double y = p.min.y; y < p.max.y; y++)
+    for (int y = p.min.y; y < p.max.y; y++)
     {
         xValues.clear();
         for (int i = 0; i < p.points.size(); i++)
@@ -35,17 +35,22 @@ void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, const unsigned int color)
             Y2 = p.points[(i + 1) % (p.points.size())].y;
 
             if (Y1 < y && Y2 < y)
+            {
                 continue;
+            }
             else if (Y1 > y && Y2 > y)
+            {
                 continue;
-
-            if (Y1 == Y2 || X1 == X2)
+            }
+            else if (Y1 == Y2 || X1 == X2)
+            {
                 continue;
+            }
 
             xValues.push_back(y * ((X2 - X1) / (Y2 - Y1)) - Y1 * ((X2 - X1) / (Y2 - Y1)) + X1);
         }
 
-        if (xValues.size() == 0)
+        if (xValues.size() <= 1)
             continue;
 
         sort(xValues.begin(), xValues.end());
@@ -61,24 +66,19 @@ void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, const unsigned int color)
     return;
 }
 
-void fillPolygon(SDL_Renderer *rend, Polygon3D &p, const unsigned int color, Point3D horizon)
+void fillPolygon(SDL_Renderer *rend, Polygon3D &poly, const unsigned int color, Point3D horizon)
 {
-    // Convert to Polygon2D
-    SDL_FPoint *SDLpoints = p.SDLify(horizon);
-    BasicPoint *basicPoints = new BasicPoint[p.points.size()];
-
-    for (int i = 0; i < p.points.size(); i++)
+    if (poly.basis.z > horizon.z || poly.basis.z < 0)
     {
-        basicPoints[i].x = SDLpoints[i].x;
-        basicPoints[i].y = SDLpoints[i].y;
-        // cout << SDLpoints[i].x << '\t' << SDLpoints[i].y << '\n';
-        // cout << basicPoints[i] << '\n';
+        return;
     }
 
-    Polygon2D polygon(basicPoints, (int)p.points.size());
-    polygon.SDLify();
+    Polygon3D p = rotate(poly);
+    p = move(p);
 
-    fillPolygon(rend, polygon, color);
+    // Convert to Polygon2D
+    Polygon2D toFill = p.project(horizon);
+    fillPolygon(rend, toFill, color);
 
     return;
 }
