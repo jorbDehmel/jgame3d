@@ -32,7 +32,7 @@ void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, const unsigned int color)
             {
                 continue;
             }
-            else if (Y1 == Y2 || X1 == X2)
+            else if (Y1 == Y2)
             {
                 continue;
             }

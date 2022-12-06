@@ -36,7 +36,7 @@ build/demo.o:	demos/demo3d.cpp
 #########################
 
 build/jgame3d.a:	build/points3d.o build/points.o build/objects.o build/textures.o
-	ar -rc build/jgame3d.a build/*.o
+	ar -rc build/jgame3d.a build/points3d.o build/points.o build/objects.o build/textures.o
 
 build/points3d.o:	jgame3D/points3d.cpp jgame3D/points3d.hpp
 	$(STEM) -c jgame3D/points3d.cpp -o build/points3d.o

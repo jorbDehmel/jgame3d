@@ -27,6 +27,10 @@ Point3D operator*(const Point3D &a, const double b);
 
 /////////////////////////////////////////
 
+extern Point3D globalHorizon;
+
+/////////////////////////////////////////
+
 class Polygon3D
 {
 public:
@@ -42,6 +46,7 @@ public:
     Point3D basis, min, max;
 
     vector<Point3D> points;
+    Point3D horizon;
 };
 
 /////////////////////////////////////////

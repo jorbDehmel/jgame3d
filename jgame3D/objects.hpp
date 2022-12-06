@@ -32,7 +32,7 @@ class GameSpace
 {
 public:
     GameSpace(int height, int width, int rt, void (*updateFunc)(vector<Object *> &),
-              SDL_WindowFlags windowFlag);
+              double scaleX = 1, double scaleY = 1, SDL_WindowFlags windowFlag = SDL_WINDOW_OPENGL);
     ~GameSpace();
 
     void runFrame();

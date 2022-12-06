@@ -4,10 +4,8 @@
 /////////////////////////////////////////
 
 int FOV_SCALAR = 500;
-int Z_CUTOFF_SCALAR = 50;
 
-int horizonX = 256;
-int horizonY = 256;
+Point3D globalHorizon(256, 256, 50);
 
 /////////////////////////////////////////
 
@@ -46,6 +44,7 @@ Polygon3D::Polygon3D(Point3D pointsIn[], int num)
     {
         points.push_back(pointsIn[i]);
     }
+
     basis.x = basis.y = basis.z = 0;
     rotationX = 0;
     rotationY = 0;
@@ -102,15 +101,15 @@ Polygon2D Polygon3D::project()
 
     for (int i = 0; i < points.size(); i++)
     {
-        out[i].x = points[i].x - horizonX;
-        out[i].y = points[i].y - horizonY;
+        out[i].x = points[i].x - globalHorizon.x;
+        out[i].y = points[i].y - globalHorizon.y;
 
         // Calculate
         out[i].x *= (FOV_SCALAR / points[i].z);
         out[i].y *= (FOV_SCALAR / points[i].z);
 
-        out[i].x += horizonX;
-        out[i].y += horizonY;
+        out[i].x += globalHorizon.x;
+        out[i].y += globalHorizon.y;
     }
 
     out[points.size()].x = out[0].x;
@@ -125,7 +124,7 @@ Polygon2D Polygon3D::project()
 
 void Polygon3D::render(SDL_Renderer *renderer)
 {
-    if (basis.z > (Z_CUTOFF_SCALAR) || basis.z < 0)
+    if (basis.z > globalHorizon.z || basis.z < 0)
     {
         return;
     }
@@ -140,7 +139,7 @@ void Polygon3D::render(SDL_Renderer *renderer)
 
 void Polygon3D::renderCross(SDL_Renderer *renderer)
 {
-    if (basis.z > (Z_CUTOFF_SCALAR) || basis.z < 0)
+    if (basis.z > globalHorizon.z || basis.z < 0)
     {
         return;
     }

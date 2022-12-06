@@ -84,12 +84,24 @@ Object rotate(const Object obj)
 
 /////////////////////////////////////////
 
-GameSpace::GameSpace(int h, int w, int rt, void (*updateFunc)(vector<Object *> &), SDL_WindowFlags windowFlags)
+GameSpace::GameSpace(int h, int w, int rt, void (*updateFunc)(vector<Object *> &), double scaleX, double scaleY, SDL_WindowFlags windowFlags)
 {
     SDL_Init(SDL_INIT_EVERYTHING);
 
     isRunning = true;
-    assert(SDL_CreateWindowAndRenderer(w, h, windowFlags, &wind, &rend) == 0);
+
+    wind = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, windowFlags);
+    rend = SDL_CreateRenderer(wind, -1, SDL_RENDERER_ACCELERATED);
+
+    SDL_RenderSetScale(rend, scaleX, scaleY);
+    SDL_SetWindowSize(wind, w * scaleX, h * scaleY);
+
+    cout << "Before: " << globalHorizon.x << '\t' << globalHorizon.y << '\t' << globalHorizon.z << '\n';
+    globalHorizon.x = (w * scaleX) / 4;
+    globalHorizon.y = (h * scaleY) / 4;
+    globalHorizon.z = 512;
+    cout << "After: " << globalHorizon.x << '\t' << globalHorizon.y << '\t' << globalHorizon.z << '\n';
+
     refreshTime = rt;
     update = updateFunc;
 
