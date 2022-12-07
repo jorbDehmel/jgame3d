@@ -31,6 +31,21 @@ ostream &operator<<(ostream &stream, const BasicPoint &point);
 
 /////////////////////////////////////////
 
+struct Pixel
+{
+    Pixel(unsigned char R, unsigned char G, unsigned char B, unsigned char A)
+    {
+        r = R;
+        g = G;
+        b = B;
+        a = A;
+    }
+
+    unsigned char r, g, b, a;
+};
+
+/////////////////////////////////////////
+
 class Polygon2D
 {
 public:
@@ -47,6 +62,7 @@ public:
 
     int render(SDL_Renderer *renderer);
     void renderCross(SDL_Renderer *renderer);
+    void checkMinMax();
 
     double rotation;
     BasicPoint basis, min, max;

@@ -13,7 +13,8 @@ public:
     void render(SDL_Renderer *rend);
     void renderCross(SDL_Renderer *rend);
 
-    void fill(SDL_Renderer *rend, vector<Uint32> &colors);
+    void fill(SDL_Renderer *rend, vector<Pixel> &colors);
+    void checkMinMax();
 
     double rotationX, rotationY, rotationZ;
     Point3D basis, min, max;

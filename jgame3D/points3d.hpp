@@ -45,8 +45,11 @@ public:
     double rotationX, rotationY, rotationZ;
     Point3D basis, min, max;
 
+    void checkMinMax();
+
     vector<Point3D> points;
     Point3D horizon;
+    Pixel color;
 };
 
 /////////////////////////////////////////

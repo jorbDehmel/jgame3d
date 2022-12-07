@@ -19,12 +19,8 @@ Polygon2D::Polygon2D(BasicPoint pointsIn[], int num)
     return;
 }
 
-SDL_FPoint *Polygon2D::SDLify()
+void Polygon2D::checkMinMax()
 {
-    assert(points.size() >= 1);
-
-    SDL_FPoint *out = new SDL_FPoint[points.size() + 1];
-
     min = max = points[0];
     for (int i = 0; i < points.size(); i++)
     {
@@ -36,12 +32,24 @@ SDL_FPoint *Polygon2D::SDLify()
             min.y = points[i].y;
         if (points[i].y > max.y)
             max.y = points[i].y;
+    }
 
+    return;
+}
+
+SDL_FPoint *Polygon2D::SDLify()
+{
+    assert(points.size() >= 1);
+
+    SDL_FPoint *out = new SDL_FPoint[points.size() + 1];
+
+    checkMinMax();
+
+    for (int i = 0; i < points.size(); i++)
+    {
         out[i].x = points[i].x;
         out[i].y = points[i].y;
     }
-
-    // cout << "Min: " << min << "\nMax: " << max << '\n';
 
     out[points.size()].x = points[0].x;
     out[points.size()].y = points[0].y;

@@ -1,7 +1,6 @@
 #include "textures.hpp"
-#include <algorithm>
 
-void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, const unsigned int color)
+void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, Pixel color)
 {
     Polygon2D p = poly;
 
@@ -9,7 +8,7 @@ void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, const unsigned int color)
     move(p, p.basis);
     p.SDLify();
 
-    SDL_SetRenderDrawColor(rend, ((unsigned char *)&color)[0], ((unsigned char *)&color)[1], ((unsigned char *)&color)[2], ((unsigned char *)&color)[3]);
+    SDL_SetRenderDrawColor(rend, color.r, color.g, color.b, color.a);
 
     double X1, X2, Y1, Y2;
     vector<double> xValues;
@@ -25,17 +24,11 @@ void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, const unsigned int color)
             Y2 = p.points[(i + 1) % (p.points.size())].y;
 
             if (Y1 < y && Y2 < y)
-            {
                 continue;
-            }
             else if (Y1 > y && Y2 > y)
-            {
                 continue;
-            }
             else if (Y1 == Y2)
-            {
                 continue;
-            }
 
             xValues.push_back(y * ((X2 - X1) / (Y2 - Y1)) - Y1 * ((X2 - X1) / (Y2 - Y1)) + X1);
         }
@@ -48,7 +41,6 @@ void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, const unsigned int color)
         // Draw line segments
         for (int i = 0; i < xValues.size(); i += 2)
         {
-            // cout << "Drawing line between " << xValues[i] << " and " << xValues[(i + 1) % (xValues.size() - 1)] << " along y = " << y << '\n';
             SDL_RenderDrawLineF(rend, xValues[i], y, xValues[(i + 1) % (xValues.size())], y);
         }
     }
@@ -56,7 +48,7 @@ void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, const unsigned int color)
     return;
 }
 
-void fillPolygon(SDL_Renderer *rend, Polygon3D &poly, const unsigned int color)
+void fillPolygon(SDL_Renderer *rend, Polygon3D &poly, Pixel color)
 {
     Polygon3D p = rotate(poly);
     p = move(p);
@@ -65,15 +57,5 @@ void fillPolygon(SDL_Renderer *rend, Polygon3D &poly, const unsigned int color)
     Polygon2D toFill = p.project();
     fillPolygon(rend, toFill, color);
 
-    return;
-}
-
-void mapSurface(SDL_Renderer *rend, const SDL_Surface *surface, const Polygon3D &p)
-{
-    return;
-}
-
-void textureObject(SDL_Renderer *rend, const Object &obj)
-{
     return;
 }

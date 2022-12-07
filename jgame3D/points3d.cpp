@@ -76,10 +76,8 @@ Polygon3D::Polygon3D()
     rotationX = rotationY = rotationZ = 0;
 }
 
-Polygon2D Polygon3D::project()
+void Polygon3D::checkMinMax()
 {
-    assert(points.size() >= 1);
-
     min = max = points[0];
     for (Point3D p : points)
     {
@@ -96,6 +94,15 @@ Polygon2D Polygon3D::project()
         if (p.z > max.z)
             max.z = p.z;
     }
+
+    return;
+}
+
+Polygon2D Polygon3D::project()
+{
+    assert(points.size() >= 1);
+
+    checkMinMax();
 
     BasicPoint *out = new BasicPoint[points.size() + 1];
 

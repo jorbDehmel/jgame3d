@@ -27,6 +27,16 @@ void Object::add(Polygon3D other)
     return;
 }
 
+void Object::checkMinMax()
+{
+    for (int i = 0; i < shapes.size(); i++)
+    {
+        shapes[i].checkMinMax();
+    }
+
+    return;
+}
+
 void Object::render(SDL_Renderer *renderer)
 {
     for (int i = 0; i < shapes.size(); i++)
@@ -43,7 +53,6 @@ void Object::render(SDL_Renderer *renderer)
 
 void Object::renderCross(SDL_Renderer *renderer)
 {
-    // outpoly = globalmove(globalrotate(polymove(polyrotat(polygon))))
     for (int i = 0; i < shapes.size(); i++)
     {
         shapes[i].basis = basis;
@@ -56,9 +65,10 @@ void Object::renderCross(SDL_Renderer *renderer)
     return;
 }
 
-void Object::fill(SDL_Renderer *rend, vector<Uint32> &colors)
+void Object::fill(SDL_Renderer *rend, vector<Pixel> &colors)
 {
-    Polygon3D temp;
+    checkMinMax();
+
     for (int i = 0; i < shapes.size(); i++)
     {
         shapes[i].basis = basis;
@@ -70,16 +80,6 @@ void Object::fill(SDL_Renderer *rend, vector<Uint32> &colors)
     }
 
     return;
-}
-
-Object move(const Object obj)
-{
-    throw runtime_error("UNIMPLEMENTED");
-}
-
-Object rotate(const Object obj)
-{
-    throw runtime_error("UNIMPLEMENTED");
 }
 
 /////////////////////////////////////////
@@ -96,11 +96,9 @@ GameSpace::GameSpace(int h, int w, int rt, void (*updateFunc)(vector<Object *> &
     SDL_RenderSetScale(rend, scaleX, scaleY);
     SDL_SetWindowSize(wind, w * scaleX, h * scaleY);
 
-    cout << "Before: " << globalHorizon.x << '\t' << globalHorizon.y << '\t' << globalHorizon.z << '\n';
     globalHorizon.x = (w * scaleX) / 4;
     globalHorizon.y = (h * scaleY) / 4;
     globalHorizon.z = 512;
-    cout << "After: " << globalHorizon.x << '\t' << globalHorizon.y << '\t' << globalHorizon.z << '\n';
 
     refreshTime = rt;
     update = updateFunc;
