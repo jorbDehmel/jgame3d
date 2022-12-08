@@ -108,6 +108,13 @@ Polygon2D Polygon3D::project()
 
     for (int i = 0; i < points.size(); i++)
     {
+        if (points[i].z < 0)
+        {
+            out[i].x = globalHorizon.x;
+            out[i].y = globalHorizon.y;
+            continue;
+        }
+
         out[i].x = points[i].x - globalHorizon.x;
         out[i].y = points[i].y - globalHorizon.y;
 

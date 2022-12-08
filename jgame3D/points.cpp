@@ -217,7 +217,6 @@ void RenderWindow::runFrame()
     SDL_RenderPresent(rend);
 
     passed = SDL_GetTicks() - prevTicks;
-    // cout << "(Frame refresh took " << passed << " ms)\n";
     if (refreshTime - passed > 0)
     {
         SDL_Delay(refreshTime - passed);

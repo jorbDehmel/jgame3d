@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 
-//#include "keys.hpp"
+// #include "keys.hpp"
 
 #include <vector>
 #include <cassert>
@@ -12,10 +12,6 @@
 #include <set>
 
 using namespace std;
-
-/////////////////////////////////////////
-
-double modulo(const double &a, const double &b);
 
 /////////////////////////////////////////
 
@@ -33,15 +29,17 @@ ostream &operator<<(ostream &stream, const BasicPoint &point);
 
 struct Pixel
 {
-    Pixel(unsigned char R, unsigned char G, unsigned char B, unsigned char A)
-    {
-        r = R;
-        g = G;
-        b = B;
-        a = A;
-    }
+    Pixel(unsigned char R, unsigned char G, unsigned char B, unsigned char A) : r(R), g(G), b(B), a(A) {}
+    Pixel() : r(0), g(0), b(0), a(0) {}
 
     unsigned char r, g, b, a;
+};
+
+struct Rotation
+{
+    Rotation(double X, double Y, double Z) : x(X), y(Y), z(Z) {}
+    Rotation() : x(0), y(0), z(0) {}
+    double x, y, z;
 };
 
 /////////////////////////////////////////
@@ -49,9 +47,8 @@ struct Pixel
 class Polygon2D
 {
 public:
-    Polygon2D()
+    Polygon2D() : rotation(0)
     {
-        rotation = 0;
         basis = min = max = BasicPoint(0, 0);
         points.clear();
     }

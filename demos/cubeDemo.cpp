@@ -118,7 +118,7 @@ int main()
     poly.basis = Point3D(256, 256, 256);
     createCube(poly);
 
-    space = new GameSpace(128, 128, 0, update, 16, 8, SDL_WINDOW_OPENGL);
+    space = new GameSpace(128, 128, 16, update, 16, 8, SDL_WINDOW_OPENGL);
     SDL_RenderSetScale(space->rend, 2, 2);
 
     space->addPolygon(&poly);

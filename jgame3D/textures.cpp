@@ -29,6 +29,14 @@ void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, Pixel color)
                 continue;
             else if (Y1 == Y2)
                 continue;
+            else if (Y1 > 10000 || Y1 < -10000)
+                continue;
+            else if (Y2 > 10000 || Y2 < -10000)
+                continue;
+            else if (X1 > 10000 || X1 < -10000)
+                continue;
+            else if (X2 > 10000 || X2 < -10000)
+                continue;
 
             xValues.push_back(y * ((X2 - X1) / (Y2 - Y1)) - Y1 * ((X2 - X1) / (Y2 - Y1)) + X1);
         }
@@ -50,6 +58,7 @@ void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, Pixel color)
 
 void fillPolygon(SDL_Renderer *rend, Polygon3D &poly, Pixel color)
 {
+
     Polygon3D p = rotate(poly);
     p = move(p);
 
