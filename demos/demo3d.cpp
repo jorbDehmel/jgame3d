@@ -39,7 +39,7 @@ void update(vector<Object *> &polygons)
     SDL_SetRenderDrawColor(space->rend, 0, 0, 0, 255);
     SDL_RenderClear(space->rend);
     SDL_SetRenderDrawColor(space->rend, 255, 255, 255, 255);
-    polygons[0]->renderCross(space->rend, space->horizon);
+    polygons[0]->renderCross(space->rend);
 
     // fillPolygon(space->rend, polygons[0]->shapes[0], 0xff'ff'ff'ff, space->horizon);
 
@@ -115,11 +115,6 @@ int main()
     createCube(poly);
 
     space = new GameSpace(512, 512, 4, update, SDL_WINDOW_OPENGL);
-
-    space->horizon.x = 256;
-    space->horizon.y = 256;
-    space->horizon.z = 512;
-
     space->addPolygon(&poly);
 
     space->mainLoop();

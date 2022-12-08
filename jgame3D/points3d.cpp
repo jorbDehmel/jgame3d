@@ -184,13 +184,11 @@ Polygon3D rotate(const Polygon3D p)
 {
     Polygon3D out(p);
 
-    // Rotate each point
     for (int i = 0; i < out.points.size(); i++)
     {
         rotatePoint(out.points[i], out.rotationX, out.rotationY, out.rotationZ);
     }
 
-    // For some reason the basis doesn't copy over
     out.basis = p.basis;
 
     return out;
@@ -203,9 +201,6 @@ void rotatePoint(Point3D &p, double dx = 0, double dy = 0, double dz = 0)
     double s = 0, c = 0;
     double x = p.x, y = p.y, z = p.z;
 
-    // p.x = p.y = p.z = -1;
-
-    // cout << "Rotations: " << dx << '\t' << dy << '\t' << dz << '\n';
     if (dx != 0)
     {
         s = sin(dx), c = cos(dx);
@@ -241,8 +236,6 @@ void rotatePoint(Point3D &p, double dx = 0, double dy = 0, double dz = 0)
         p.x = (c * x) - (s * y);
         p.y = (s * x) + (c * y);
     }
-
-    // cout << "rotational output: " << p.x << '\t' << p.y << '\t' << p.z << '\n';
 
     return;
 }

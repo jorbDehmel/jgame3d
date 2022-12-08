@@ -8,7 +8,7 @@
 class Point3D
 {
 public:
-    Point3D() { x = y = z = 0; }
+    Point3D() : x(0), y(0), z(0) {}
     Point3D(double xIn, double yIn, double zIn) : x(xIn), y(yIn), z(zIn) {}
 
     Point3D operator=(Point3D other)

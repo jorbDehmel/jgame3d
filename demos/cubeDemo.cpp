@@ -51,6 +51,7 @@ void update(vector<Object *> &polygons)
     poly->rotationX += .001;
     poly->rotationY += .001;
     poly->rotationZ += .001;
+
     polygons[1]->rotationX += 0.01;
 
     SDL_RenderDrawPointF(space->rend, globalHorizon.x, globalHorizon.y);

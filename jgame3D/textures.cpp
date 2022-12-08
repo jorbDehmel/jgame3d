@@ -8,7 +8,7 @@ void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, Pixel color)
 
     rotate(p, p.rotation);
     move(p, p.basis);
-    p.SDLify();
+    p.checkMinMax();
 
     SDL_SetRenderDrawColor(rend, color.r, color.g, color.b, color.a);
 

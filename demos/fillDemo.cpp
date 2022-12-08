@@ -22,7 +22,7 @@ void update(SDL_Renderer *r)
     SDL_SetRenderDrawColor(renderer->rend, 0, 0, 0, 255);
     SDL_RenderClear(renderer->rend);
 
-    fillPolygon(r, *poly, 0b1111'1111'0000'0000'0000'0000'1111'1111);
+    fillPolygon(r, *poly, Pixel(255, 0, 0, 255));
 
     poly->rotation += 0.01;
 

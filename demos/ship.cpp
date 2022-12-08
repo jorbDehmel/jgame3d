@@ -1,4 +1,5 @@
 #include "../jgame3D/points.hpp"
+#include "../jgame3D/keys.hpp"
 
 using namespace std;
 
@@ -21,7 +22,8 @@ void update(SDL_Renderer *rend)
     SDL_RenderClear(rend);
 
     SDL_SetRenderDrawColor(rend, 255, 255, 255, 255);
-    SDL_RenderDrawLinesF(rend, *poly);
+
+    poly->render(rend);
 
     if (wind->key(keys::space))
     {
