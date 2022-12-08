@@ -1,5 +1,7 @@
 #include "textures.hpp"
 
+int X_RENDER_THRESH = 1000, Y_RENDER_THRESH = 1000;
+
 void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, Pixel color)
 {
     Polygon2D p = poly;
@@ -29,13 +31,13 @@ void fillPolygon(SDL_Renderer *rend, Polygon2D &poly, Pixel color)
                 continue;
             else if (Y1 == Y2)
                 continue;
-            else if (Y1 > 10000 || Y1 < -10000)
+            else if (Y1 - globalHorizon.y > Y_RENDER_THRESH || Y1 - globalHorizon.y < -Y_RENDER_THRESH)
                 continue;
-            else if (Y2 > 10000 || Y2 < -10000)
+            else if (Y2 - globalHorizon.y > Y_RENDER_THRESH || Y2 - globalHorizon.y < -Y_RENDER_THRESH)
                 continue;
-            else if (X1 > 10000 || X1 < -10000)
+            else if (X1 - globalHorizon.x > X_RENDER_THRESH || X1 - globalHorizon.x < -X_RENDER_THRESH)
                 continue;
-            else if (X2 > 10000 || X2 < -10000)
+            else if (X2 - globalHorizon.x > X_RENDER_THRESH || X2 - globalHorizon.x < -X_RENDER_THRESH)
                 continue;
 
             xValues.push_back(y * ((X2 - X1) / (Y2 - Y1)) - Y1 * ((X2 - X1) / (Y2 - Y1)) + X1);
