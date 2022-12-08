@@ -11,6 +11,12 @@ main:
 	mkdir -p build bin
 	make bin/jgame3d.a
 
+install:
+	sudo apt install libsdl2-dev
+	sudo rm -r -f /usr/include/jgame3d
+	sudo mkdir /usr/include/jgame3d
+	sudo cp -r ./* /usr/include/jgame3d
+
 bin/jgame3d.a:	build/points3d.o build/points.o build/objects.o build/textures.o
 	ar -rc bin/jgame3d.a build/*.o
 
