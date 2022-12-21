@@ -1,10 +1,10 @@
-#include "jg3d.hpp"
+#include "basics.hpp"
 
 //////////////////////////////
 
 int FOV_SCALAR = 500;
 Point3D horizon(100, 100, 100);
-double dz = .5;
+double dz = 1;
 
 //////////////////////////////
 
@@ -146,23 +146,9 @@ void move(Model &m, const Point3D &by)
 
 void rotate(Model &m, const Point3D &about, const Rotation &by)
 {
-    Point3D *current;
     for (int shapeNum = 0; shapeNum < m.polygons.size(); shapeNum++)
     {
-        for (int pointNum = 0; pointNum < m.polygons[shapeNum].points.size(); pointNum++)
-        {
-            current = &m.polygons[shapeNum].points[pointNum];
-
-            current->x -= about.x;
-            current->y -= about.y;
-            current->z -= about.z;
-
-            rotate(*current, by);
-
-            current->x += about.x;
-            current->y += about.y;
-            current->z += about.z;
-        }
+        rotate(m.polygons[shapeNum], about, by);
     }
     return;
 }

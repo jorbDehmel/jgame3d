@@ -1,4 +1,4 @@
-#include "jg3d.hpp"
+#include "basics.hpp"
 using namespace std;
 
 //////////////////////////////////////////////////
@@ -26,10 +26,10 @@ vector<SDL_Color> colors = {
 void createCube(Model &obj)
 {
     vector<Point3D> tbSquare = {
-        Point3D(0, 64, 0),
-        Point3D(64, 64, 0),
+        Point3D(0, 0, 0),
         Point3D(64, 0, 0),
-        Point3D(0, 0, 0)};
+        Point3D(64, 64, 0),
+        Point3D(0, 64, 0)};
 
     Polygon top;
     top.points = tbSquare;
@@ -39,7 +39,7 @@ void createCube(Model &obj)
     Polygon bottom;
     bottom.points = tbSquare;
     bottom.color = colors[1];
-    move(top, Point3D(-32, -32, -32));
+    move(bottom, Point3D(-32, -32, -32));
 
     /////////////////////////////
 
@@ -79,8 +79,10 @@ void createCube(Model &obj)
 
     obj.polygons.push_back(right);
     obj.polygons.push_back(left);
+
     obj.polygons.push_back(top);
     obj.polygons.push_back(bottom);
+
     obj.polygons.push_back(front);
     obj.polygons.push_back(back);
 
@@ -89,10 +91,49 @@ void createCube(Model &obj)
     return;
 }
 
+Point3D getCenter(const Model &m)
+{
+    double minX, maxX, minY, maxY, minZ, maxZ;
+    minX = maxX = m.polygons[0].points[0].x;
+    minY = maxY = m.polygons[0].points[0].y;
+    minZ = maxZ = m.polygons[0].points[0].z;
+
+    for (auto poly : m.polygons)
+    {
+        for (auto point : poly.points)
+        {
+            if (point.x < minX)
+                minX = point.x;
+            else if (point.x > maxX)
+                maxX = point.x;
+
+            if (point.y < minY)
+                minY = point.y;
+            else if (point.y > maxY)
+                maxY = point.y;
+
+            if (point.z < minZ)
+                minZ = point.z;
+            else if (point.z > maxZ)
+                maxZ = point.z;
+        }
+    }
+
+    Point3D out;
+
+    out.x = minX + ((maxX - minX) / 2);
+    out.y = minY + ((maxY - minY) / 2);
+    out.z = minZ + ((maxZ - minZ) / 2);
+
+    return out;
+}
+
 //////////////////////////////////////////////////
 
 int main()
 {
+    dz = 1;
+
     SDL_Window *wind;
     SDL_Renderer *rend;
 
@@ -110,20 +151,20 @@ int main()
     createCube(cube);
     space.models.push_back(&cube);
 
-    auto start = chrono::high_resolution_clock::now();
-    auto end = start;
-    int ellapsed;
+    int delayTime = 8;
+
+    int timeA, timeB, ellapsed;
 
     SDL_Event event;
     bool isRunning = true;
     while (isRunning)
     {
-        start = chrono::high_resolution_clock::now();
+        timeA = SDL_GetTicks();
 
         SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
         SDL_RenderClear(rend);
 
-        rotate(cube, Point3D(256, 256, 256), Point3D(.001, .001, .001));
+        rotate(cube, getCenter(cube), Point3D(.005, .005, .005));
 
         space.render();
 
@@ -137,18 +178,23 @@ int main()
                 if (event.key.keysym.sym == 27)
                     isRunning = false;
                 else if (event.key.keysym.sym == 'w')
-                    move(cube, Point3D(0, 0, 1));
+                    move(cube, Point3D(0, 0, 5));
                 else if (event.key.keysym.sym == 's')
-                    move(cube, Point3D(0, 0, -1));
+                    move(cube, Point3D(0, 0, -5));
+
                 break;
             default:
                 break;
             }
         }
 
-        end = chrono::high_resolution_clock::now();
-        ellapsed = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
-        cout << "FPS: " << 1'000'000'000 / ellapsed << '\n';
+        timeB = SDL_GetTicks();
+        ellapsed = timeB - timeA;
+
+        if (ellapsed < delayTime)
+        {
+            SDL_Delay(delayTime - ellapsed);
+        }
     }
 
     return 0;
