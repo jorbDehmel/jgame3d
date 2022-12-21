@@ -1,7 +1,8 @@
 #include "jg3d.hpp"
 
-int FOV_SCALAR = 1;
+int FOV_SCALAR = 500;
 Point3D horizon(100, 100, 100);
+double dz = .5;
 
 Point3D::Point3D()
 {
@@ -50,10 +51,9 @@ void Renderer::render()
             }
         }
     }
-    cout << "Min z: " << minZ << " max z: " << maxZ << '\n';
 
     // Iterate over z
-    for (double z = maxZ; z > minZ; z -= 1)
+    for (double z = maxZ; z > minZ; z -= dz)
     {
         // Iterate over
         int ind = 0;
@@ -81,7 +81,7 @@ void Renderer::render()
                 else if (Z2 == Z1) // asymptote check
                     continue;
 
-                // Compute coords for out here
+                // Compute coords for out
                 out.x = z * ((X2 - X1) / (Z2 - Z1)) - Z1 * ((X2 - X1) / (Z2 - Z1)) + X1;
                 out.y = z * ((Y2 - Y1) / (Z2 - Z1)) - Z1 * ((Y2 - Y1) / (Z2 - Z1)) + Y1;
 
@@ -105,8 +105,6 @@ void Renderer::render()
 
             points.push_back(points[0]);
 
-            // cout << "Drawing line of size " << points.size() << " and color " << (int)p.color.r << ' ' << (int)p.color.g << ' ' << (int)p.color.b << '\n';
-
             SDL_FPoint rawPoints[points.size()];
             for (int i = 0; i < points.size(); i++)
                 rawPoints[i] = points[i];
@@ -121,21 +119,24 @@ void Renderer::render()
     return;
 }
 
-void move(Model m, const Point3D &by)
+void move(Model &m, const Point3D &by)
 {
+    Point3D *current;
     for (int shapeNum = 0; shapeNum < m.polygons.size(); shapeNum++)
     {
         for (int pointNum = 0; pointNum < m.polygons[shapeNum].points.size(); pointNum++)
         {
-            m.polygons[shapeNum].points[pointNum].x += by.x;
-            m.polygons[shapeNum].points[pointNum].y += by.y;
-            m.polygons[shapeNum].points[pointNum].z += by.z;
+            current = &m.polygons[shapeNum].points[pointNum];
+
+            current->x += by.x;
+            current->y += by.y;
+            current->z += by.z;
         }
     }
     return;
 }
 
-void rotate(Model m, const Point3D &about, const Rotation &by)
+void rotate(Model &m, const Point3D &about, const Rotation &by)
 {
     Point3D *current;
     for (int shapeNum = 0; shapeNum < m.polygons.size(); shapeNum++)
@@ -155,9 +156,10 @@ void rotate(Model m, const Point3D &about, const Rotation &by)
             current->z += about.z;
         }
     }
+    return;
 }
 
-void move(Polygon p, const Point3D &by)
+void move(Polygon &p, const Point3D &by)
 {
     for (int pointNum = 0; pointNum < p.points.size(); pointNum++)
     {
@@ -165,9 +167,10 @@ void move(Polygon p, const Point3D &by)
         p.points[pointNum].y += by.y;
         p.points[pointNum].z += by.z;
     }
+    return;
 }
 
-void rotate(Polygon p, const Point3D &about, const Rotation &by)
+void rotate(Polygon &p, const Point3D &about, const Rotation &by)
 {
     Point3D *current;
     for (int pointNum = 0; pointNum < p.points.size(); pointNum++)
@@ -184,6 +187,7 @@ void rotate(Polygon p, const Point3D &about, const Rotation &by)
         current->y += about.y;
         current->z += about.z;
     }
+    return;
 }
 
 void rotate(Point3D &p, const Rotation &by)
@@ -225,6 +229,58 @@ void rotate(Point3D &p, const Rotation &by)
 
         p.x = (c * x) - (s * y);
         p.y = (s * x) + (c * y);
+    }
+
+    return;
+}
+
+void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color)
+{
+    SDL_SetRenderDrawColor(rend, color.r, color.g, color.b, color.a);
+
+    double X1, X2, Y1, Y2;
+    vector<double> xValues;
+
+    double yMin = poly[0].y, yMax = yMin;
+    for (SDL_FPoint p : poly)
+    {
+        if (p.y < yMin)
+            yMin = p.y;
+        else if (p.y > yMax)
+            yMax = p.y;
+    }
+
+    for (double y = yMin; y < yMax; y++)
+    {
+        xValues.clear();
+        for (int i = 0; i < poly.size(); i++)
+        {
+            X1 = poly[i].x;
+            Y1 = poly[i].y;
+            X2 = poly[(i + 1) % (poly.size())].x;
+            Y2 = poly[(i + 1) % (poly.size())].y;
+
+            if (Y1 < y && Y2 < y)
+                continue;
+            else if (Y1 > y && Y2 > y)
+                continue;
+            else if (Y1 == Y2)
+                continue;
+
+            // curY * (dx/dy) - y1 * (dx/dy) + x1
+            xValues.push_back(y * ((X2 - X1) / (Y2 - Y1)) - Y1 * ((X2 - X1) / (Y2 - Y1)) + X1);
+        }
+
+        if (xValues.size() <= 1)
+            continue;
+
+        sort(xValues.begin(), xValues.end());
+
+        // Draw line segments
+        for (int i = 0; i < xValues.size(); i += 2)
+        {
+            SDL_RenderDrawLineF(rend, xValues[i], y, xValues[(i + 1) % (xValues.size())], y);
+        }
     }
 
     return;

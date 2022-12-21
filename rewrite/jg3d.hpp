@@ -4,7 +4,10 @@
 #include <cassert>
 #include <SDL2/SDL.h>
 #include <iostream>
+#include <algorithm>
+#include <map>
 #include <vector>
+#include <chrono>
 using namespace std;
 
 class Point3D
@@ -21,6 +24,7 @@ typedef Point3D Rotation;
 
 extern int FOV_SCALAR;
 extern Point3D horizon;
+extern double dz;
 
 class Polygon
 {
@@ -51,12 +55,14 @@ public:
     SDL_Window *wind;
 };
 
-void move(Model m, const Point3D &by);
-void rotate(Model m, const Point3D &about, const Rotation &by);
+void move(Model &m, const Point3D &by);
+void rotate(Model &m, const Point3D &about, const Rotation &by);
 
-void move(Polygon m, const Point3D &by);
-void rotate(Polygon m, const Point3D &about, const Rotation &by);
+void move(Polygon &m, const Point3D &by);
+void rotate(Polygon &m, const Point3D &about, const Rotation &by);
 
 void rotate(Point3D &p, const Rotation &by);
+
+void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color);
 
 #endif

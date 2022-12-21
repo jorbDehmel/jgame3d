@@ -84,7 +84,7 @@ void createCube(Model &obj)
     obj.polygons.push_back(front);
     obj.polygons.push_back(back);
 
-    move(obj, Point3D(128, 128, 128));
+    move(obj, Point3D(256, 256, 256));
 
     return;
 }
@@ -97,7 +97,11 @@ int main()
     SDL_Renderer *rend;
 
     assert(SDL_CreateWindowAndRenderer(512, 512, SDL_WINDOW_OPENGL, &wind, &rend) == 0);
-    horizon.x = horizon.y = horizon.z = 256;
+    SDL_SetWindowSize(wind, 1028, 1028);
+    SDL_RenderSetScale(rend, 2, 2);
+
+    horizon.x = horizon.y = 256;
+    horizon.z = 1000;
 
     Renderer space(rend, wind);
     assert(space.rend == rend);
@@ -106,14 +110,20 @@ int main()
     createCube(cube);
     space.models.push_back(&cube);
 
+    auto start = chrono::high_resolution_clock::now();
+    auto end = start;
+    int ellapsed;
+
     SDL_Event event;
     bool isRunning = true;
     while (isRunning)
     {
+        start = chrono::high_resolution_clock::now();
+
         SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
         SDL_RenderClear(rend);
 
-        rotate(cube, Point3D(256, 256, 256), Point3D(0, 0, 1));
+        rotate(cube, Point3D(256, 256, 256), Point3D(.001, .001, .001));
 
         space.render();
 
@@ -127,15 +137,18 @@ int main()
                 if (event.key.keysym.sym == 27)
                     isRunning = false;
                 else if (event.key.keysym.sym == 'w')
-                {
-                    cout << "moving\n";
                     move(cube, Point3D(0, 0, 1));
-                }
+                else if (event.key.keysym.sym == 's')
+                    move(cube, Point3D(0, 0, -1));
                 break;
             default:
                 break;
             }
         }
+
+        end = chrono::high_resolution_clock::now();
+        ellapsed = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+        cout << "FPS: " << 1'000'000'000 / ellapsed << '\n';
     }
 
     return 0;
