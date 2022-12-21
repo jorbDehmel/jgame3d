@@ -27,6 +27,7 @@ Point3D operator*(const Point3D &a, const double b);
 
 /////////////////////////////////////////
 
+extern int FOV_SCALAR;
 extern Point3D globalHorizon;
 
 /////////////////////////////////////////

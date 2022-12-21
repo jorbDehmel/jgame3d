@@ -76,7 +76,8 @@ void Object::fill(SDL_Renderer *rend, vector<Pixel> &colors)
         shapes[i].rotationY = rotationY;
         shapes[i].rotationZ = rotationZ;
 
-        fillPolygon(rend, shapes[i], colors[i]);
+        // fillPolygon(rend, shapes[i], colors[i]);
+        renderSlice(rend, shapes[i], colors[i]);
     }
 
     return;

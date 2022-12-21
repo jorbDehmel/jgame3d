@@ -45,14 +45,15 @@ void update(vector<Object *> &polygons)
     SDL_SetRenderDrawColor(space->rend, 0, 0, 0, 255);
     SDL_RenderClear(space->rend);
 
-    polygons[1]->fill(space->rend, colors);
-    poly->fill(space->rend, colors);
+    // polygons[1]->fill(space->rend, colors);
+    // poly->fill(space->rend, colors);
+    renderSlice(space->rend, *poly, colors);
 
     poly->rotationX += .001;
     poly->rotationY += .001;
     poly->rotationZ += .001;
 
-    polygons[1]->rotationX += 0.01;
+    // polygons[1]->rotationX += 0.01;
 
     SDL_RenderDrawPointF(space->rend, globalHorizon.x, globalHorizon.y);
 
@@ -121,15 +122,15 @@ int main()
     poly.basis = Point3D(256, 256, 256);
     createCube(poly);
 
-    Object other;
-    other.basis = Point3D(256, 256, 256);
-    createCube(other);
+    // Object other;
+    // other.basis = Point3D(256, 256, 256);
+    // createCube(other);
 
     space = new GameSpace(128, 128, 16, update, 8, 8, SDL_WINDOW_OPENGL);
     SDL_RenderSetScale(space->rend, 2, 2);
 
     space->addPolygon(&poly);
-    space->addPolygon(&other);
+    // space->addPolygon(&other);
 
     space->mainLoop();
 
