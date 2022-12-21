@@ -1,15 +1,24 @@
 #ifndef JG3D2_H
 #define JG3D2_H
 
-#include <cassert>
 #include <SDL2/SDL.h>
+
+#include <cassert>
 #include <iostream>
 #include <algorithm>
+#include <chrono>
+
 #include <map>
 #include <vector>
-#include <chrono>
+
 using namespace std;
 
+//////////////////////////////
+
+/*
+A point in 3D space
+(Coords are held by doubles)
+*/
 class Point3D
 {
 public:
@@ -20,12 +29,29 @@ public:
     double x, y, z;
 };
 
+/*
+A rotation in 3D space
+x, y, and z represent rotations in their
+respective axiis
+*/
 typedef Point3D Rotation;
 
+//////////////////////////////
+
+// Adjusts FOV, akin to fisheye
 extern int FOV_SCALAR;
+
+// Global horizon point used by rendering
 extern Point3D horizon;
+
+// Change in z for layered rendering
 extern double dz;
 
+//////////////////////////////
+
+/*
+A polygon, holding a vector of points in 3D space.
+*/
 class Polygon
 {
 public:
@@ -36,12 +62,22 @@ public:
     SDL_Color color;
 };
 
+/*
+A model in 3D space, holding a vector of Polygons
+*/
 class Model
 {
 public:
     vector<Polygon> polygons;
 };
 
+//////////////////////////////
+
+/*
+A renderer for proper layering in space.
+Without this, things will only display in render order,
+but with this they are able to overlap eachother.
+*/
 class Renderer
 {
 public:
@@ -55,14 +91,26 @@ public:
     SDL_Window *wind;
 };
 
+//////////////////////////////
+
+// Mode a model by a point
 void move(Model &m, const Point3D &by);
+
+// Rotate a model about a point and by a rotation
 void rotate(Model &m, const Point3D &about, const Rotation &by);
 
+// Mode a polygon by a point
 void move(Polygon &m, const Point3D &by);
+
+// Rotate a polygon about a point and by a rotation
 void rotate(Polygon &m, const Point3D &about, const Rotation &by);
 
+// Rotate a point by a rotation
 void rotate(Point3D &p, const Rotation &by);
 
+// Fill a 2D polygon with a color
 void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color);
+
+//////////////////////////////
 
 #endif

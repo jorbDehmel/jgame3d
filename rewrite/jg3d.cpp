@@ -1,8 +1,12 @@
 #include "jg3d.hpp"
 
+//////////////////////////////
+
 int FOV_SCALAR = 500;
 Point3D horizon(100, 100, 100);
 double dz = .5;
+
+//////////////////////////////
 
 Point3D::Point3D()
 {
@@ -22,6 +26,8 @@ Point3D::Point3D(const double X, const double Y, const double Z)
     y = Y;
     z = Z;
 }
+
+//////////////////////////////
 
 Renderer::Renderer(SDL_Renderer *&Rend, SDL_Window *&Wind)
 {
@@ -118,6 +124,8 @@ void Renderer::render()
 
     return;
 }
+
+//////////////////////////////
 
 void move(Model &m, const Point3D &by)
 {
@@ -234,6 +242,8 @@ void rotate(Point3D &p, const Rotation &by)
     return;
 }
 
+//////////////////////////////
+
 void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color)
 {
     SDL_SetRenderDrawColor(rend, color.r, color.g, color.b, color.a);
@@ -285,3 +295,5 @@ void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color)
 
     return;
 }
+
+//////////////////////////////
