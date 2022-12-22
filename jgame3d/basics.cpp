@@ -115,6 +115,12 @@ void Renderer::render()
     }
 
     // Iterate over z
+    vector<SDL_FPoint> prevPoints[polys.size()];
+    for (int i = 0; i < polys.size(); i++)
+    {
+        prevPoints[i].clear();
+    }
+
     for (double z = maxZ; z >= minZ; z -= dz)
     {
         if (z < renderMinZ)
@@ -127,8 +133,10 @@ void Renderer::render()
         }
 
         // Iterate over
-        for (auto p : polys)
+        for (int polygonIndex = 0; polygonIndex < polys.size(); polygonIndex++)
         {
+            Polygon &p = polys[polygonIndex];
+
             vector<SDL_FPoint> points;
 
             for (int i = 0; i < p.points.size(); i++)
@@ -173,16 +181,31 @@ void Renderer::render()
                 out.y += horizon.y;
 
                 points.push_back(out);
-            }
+            } // End iterating over points
 
             if (points.empty())
             {
                 continue;
             }
 
-            points.push_back(points[0]);
+            vector<SDL_FPoint> toFill;
+            for (auto p : points)
+            {
+                toFill.push_back(p);
+            }
 
-            if (points.size() <= 3)
+            for (auto p : prevPoints[polygonIndex])
+            {
+                toFill.push_back(p);
+            }
+
+            fillPolygon(rend, toFill, p.color);
+
+            prevPoints[polygonIndex].clear();
+            for (int j = points.size() - 1; j >= 0; j--)
+                prevPoints[polygonIndex].push_back(points[j]);
+
+            /*if (points.size() <= 3)
             {
                 SDL_FPoint rawPoints[points.size()];
                 for (int j = 0; j < points.size(); j++)
@@ -194,9 +217,9 @@ void Renderer::render()
             else
             {
                 fillPolygon(rend, points, p.color);
-            }
-        }
-    }
+            }*/
+        } // End iterating over polygons
+    }     // End iterating over z
 
     return;
 }

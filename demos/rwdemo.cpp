@@ -104,7 +104,7 @@ int main()
 
     SDL_Init(SDL_INIT_EVERYTHING);
 
-    SDL_CreateWindowAndRenderer(256, 256, SDL_WINDOW_OPENGL, &wind, &rend);
+    SDL_CreateWindowAndRenderer(512, 512, SDL_WINDOW_OPENGL, &wind, &rend);
     SDL_SetWindowSize(wind, 1028, 1028);
     SDL_RenderSetScale(rend, 4, 4);
 
