@@ -95,30 +95,32 @@ bool hasKey(set<SDL_Keycode> &set, int keycode)
 
 int main()
 {
-    int numCubes = 32;
+    int numCubes = 8;
     srand(time(NULL));
 
     /*
-    cubes|polygons|ms/frame
-    1     (6)      1-10
-    32    (192)    40-50
-    64    (384)    70-110
-    128   (768)    140-170
-    256   (1536)   325-400
+    cubes   ms/frame    apr. fps
+    1       5-10        100-200
+    2       5-15        67-200
+    4       10-20       50-100
+    8       20-50       20-50
+    16      50-70       15-20
+    32      90-130      8-11
     */
 
     //////////////////
 
     set<SDL_Keycode> keys;
 
-    dz = dy = 1;
+    dy = 1;
+    dz = 1;
 
     SDL_Window *wind;
     SDL_Renderer *rend;
 
     SDL_Init(SDL_INIT_EVERYTHING);
 
-    SDL_CreateWindowAndRenderer(256, 256, SDL_WINDOW_OPENGL, &wind, &rend);
+    SDL_CreateWindowAndRenderer(512, 512, SDL_WINDOW_OPENGL, &wind, &rend);
     SDL_SetWindowSize(wind, 1028, 1028);
     SDL_RenderSetScale(rend, 4, 4);
 
@@ -153,7 +155,7 @@ int main()
 
         for (int i = 0; i < numCubes; i++)
         {
-            rotate(cubes[i], Rotation((rand() % 100) / 1000.0, (rand() % 100) / 1000.0, (rand() % 100) / 1000.0));
+            // rotate(cubes[i], Rotation((rand() % 100) / 1000.0, (rand() % 100) / 1000.0, (rand() % 100) / 1000.0));
             move(cubes[i], Point3D((rand() % 10) - 5, (rand() % 10) - 5, (rand() % 10) - 5));
         }
 

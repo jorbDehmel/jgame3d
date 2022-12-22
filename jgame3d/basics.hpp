@@ -11,6 +11,7 @@
 
 #include <map>
 #include <vector>
+#include <set>
 
 using namespace std;
 
@@ -44,7 +45,7 @@ typedef Point3D Rotation;
 //////////////////////////////
 
 // Adjusts FOV, akin to fisheye
-extern int FOV_SCALAR;
+extern int FOVScalar;
 
 // Global horizon point used by rendering
 extern Point3D horizon;
@@ -123,7 +124,13 @@ void rotate(Polygon &m, const Rotation &by);
 void rotate(Point3D &p, const Rotation &by);
 
 // Fill a 2D polygon with a color
-void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color, double lineWidth = 2);
+void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color);
+
+//////////////////////////////
+
+#define intersects fullIntersects
+bool aIntersectsB(Point3D &where, const Polygon &a, const Polygon &b);
+bool fullIntersects(Point3D &where, const Polygon &a, const Polygon &b);
 
 //////////////////////////////
 

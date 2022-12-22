@@ -85,6 +85,60 @@ ostream &operator<<(ostream &stream, const Model &p)
 
 //////////////////////////////
 
+bool aIntersectsB(Point3D &where, const Polygon &a, const Polygon &b)
+{
+    Point3D aMin = a.points[0], aMax = aMin;
+    for (auto p : a.points)
+    {
+        if (p.x < aMin.x)
+            aMin.x = p.x;
+        else if (p.x > aMax.x)
+            aMax.x = p.x;
+
+        if (p.y < aMin.y)
+            aMin.y = p.y;
+        else if (p.y > aMax.y)
+            aMax.y = p.y;
+
+        if (p.z < aMin.z)
+            aMin.z = p.z;
+        else if (p.z > aMax.z)
+            aMax.z = p.z;
+    }
+
+    for (auto p : b.points)
+    {
+        if (p.x > aMin.x && p.x < aMax.x)
+        {
+            where = p;
+            return true;
+        }
+        else if (p.y > aMin.y && p.y < aMax.y)
+        {
+            where = p;
+            return true;
+        }
+        else if (p.z > aMin.z && p.z < aMax.z)
+        {
+            where = p;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool fullIntersects(Point3D &where, const Polygon &a, const Polygon &b)
+{
+    if (aIntersectsB(where, a, b))
+        return true;
+    else if (aIntersectsB(where, b, a))
+        return true;
+    else
+        return false;
+}
+
+//////////////////////////////
+
 Renderer::Renderer(SDL_Renderer *&Rend, SDL_Window *&Wind)
 {
     rend = Rend;
@@ -95,7 +149,6 @@ void Renderer::render()
 {
     // Prepare min and max
     vector<Polygon> polys;
-    double minZ = models[0]->polygons[0].points[0].z, maxZ = minZ;
 
     // Find minZ, maxZ, prepare list of polygons
     for (Model *m : models)
@@ -103,46 +156,45 @@ void Renderer::render()
         for (Polygon p : m->polygons)
         {
             polys.push_back(p);
+        }
+    }
 
-            for (auto point : p.points)
+    vector<SDL_FPoint> prevPoints[polys.size()];
+    vector<SDL_FPoint> toFill;
+
+    // Prepare list of zBreakPoints (z points where polygons intersect)
+    set<double> zBreakPoints;
+    Point3D where;
+    for (int a = 0; a < polys.size(); a++)
+    {
+        for (int b = a + 1; b < polys.size(); b++)
+        {
+            if (fullIntersects(where, polys[a], polys[b]))
             {
-                if (point.z < minZ)
-                    minZ = point.z;
-                else if (point.z > maxZ)
-                    maxZ = point.z;
+                zBreakPoints.insert(where.z);
             }
         }
     }
 
-    // Iterate over z
-    vector<SDL_FPoint> prevPoints[polys.size()];
-    for (int i = 0; i < polys.size(); i++)
+    cout << "Z breakpoints:\n";
+    for (set<double>::reverse_iterator rit = zBreakPoints.rbegin(); rit != zBreakPoints.rend(); rit++)
     {
-        prevPoints[i].clear();
+        double z = *rit;
+        cout << z << '\n';
     }
 
-    for (double z = maxZ; z >= minZ; z -= dz)
+    for (set<double>::reverse_iterator rit = zBreakPoints.rbegin(); rit != zBreakPoints.rend(); rit++)
     {
-        if (z < renderMinZ)
-        {
-            break;
-        }
-        else if (z > renderMaxZ)
-        {
-            continue;
-        }
-
+        double z = *rit;
         // Iterate over
         for (int polygonIndex = 0; polygonIndex < polys.size(); polygonIndex++)
         {
-            Polygon &p = polys[polygonIndex];
-
             vector<SDL_FPoint> points;
 
-            for (int i = 0; i < p.points.size(); i++)
+            for (int i = 0; i < polys[polygonIndex].points.size(); i++)
             {
-                Point3D A = p.points[i];
-                Point3D B = p.points[(i + 1) % (p.points.size())];
+                Point3D A = polys[polygonIndex].points[i];
+                Point3D B = polys[polygonIndex].points[(i + 1) % (polys[polygonIndex].points.size())];
 
                 double X1, X2, Y1, Y2, Z1, Z2;
                 X1 = A.x, X2 = B.x;
@@ -188,36 +240,24 @@ void Renderer::render()
                 continue;
             }
 
-            vector<SDL_FPoint> toFill;
+            toFill.clear();
             for (auto p : points)
             {
                 toFill.push_back(p);
             }
 
-            for (auto p : prevPoints[polygonIndex])
+            for (int j = prevPoints[polygonIndex].size() - 1; j >= 0; j--)
             {
-                toFill.push_back(p);
+                toFill.push_back(prevPoints[polygonIndex][j]);
             }
 
-            fillPolygon(rend, toFill, p.color);
+            fillPolygon(rend, toFill, polys[polygonIndex].color);
 
             prevPoints[polygonIndex].clear();
-            for (int j = points.size() - 1; j >= 0; j--)
-                prevPoints[polygonIndex].push_back(points[j]);
-
-            /*if (points.size() <= 3)
+            for (auto p : points)
             {
-                SDL_FPoint rawPoints[points.size()];
-                for (int j = 0; j < points.size(); j++)
-                    rawPoints[j] = points[j];
-
-                SDL_SetRenderDrawColor(rend, p.color.r, p.color.g, p.color.b, p.color.a);
-                SDL_RenderDrawLinesF(rend, rawPoints, points.size());
+                prevPoints[polygonIndex].push_back(p);
             }
-            else
-            {
-                fillPolygon(rend, points, p.color);
-            }*/
         } // End iterating over polygons
     }     // End iterating over z
 
@@ -296,6 +336,8 @@ Point3D getCenter(const Polygon &p)
 
     return out;
 }
+
+//////////////////////////////
 
 void move(Model &m, const Point3D &by)
 {
@@ -412,7 +454,7 @@ void rotate(Point3D &p, const Rotation &by)
 
 //////////////////////////////
 
-void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color, double lineWidth)
+void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color)
 {
     SDL_SetRenderDrawColor(rend, color.r, color.g, color.b, color.a);
 
@@ -458,17 +500,9 @@ void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color, 
         sort(xValues.begin(), xValues.end());
 
         // Draw line segments
-        SDL_FRect rect;
-        rect.y = y;
-        rect.h = lineWidth;
-
         for (int i = 0; i < xValues.size(); i += 2)
         {
-            rect.x = xValues[i];
-            rect.w = xValues[(i + 1) % (xValues.size())] - rect.x;
-
-            SDL_RenderDrawRectF(rend, &rect);
-            // SDL_RenderDrawLineF(rend, xValues[i], y, xValues[(i + 1) % (xValues.size())], y);
+            SDL_RenderDrawLineF(rend, xValues[i], y, xValues[(i + 1) % (xValues.size())], y);
         }
     }
 
