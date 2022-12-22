@@ -4,12 +4,26 @@
 
 int FOVScalar = 200;
 Point3D horizon(100, 100, 100);
+
 double dz = 1;
 double dy = 1;
+
 double renderMinX = 0, renderMinY = renderMinX;
 double renderMaxX = 512, renderMaxY = renderMaxX;
 double renderMinZ = 0;
 double renderMaxZ = 1028;
+
+//////////////////////////////
+
+SDL_Color makeColor(const Uint8 r, const Uint8 g, const Uint8 b, const Uint8 a)
+{
+    SDL_Color out;
+    out.r = r;
+    out.g = g;
+    out.b = b;
+    out.a = a;
+    return out;
+}
 
 //////////////////////////////
 
@@ -83,7 +97,7 @@ void Renderer::render()
     vector<Polygon> polys;
     double minZ = models[0]->polygons[0].points[0].z, maxZ = minZ;
 
-    // Prepare real positions of polygons
+    // Find minZ, maxZ, prepare list of polygons
     for (Model *m : models)
     {
         for (Polygon p : m->polygons)
@@ -101,7 +115,7 @@ void Renderer::render()
     }
 
     // Iterate over z
-    for (double z = maxZ; z > minZ; z -= dz)
+    for (double z = maxZ; z >= minZ; z -= dz)
     {
         if (z < renderMinZ)
         {
@@ -168,12 +182,19 @@ void Renderer::render()
 
             points.push_back(points[0]);
 
-            SDL_FPoint rawPoints[points.size()];
-            for (int i = 0; i < points.size(); i++)
-                rawPoints[i] = points[i];
+            if (points.size() <= 3)
+            {
+                SDL_FPoint rawPoints[points.size()];
+                for (int j = 0; j < points.size(); j++)
+                    rawPoints[j] = points[j];
 
-            SDL_SetRenderDrawColor(rend, p.color.r, p.color.g, p.color.b, p.color.a);
-            SDL_RenderDrawLinesF(rend, rawPoints, points.size());
+                SDL_SetRenderDrawColor(rend, p.color.r, p.color.g, p.color.b, p.color.a);
+                SDL_RenderDrawLinesF(rend, rawPoints, points.size());
+            }
+            else
+            {
+                fillPolygon(rend, points, p.color);
+            }
         }
     }
 
@@ -208,6 +229,40 @@ Point3D getCenter(const Model &m)
             else if (point.z > maxZ)
                 maxZ = point.z;
         }
+    }
+
+    Point3D out;
+
+    out.x = minX + ((maxX - minX) / 2);
+    out.y = minY + ((maxY - minY) / 2);
+    out.z = minZ + ((maxZ - minZ) / 2);
+
+    return out;
+}
+
+Point3D getCenter(const Polygon &p)
+{
+    double minX, maxX, minY, maxY, minZ, maxZ;
+    minX = maxX = p.points[0].x;
+    minY = maxY = p.points[0].y;
+    minZ = maxZ = p.points[0].z;
+
+    for (auto point : p.points)
+    {
+        if (point.x < minX)
+            minX = point.x;
+        else if (point.x > maxX)
+            maxX = point.x;
+
+        if (point.y < minY)
+            minY = point.y;
+        else if (point.y > maxY)
+            maxY = point.y;
+
+        if (point.z < minZ)
+            minZ = point.z;
+        else if (point.z > maxZ)
+            maxZ = point.z;
     }
 
     Point3D out;
@@ -282,6 +337,12 @@ void rotate(Polygon &p, const Point3D &about, const Rotation &by)
     return;
 }
 
+void rotate(Polygon &m, const Rotation &by)
+{
+    rotate(m, getCenter(m), by);
+    return;
+}
+
 void rotate(Point3D &p, const Rotation &by)
 {
     double s = 0, c = 0;
@@ -328,7 +389,7 @@ void rotate(Point3D &p, const Rotation &by)
 
 //////////////////////////////
 
-void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color)
+void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color, double lineWidth)
 {
     SDL_SetRenderDrawColor(rend, color.r, color.g, color.b, color.a);
 
@@ -363,8 +424,6 @@ void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color)
                 continue;
             else if (Y1 > y && Y2 > y)
                 continue;
-            else if (Y1 == Y2)
-                continue;
 
             // curY * (dx/dy) - y1 * (dx/dy) + x1
             xValues.push_back(y * ((X2 - X1) / (Y2 - Y1)) - Y1 * ((X2 - X1) / (Y2 - Y1)) + X1);
@@ -376,9 +435,17 @@ void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color)
         sort(xValues.begin(), xValues.end());
 
         // Draw line segments
+        SDL_FRect rect;
+        rect.y = y;
+        rect.h = lineWidth;
+
         for (int i = 0; i < xValues.size(); i += 2)
         {
-            SDL_RenderDrawLineF(rend, xValues[i], y, xValues[(i + 1) % (xValues.size())], y);
+            rect.x = xValues[i];
+            rect.w = xValues[(i + 1) % (xValues.size())] - rect.x;
+
+            SDL_RenderDrawRectF(rend, &rect);
+            // SDL_RenderDrawLineF(rend, xValues[i], y, xValues[(i + 1) % (xValues.size())], y);
         }
     }
 

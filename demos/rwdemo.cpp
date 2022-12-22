@@ -1,21 +1,11 @@
-#include "basics.hpp"
-#include "keys.hpp"
+#include "../jgame3d/basics.hpp"
+#include "../jgame3d/keys.hpp"
 
 #include <set>
 
 using namespace std;
 
 //////////////////////////////////////////////////
-
-SDL_Color makeColor(const Uint8 r, const Uint8 g, const Uint8 b, const Uint8 a)
-{
-    SDL_Color out;
-    out.r = r;
-    out.g = g;
-    out.b = b;
-    out.a = a;
-    return out;
-}
 
 vector<SDL_Color> colors = {
     makeColor(255, 0, 0, 255),
@@ -142,7 +132,6 @@ int main()
         SDL_RenderClear(rend);
 
         rotate(cube, Rotation(.001, .005, .005));
-        // rotate(floor, Rotation(.005, .005, .005));
 
         space.render();
 

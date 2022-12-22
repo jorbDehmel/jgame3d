@@ -16,6 +16,8 @@ using namespace std;
 
 //////////////////////////////
 
+SDL_Color makeColor(const Uint8 r, const Uint8 g, const Uint8 b, const Uint8 a);
+
 /*
 A point in 3D space
 (Coords are held by doubles)
@@ -101,14 +103,13 @@ public:
 
 // Get the center point of a model in 3D
 Point3D getCenter(const Model &m);
+Point3D getCenter(const Polygon &m);
 
 // Mode a model by a point
 void move(Model &m, const Point3D &by);
 
 // Rotate a model about a point and by a rotation
 void rotate(Model &m, const Point3D &about, const Rotation &by);
-
-// Rotate a model about its center
 void rotate(Model &m, const Rotation &by);
 
 // Mode a polygon by a point
@@ -116,12 +117,13 @@ void move(Polygon &m, const Point3D &by);
 
 // Rotate a polygon about a point and by a rotation
 void rotate(Polygon &m, const Point3D &about, const Rotation &by);
+void rotate(Polygon &m, const Rotation &by);
 
 // Rotate a point by a rotation
 void rotate(Point3D &p, const Rotation &by);
 
 // Fill a 2D polygon with a color
-void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color);
+void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color, double lineWidth = 2);
 
 //////////////////////////////
 
