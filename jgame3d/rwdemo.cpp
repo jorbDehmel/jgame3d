@@ -1,4 +1,8 @@
 #include "basics.hpp"
+#include "keys.hpp"
+
+#include <set>
+
 using namespace std;
 
 //////////////////////////////////////////////////
@@ -29,6 +33,7 @@ void createCube(Model &obj)
         Point3D(0, 0, 0),
         Point3D(64, 0, 0),
         Point3D(64, 64, 0),
+        Point3D(32, 96, 0),
         Point3D(0, 64, 0)};
 
     Polygon top;
@@ -86,72 +91,44 @@ void createCube(Model &obj)
     obj.polygons.push_back(front);
     obj.polygons.push_back(back);
 
-    move(obj, Point3D(256, 256, 256));
+    move(obj, Point3D(128, 128, 256));
 
     return;
 }
 
-Point3D getCenter(const Model &m)
-{
-    double minX, maxX, minY, maxY, minZ, maxZ;
-    minX = maxX = m.polygons[0].points[0].x;
-    minY = maxY = m.polygons[0].points[0].y;
-    minZ = maxZ = m.polygons[0].points[0].z;
-
-    for (auto poly : m.polygons)
-    {
-        for (auto point : poly.points)
-        {
-            if (point.x < minX)
-                minX = point.x;
-            else if (point.x > maxX)
-                maxX = point.x;
-
-            if (point.y < minY)
-                minY = point.y;
-            else if (point.y > maxY)
-                maxY = point.y;
-
-            if (point.z < minZ)
-                minZ = point.z;
-            else if (point.z > maxZ)
-                maxZ = point.z;
-        }
-    }
-
-    Point3D out;
-
-    out.x = minX + ((maxX - minX) / 2);
-    out.y = minY + ((maxY - minY) / 2);
-    out.z = minZ + ((maxZ - minZ) / 2);
-
-    return out;
-}
-
 //////////////////////////////////////////////////
+
+bool hasKey(set<SDL_Keycode> &set, int keycode)
+{
+    return set.count(keycode) != 0;
+}
 
 int main()
 {
-    dz = 1;
+    set<SDL_Keycode> keys;
+
+    dz = dy = 1;
 
     SDL_Window *wind;
     SDL_Renderer *rend;
 
-    assert(SDL_CreateWindowAndRenderer(512, 512, SDL_WINDOW_OPENGL, &wind, &rend) == 0);
-    SDL_SetWindowSize(wind, 1028, 1028);
-    SDL_RenderSetScale(rend, 2, 2);
+    SDL_Init(SDL_INIT_EVERYTHING);
 
-    horizon.x = horizon.y = 256;
+    SDL_CreateWindowAndRenderer(256, 256, SDL_WINDOW_OPENGL, &wind, &rend);
+    SDL_SetWindowSize(wind, 1028, 1028);
+    SDL_RenderSetScale(rend, 4, 4);
+
+    horizon.x = horizon.y = 128;
     horizon.z = 1000;
 
     Renderer space(rend, wind);
-    assert(space.rend == rend);
 
     Model cube;
     createCube(cube);
     space.models.push_back(&cube);
 
-    int delayTime = 8;
+    int delayTime = 10;
+    double stepSize = 1;
 
     int timeA, timeB, ellapsed;
 
@@ -161,32 +138,59 @@ int main()
     {
         timeA = SDL_GetTicks();
 
-        SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
+        SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
         SDL_RenderClear(rend);
 
-        rotate(cube, getCenter(cube), Point3D(.005, .005, .005));
+        rotate(cube, Rotation(.001, .005, .005));
+        // rotate(floor, Rotation(.005, .005, .005));
 
         space.render();
 
         SDL_RenderPresent(rend);
+
+        ///////////////////////////
 
         while (SDL_PollEvent(&event))
         {
             switch (event.type)
             {
             case SDL_KEYDOWN:
-                if (event.key.keysym.sym == 27)
-                    isRunning = false;
-                else if (event.key.keysym.sym == 'w')
-                    move(cube, Point3D(0, 0, 5));
-                else if (event.key.keysym.sym == 's')
-                    move(cube, Point3D(0, 0, -5));
-
+                keys.insert(event.key.keysym.sym);
                 break;
-            default:
+            case SDL_KEYUP:
+                keys.erase(event.key.keysym.sym);
                 break;
             }
         }
+
+        //////////////////////////////
+
+        if (!keys.empty())
+        {
+
+            if (hasKey(keys, 27))
+            {
+                isRunning = false;
+                break;
+            }
+
+            if (hasKey(keys, 'q'))
+                move(cube, Point3D(0, 0, stepSize));
+            if (hasKey(keys, 'e'))
+                move(cube, Point3D(0, 0, -stepSize));
+
+            if (hasKey(keys, 'w'))
+                move(cube, Point3D(0, -stepSize, 0));
+            if (hasKey(keys, 's'))
+                move(cube, Point3D(0, stepSize, 0));
+
+            if (hasKey(keys, 'd'))
+                move(cube, Point3D(stepSize, 0, 0));
+            if (hasKey(keys, 'a'))
+                move(cube, Point3D(-stepSize, 0, 0));
+        }
+
+        //////////////////////////////
 
         timeB = SDL_GetTicks();
         ellapsed = timeB - timeA;
@@ -195,7 +199,15 @@ int main()
         {
             SDL_Delay(delayTime - ellapsed);
         }
+        else
+        {
+            cout << "Update took " << ellapsed << " ms\n";
+        }
     }
+
+    SDL_DestroyRenderer(rend);
+    SDL_DestroyWindow(wind);
+    SDL_Quit();
 
     return 0;
 }

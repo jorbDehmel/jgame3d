@@ -7,7 +7,7 @@ STEM = $(CC) $(ARGS) $(DEPS)
 
 #########################
 
-bin/demo.out:	bin/jgame3d.a build/demo.o
+bin/demo.out:	build/basics.o build/demo.o
 	$(STEM) build/basics.o build/demo.o -o bin/demo.out
 
 build/demo.o:	rwdemo.cpp

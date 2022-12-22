@@ -2,9 +2,14 @@
 
 //////////////////////////////
 
-int FOV_SCALAR = 500;
+int FOVScalar = 200;
 Point3D horizon(100, 100, 100);
 double dz = 1;
+double dy = 1;
+double renderMinX = 0, renderMinY = renderMinX;
+double renderMaxX = 512, renderMaxY = renderMaxX;
+double renderMinZ = 0;
+double renderMaxZ = 1028;
 
 //////////////////////////////
 
@@ -25,6 +30,43 @@ Point3D::Point3D(const double X, const double Y, const double Z)
     x = X;
     y = Y;
     z = Z;
+}
+
+ostream &operator<<(ostream &stream, const Point3D &p)
+{
+    stream << "(" << p.x << '\t' << p.y << '\t' << p.z << ")";
+    return stream;
+}
+
+//////////////////////////////
+
+ostream &operator<<(ostream &stream, const Polygon &p)
+{
+    stream << "Points:\n";
+
+    for (Point3D p : p.points)
+    {
+        stream << p << '\n';
+    }
+
+    return stream;
+}
+
+ostream &operator<<(ostream &stream, const Model &p)
+{
+    stream << "Polygons:\n";
+
+    for (Polygon poly : p.polygons)
+    {
+        stream << "\tPoints:\n";
+        for (Point3D p : poly.points)
+        {
+            stream << "\t" << p << '\n';
+        }
+        stream << '\n';
+    }
+
+    return stream;
 }
 
 //////////////////////////////
@@ -61,8 +103,16 @@ void Renderer::render()
     // Iterate over z
     for (double z = maxZ; z > minZ; z -= dz)
     {
+        if (z < renderMinZ)
+        {
+            break;
+        }
+        else if (z > renderMaxZ)
+        {
+            continue;
+        }
+
         // Iterate over
-        int ind = 0;
         for (auto p : polys)
         {
             vector<SDL_FPoint> points;
@@ -81,11 +131,18 @@ void Renderer::render()
 
                 // Continue if out of range
                 if (Z1 < z && Z2 < z)
+                {
                     continue;
+                }
                 else if (Z1 > z && Z2 > z)
+                {
                     continue;
+                }
+
                 else if (Z2 == Z1) // asymptote check
+                {
                     continue;
+                }
 
                 // Compute coords for out
                 out.x = z * ((X2 - X1) / (Z2 - Z1)) - Z1 * ((X2 - X1) / (Z2 - Z1)) + X1;
@@ -95,19 +152,19 @@ void Renderer::render()
                 out.x -= horizon.x;
                 out.y -= horizon.y;
 
-                out.x *= (FOV_SCALAR / z);
-                out.y *= (FOV_SCALAR / z);
+                out.x *= (FOVScalar / z);
+                out.y *= (FOVScalar / z);
 
                 out.x += horizon.x;
                 out.y += horizon.y;
 
-                // Add to list of points
-                // cout << out.x << '\t' << out.y << '\n';
                 points.push_back(out);
             }
 
-            if (points.size() == 0)
+            if (points.empty())
+            {
                 continue;
+            }
 
             points.push_back(points[0]);
 
@@ -117,8 +174,6 @@ void Renderer::render()
 
             SDL_SetRenderDrawColor(rend, p.color.r, p.color.g, p.color.b, p.color.a);
             SDL_RenderDrawLinesF(rend, rawPoints, points.size());
-
-            ind++;
         }
     }
 
@@ -126,6 +181,43 @@ void Renderer::render()
 }
 
 //////////////////////////////
+
+Point3D getCenter(const Model &m)
+{
+    double minX, maxX, minY, maxY, minZ, maxZ;
+    minX = maxX = m.polygons[0].points[0].x;
+    minY = maxY = m.polygons[0].points[0].y;
+    minZ = maxZ = m.polygons[0].points[0].z;
+
+    for (auto poly : m.polygons)
+    {
+        for (auto point : poly.points)
+        {
+            if (point.x < minX)
+                minX = point.x;
+            else if (point.x > maxX)
+                maxX = point.x;
+
+            if (point.y < minY)
+                minY = point.y;
+            else if (point.y > maxY)
+                maxY = point.y;
+
+            if (point.z < minZ)
+                minZ = point.z;
+            else if (point.z > maxZ)
+                maxZ = point.z;
+        }
+    }
+
+    Point3D out;
+
+    out.x = minX + ((maxX - minX) / 2);
+    out.y = minY + ((maxY - minY) / 2);
+    out.z = minZ + ((maxZ - minZ) / 2);
+
+    return out;
+}
 
 void move(Model &m, const Point3D &by)
 {
@@ -150,6 +242,12 @@ void rotate(Model &m, const Point3D &about, const Rotation &by)
     {
         rotate(m.polygons[shapeNum], about, by);
     }
+    return;
+}
+
+void rotate(Model &m, const Rotation &by)
+{
+    rotate(m, getCenter(m), by);
     return;
 }
 
@@ -246,8 +344,13 @@ void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color)
             yMax = p.y;
     }
 
-    for (double y = yMin; y < yMax; y++)
+    for (double y = yMin; y < yMax; y += dy)
     {
+        if (y < renderMinY)
+            continue;
+        else if (y > renderMaxY)
+            break;
+
         xValues.clear();
         for (int i = 0; i < poly.size(); i++)
         {

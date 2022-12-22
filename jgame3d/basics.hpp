@@ -2,6 +2,7 @@
 #define JG3D2_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_test_font.h>
 
 #include <cassert>
 #include <iostream>
@@ -29,6 +30,8 @@ public:
     double x, y, z;
 };
 
+ostream &operator<<(ostream &stream, const Point3D &p);
+
 /*
 A rotation in 3D space
 x, y, and z represent rotations in their
@@ -44,8 +47,10 @@ extern int FOV_SCALAR;
 // Global horizon point used by rendering
 extern Point3D horizon;
 
-// Change in z for layered rendering
-extern double dz;
+// Change in z and y for layered rendering
+extern double dz, dy;
+
+extern double renderMinZ, renderMaxZ, renderMinY, renderMaxY, renderMinX, renderMaxX;
 
 //////////////////////////////
 
@@ -55,12 +60,11 @@ A polygon, holding a vector of points in 3D space.
 class Polygon
 {
 public:
-    Point3D posOffset;
-    Rotation rotOffset;
-
     vector<Point3D> points;
     SDL_Color color;
 };
+
+ostream &operator<<(ostream &stream, const Polygon &p);
 
 /*
 A model in 3D space, holding a vector of Polygons
@@ -70,6 +74,8 @@ class Model
 public:
     vector<Polygon> polygons;
 };
+
+ostream &operator<<(ostream &stream, const Model &p);
 
 //////////////////////////////
 
@@ -93,11 +99,17 @@ public:
 
 //////////////////////////////
 
+// Get the center point of a model in 3D
+Point3D getCenter(const Model &m);
+
 // Mode a model by a point
 void move(Model &m, const Point3D &by);
 
 // Rotate a model about a point and by a rotation
 void rotate(Model &m, const Point3D &about, const Rotation &by);
+
+// Rotate a model about its center
+void rotate(Model &m, const Rotation &by);
 
 // Mode a polygon by a point
 void move(Polygon &m, const Point3D &by);
