@@ -117,7 +117,7 @@ int main()
     createCube(cube);
     space.models.push_back(&cube);
 
-    int delayTime = 10;
+    int delayTime = 0;
     double stepSize = 1;
 
     int timeA, timeB, ellapsed;
@@ -131,7 +131,7 @@ int main()
         SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
         SDL_RenderClear(rend);
 
-        rotate(cube, Rotation(.001, .005, .005));
+        // rotate(cube, Rotation(.001, .005, .005));
 
         space.render();
 
@@ -177,6 +177,13 @@ int main()
                 move(cube, Point3D(stepSize, 0, 0));
             if (hasKey(keys, 'a'))
                 move(cube, Point3D(-stepSize, 0, 0));
+
+            if (hasKey(keys, keys::upArrow))
+                rotate(cube, Rotation(.01, 0, 0));
+            if (hasKey(keys, keys::downArrow))
+                rotate(cube, Rotation(0, .01, 0));
+            if (hasKey(keys, keys::leftArrow))
+                rotate(cube, Rotation(0, 0, .01));
         }
 
         //////////////////////////////

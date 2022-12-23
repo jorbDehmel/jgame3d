@@ -145,6 +145,88 @@ Renderer::Renderer(SDL_Renderer *&Rend, SDL_Window *&Wind)
     wind = Wind;
 }
 
+Point3D getPointAtZBetween(const Point3D &A, const Point3D &B, double z)
+{
+    Point3D out;
+    out.z = z;
+
+    // Compute coords for out (along line)
+    out.x = z * ((B.x - A.x) / (B.z - A.z)) - A.z * ((B.x - A.x) / (B.z - A.z)) + A.x;
+    out.y = z * ((B.y - A.y) / (B.z - A.z)) - A.z * ((B.y - A.y) / (B.z - A.z)) + A.y;
+
+    return out;
+}
+
+SDL_FPoint projectPoint(const Point3D &p)
+{
+    SDL_FPoint out;
+    out.x = p.x;
+    out.y = p.y;
+
+    // Project onto plane via z-coord
+    out.x -= horizon.x;
+    out.y -= horizon.y;
+
+    out.x *= (FOVScalar / p.z);
+    out.y *= (FOVScalar / p.z);
+
+    out.x += horizon.x;
+    out.y += horizon.y;
+
+    return out;
+}
+
+void renderBetweenZ(SDL_Renderer *rend, Polygon &p, const double z1, const double z2)
+{
+    vector<SDL_FPoint> points;
+
+    for (int i = 0; i < p.points.size(); i++)
+    {
+        Point3D a = p.points[i];
+        Point3D b = p.points[(i + 1) % (p.points.size())];
+
+        // Make a.z less than b.z
+        if (a.z > b.z)
+        {
+            Point3D temp = a;
+            a = b;
+            b = temp;
+        }
+
+        // If line is before z1, continue
+        if (a.z < z1 && b.z < z1)
+            continue;
+
+        // If line is after z2, continue
+        else if (a.z > z2 && b.z > z2)
+            continue;
+
+        // If line is between z points, don't do anything
+        else if (a.z > z1 && a.z < z2 && b.z > z1 && b.z < z2)
+        {
+            points.push_back(projectPoint(a));
+        }
+        else
+        {
+            // If passes through z1, fix
+            if (a.z < z1 && b.z > z1)
+            {
+                points.push_back(projectPoint(getPointAtZBetween(a, b, z1)));
+            }
+            // If passes through z2, fix
+            if (a.z < z2 && b.z > z2)
+            {
+                points.push_back(projectPoint(getPointAtZBetween(a, b, z2)));
+            }
+        }
+    } // End iterating over points
+
+    if (!points.empty())
+        fillPolygon(rend, points, p.color);
+
+    return;
+}
+
 void Renderer::render()
 {
     // Prepare min and max
@@ -163,103 +245,36 @@ void Renderer::render()
     vector<SDL_FPoint> toFill;
 
     // Prepare list of zBreakPoints (z points where polygons intersect)
-    set<double> zBreakPoints;
-    Point3D where;
+    vector<double> zBreakPoints;
+
+    /*Point3D where;
     for (int a = 0; a < polys.size(); a++)
     {
         for (int b = a + 1; b < polys.size(); b++)
         {
             if (fullIntersects(where, polys[a], polys[b]))
             {
-                zBreakPoints.insert(where.z);
+                if (find(zBreakPoints.begin(), zBreakPoints.end(), where.z) == zBreakPoints.end())
+                    zBreakPoints.push_back(where.z);
             }
         }
     }
+    zBreakPoints.push_back(renderMinZ);
+    zBreakPoints.push_back(renderMaxZ);*/
 
-    cout << "Z breakpoints:\n";
-    for (set<double>::reverse_iterator rit = zBreakPoints.rbegin(); rit != zBreakPoints.rend(); rit++)
-    {
-        double z = *rit;
-        cout << z << '\n';
-    }
+    for (int z = renderMinZ; z < renderMaxZ; z += 5)
+        zBreakPoints.push_back(z);
 
-    for (set<double>::reverse_iterator rit = zBreakPoints.rbegin(); rit != zBreakPoints.rend(); rit++)
+    sort(zBreakPoints.begin(), zBreakPoints.end());
+
+    for (int i = zBreakPoints.size() - 1; i > 0; i--)
     {
-        double z = *rit;
         // Iterate over
         for (int polygonIndex = 0; polygonIndex < polys.size(); polygonIndex++)
         {
-            vector<SDL_FPoint> points;
-
-            for (int i = 0; i < polys[polygonIndex].points.size(); i++)
-            {
-                Point3D A = polys[polygonIndex].points[i];
-                Point3D B = polys[polygonIndex].points[(i + 1) % (polys[polygonIndex].points.size())];
-
-                double X1, X2, Y1, Y2, Z1, Z2;
-                X1 = A.x, X2 = B.x;
-                Y1 = A.y, Y2 = B.y;
-                Z1 = A.z, Z2 = B.z;
-
-                SDL_FPoint out;
-
-                // Continue if out of range
-                if (Z1 < z && Z2 < z)
-                {
-                    continue;
-                }
-                else if (Z1 > z && Z2 > z)
-                {
-                    continue;
-                }
-
-                else if (Z2 == Z1) // asymptote check
-                {
-                    continue;
-                }
-
-                // Compute coords for out
-                out.x = z * ((X2 - X1) / (Z2 - Z1)) - Z1 * ((X2 - X1) / (Z2 - Z1)) + X1;
-                out.y = z * ((Y2 - Y1) / (Z2 - Z1)) - Z1 * ((Y2 - Y1) / (Z2 - Z1)) + Y1;
-
-                // Project onto plane via z-coord
-                out.x -= horizon.x;
-                out.y -= horizon.y;
-
-                out.x *= (FOVScalar / z);
-                out.y *= (FOVScalar / z);
-
-                out.x += horizon.x;
-                out.y += horizon.y;
-
-                points.push_back(out);
-            } // End iterating over points
-
-            if (points.empty())
-            {
-                continue;
-            }
-
-            toFill.clear();
-            for (auto p : points)
-            {
-                toFill.push_back(p);
-            }
-
-            for (int j = prevPoints[polygonIndex].size() - 1; j >= 0; j--)
-            {
-                toFill.push_back(prevPoints[polygonIndex][j]);
-            }
-
-            fillPolygon(rend, toFill, polys[polygonIndex].color);
-
-            prevPoints[polygonIndex].clear();
-            for (auto p : points)
-            {
-                prevPoints[polygonIndex].push_back(p);
-            }
-        } // End iterating over polygons
-    }     // End iterating over z
+            renderBetweenZ(rend, polys[polygonIndex], zBreakPoints[i], zBreakPoints[i - 1]);
+        }
+    }
 
     return;
 }
