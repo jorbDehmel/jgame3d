@@ -128,10 +128,4 @@ void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color);
 
 //////////////////////////////
 
-#define intersects fullIntersects
-bool aIntersectsB(Point3D &where, const Polygon &a, const Polygon &b);
-bool fullIntersects(Point3D &where, const Polygon &a, const Polygon &b);
-
-//////////////////////////////
-
 #endif

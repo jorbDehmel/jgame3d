@@ -95,7 +95,7 @@ bool hasKey(set<SDL_Keycode> &set, int keycode)
 
 int main()
 {
-    int numCubes = 8;
+    int numCubes = 64;
     srand(time(NULL));
 
     /*
@@ -155,7 +155,7 @@ int main()
 
         for (int i = 0; i < numCubes; i++)
         {
-            // rotate(cubes[i], Rotation((rand() % 100) / 1000.0, (rand() % 100) / 1000.0, (rand() % 100) / 1000.0));
+            rotate(cubes[i], Rotation((rand() % 100) / 1000.0, (rand() % 100) / 1000.0, (rand() % 100) / 1000.0));
             move(cubes[i], Point3D((rand() % 10) - 5, (rand() % 10) - 5, (rand() % 10) - 5));
         }
 

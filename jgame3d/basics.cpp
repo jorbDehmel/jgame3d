@@ -85,60 +85,6 @@ ostream &operator<<(ostream &stream, const Model &p)
 
 //////////////////////////////
 
-bool aIntersectsB(Point3D &where, const Polygon &a, const Polygon &b)
-{
-    Point3D aMin = a.points[0], aMax = aMin;
-    for (auto p : a.points)
-    {
-        if (p.x < aMin.x)
-            aMin.x = p.x;
-        else if (p.x > aMax.x)
-            aMax.x = p.x;
-
-        if (p.y < aMin.y)
-            aMin.y = p.y;
-        else if (p.y > aMax.y)
-            aMax.y = p.y;
-
-        if (p.z < aMin.z)
-            aMin.z = p.z;
-        else if (p.z > aMax.z)
-            aMax.z = p.z;
-    }
-
-    for (auto p : b.points)
-    {
-        if (p.x > aMin.x && p.x < aMax.x)
-        {
-            where = p;
-            return true;
-        }
-        else if (p.y > aMin.y && p.y < aMax.y)
-        {
-            where = p;
-            return true;
-        }
-        else if (p.z > aMin.z && p.z < aMax.z)
-        {
-            where = p;
-            return true;
-        }
-    }
-    return false;
-}
-
-bool fullIntersects(Point3D &where, const Polygon &a, const Polygon &b)
-{
-    if (aIntersectsB(where, a, b))
-        return true;
-    else if (aIntersectsB(where, b, a))
-        return true;
-    else
-        return false;
-}
-
-//////////////////////////////
-
 Renderer::Renderer(SDL_Renderer *&Rend, SDL_Window *&Wind)
 {
     rend = Rend;
@@ -202,10 +148,11 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, const double z1, const doubl
             continue;
 
         // If line is between z points, don't do anything
-        else if (a.z > z1 && a.z < z2 && b.z > z1 && b.z < z2)
+        else if (a.z >= z1 && a.z <= z2 && b.z >= z1 && b.z <= z2)
         {
             points.push_back(projectPoint(a));
         }
+
         else
         {
             // If passes through z1, fix
@@ -232,43 +179,33 @@ void Renderer::render()
     // Prepare min and max
     vector<Polygon> polys;
 
-    // Find minZ, maxZ, prepare list of polygons
+    vector<double> zBreakPoints;
+    zBreakPoints.push_back(renderMinZ);
+    zBreakPoints.push_back(renderMaxZ);
+
     for (Model *m : models)
     {
         for (Polygon p : m->polygons)
         {
             polys.push_back(p);
-        }
-    }
 
-    vector<SDL_FPoint> prevPoints[polys.size()];
-    vector<SDL_FPoint> toFill;
-
-    // Prepare list of zBreakPoints (z points where polygons intersect)
-    vector<double> zBreakPoints;
-
-    /*Point3D where;
-    for (int a = 0; a < polys.size(); a++)
-    {
-        for (int b = a + 1; b < polys.size(); b++)
-        {
-            if (fullIntersects(where, polys[a], polys[b]))
+            for (Point3D point : p.points)
             {
-                if (find(zBreakPoints.begin(), zBreakPoints.end(), where.z) == zBreakPoints.end())
-                    zBreakPoints.push_back(where.z);
+                if (find(zBreakPoints.begin(), zBreakPoints.end(), point.z) == zBreakPoints.end())
+                {
+                    zBreakPoints.push_back(point.z);
+                    zBreakPoints.push_back(point.z);
+                }
             }
         }
     }
-    zBreakPoints.push_back(renderMinZ);
-    zBreakPoints.push_back(renderMaxZ);*/
-
-    for (int z = renderMinZ; z < renderMaxZ; z += 5)
-        zBreakPoints.push_back(z);
 
     sort(zBreakPoints.begin(), zBreakPoints.end());
 
     for (int i = zBreakPoints.size() - 1; i > 0; i--)
     {
+        // cout << "Rendering between z " << zBreakPoints[i] << " and " << zBreakPoints[i - 1] << '\n';
+
         // Iterate over
         for (int polygonIndex = 0; polygonIndex < polys.size(); polygonIndex++)
         {
