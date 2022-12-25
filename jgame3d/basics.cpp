@@ -170,10 +170,10 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, const double z1, const doubl
 
     if (!points.empty())
     {
-        cout << "Points: (color " << (int)p.color.r << ' ' << (int)p.color.g << ' ' << (int)p.color.b << ' ' << (int)p.color.a << ")\n";
-        for (auto p : points)
-            cout << p.x << '\t' << p.y << '\n';
-        cout << '\n';
+        //cout << "Points: (color " << (int)p.color.r << ' ' << (int)p.color.g << ' ' << (int)p.color.b << ' ' << (int)p.color.a << ")\n";
+        //for (auto p : points)
+        //    cout << p.x << '\t' << p.y << '\n';
+        //cout << '\n';
 
         fillPolygon(rend, points, p.color);
     }
