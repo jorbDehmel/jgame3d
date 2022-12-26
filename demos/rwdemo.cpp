@@ -1,5 +1,6 @@
 #include "../jgame3d/basics.hpp"
 #include "../jgame3d/keys.hpp"
+#include "../jgame3d/window.hpp"
 
 #include <set>
 
@@ -88,120 +89,51 @@ void createCube(Model &obj)
 
 //////////////////////////////////////////////////
 
-bool hasKey(set<SDL_Keycode> &set, int keycode)
+int stepSize = 1;
+bool update(Window *wind)
 {
-    return set.count(keycode) != 0;
+    Model &cube = wind->getModels()[0];
+
+    if (wind->isKeyPressed(keys::esc))
+    {
+        return false;
+    }
+
+    if (wind->isKeyPressed(keys::q))
+        move(cube, Point3D(0, 0, stepSize));
+    if (wind->isKeyPressed(keys::e))
+        move(cube, Point3D(0, 0, -stepSize));
+
+    if (wind->isKeyPressed(keys::w))
+        move(cube, Point3D(0, -stepSize, 0));
+    if (wind->isKeyPressed(keys::s))
+        move(cube, Point3D(0, stepSize, 0));
+
+    if (wind->isKeyPressed(keys::d))
+        move(cube, Point3D(stepSize, 0, 0));
+    if (wind->isKeyPressed(keys::a))
+        move(cube, Point3D(-stepSize, 0, 0));
+
+    if (wind->isKeyPressed(keys::upArrow))
+        rotate(cube, Rotation(.01, 0, 0));
+    if (wind->isKeyPressed(keys::downArrow))
+        rotate(cube, Rotation(0, .01, 0));
+    if (wind->isKeyPressed(keys::leftArrow))
+        rotate(cube, Rotation(0, 0, .01));
+
+    return true;
 }
 
 int main()
 {
-    set<SDL_Keycode> keys;
-
-    dz = dy = 1;
-
-    SDL_Window *wind;
-    SDL_Renderer *rend;
-
-    SDL_Init(SDL_INIT_EVERYTHING);
-
-    SDL_CreateWindowAndRenderer(256, 256, SDL_WINDOW_OPENGL, &wind, &rend);
-    
-    horizon.x = horizon.y = 128;
-    horizon.z = 1000;
-
-    Renderer space(rend, wind);
+    Window wind(512, 512, 8, update);
 
     Model cube;
     createCube(cube);
-    space.models.push_back(&cube);
 
-    int delayTime = 0;
-    double stepSize = 1;
+    wind.add(cube);
 
-    int timeA, timeB, ellapsed;
-
-    SDL_Event event;
-    bool isRunning = true;
-    while (isRunning)
-    {
-        timeA = SDL_GetTicks();
-
-        SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
-        SDL_RenderClear(rend);
-
-        // rotate(cube, Rotation(.001, .005, .005));
-
-        space.render();
-
-        SDL_RenderPresent(rend);
-
-        ///////////////////////////
-
-        while (SDL_PollEvent(&event))
-        {
-            switch (event.type)
-            {
-            case SDL_KEYDOWN:
-                keys.insert(event.key.keysym.sym);
-                break;
-            case SDL_KEYUP:
-                keys.erase(event.key.keysym.sym);
-                break;
-            }
-        }
-
-        //////////////////////////////
-
-        if (!keys.empty())
-        {
-
-            if (hasKey(keys, 27))
-            {
-                isRunning = false;
-                break;
-            }
-
-            if (hasKey(keys, 'q'))
-                move(cube, Point3D(0, 0, stepSize));
-            if (hasKey(keys, 'e'))
-                move(cube, Point3D(0, 0, -stepSize));
-
-            if (hasKey(keys, 'w'))
-                move(cube, Point3D(0, -stepSize, 0));
-            if (hasKey(keys, 's'))
-                move(cube, Point3D(0, stepSize, 0));
-
-            if (hasKey(keys, 'd'))
-                move(cube, Point3D(stepSize, 0, 0));
-            if (hasKey(keys, 'a'))
-                move(cube, Point3D(-stepSize, 0, 0));
-
-            if (hasKey(keys, keys::upArrow))
-                rotate(cube, Rotation(.01, 0, 0));
-            if (hasKey(keys, keys::downArrow))
-                rotate(cube, Rotation(0, .01, 0));
-            if (hasKey(keys, keys::leftArrow))
-                rotate(cube, Rotation(0, 0, .01));
-        }
-
-        //////////////////////////////
-
-        timeB = SDL_GetTicks();
-        ellapsed = timeB - timeA;
-
-        if (ellapsed < delayTime)
-        {
-            SDL_Delay(delayTime - ellapsed);
-        }
-        else
-        {
-            cout << "Update took " << ellapsed << " ms\n";
-        }
-    }
-
-    SDL_DestroyRenderer(rend);
-    SDL_DestroyWindow(wind);
-    SDL_Quit();
+    wind.mainLoop();
 
     return 0;
 }

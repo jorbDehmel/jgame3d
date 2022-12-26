@@ -190,9 +190,9 @@ void Renderer::render()
     zBreakPoints.push_back(renderMinZ);
     zBreakPoints.push_back(renderMaxZ);
 
-    for (Model *m : models)
+    for (Model m : models)
     {
-        for (Polygon p : m->polygons)
+        for (Polygon p : m.polygons)
         {
             polys.push_back(p);
 

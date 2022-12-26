@@ -1,5 +1,5 @@
-#ifndef JG3D2_H
-#define JG3D2_H
+#ifndef BASICS_H
+#define BASICS_H
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_test_font.h>
@@ -94,7 +94,7 @@ public:
 
     void render();
 
-    vector<Model *> models;
+    vector<Model> models;
 
     SDL_Renderer *rend;
     SDL_Window *wind;

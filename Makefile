@@ -7,8 +7,8 @@ STEM = $(CC) $(ARGS) $(DEPS)
 
 #########################
 
-bin/demo.out:	build/basics.o build/demo.o
-	$(STEM) build/basics.o build/demo.o -o bin/demo.out
+bin/demo.out:	build/basics.o build/window.o build/demo.o
+	$(STEM) build/basics.o build/window.o build/demo.o -o bin/demo.out
 
 bin/stress.out: build/basics.o build/stress.o
 	$(STEM) build/basics.o build/stress.o -o bin/stress.out
@@ -21,6 +21,9 @@ build/stress.o:	demos/stresstest.cpp
 
 build/basics.o:	jgame3d/basics.cpp jgame3d/basics.hpp
 	$(STEM) -c jgame3d/basics.cpp -o build/basics.o
+
+build/window.o:	jgame3d/window.cpp jgame3d/window.hpp
+	$(STEM) -c jgame3d/window.cpp -o build/window.o
 
 #########################
 
