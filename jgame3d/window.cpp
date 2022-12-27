@@ -30,23 +30,24 @@ Window::~Window()
 
 void Window::mainLoop()
 {
-    Uint64 start, end;
+    Uint32 start, end;
     SDL_Event event;
 
     bool isRunning = true;
     while (isRunning)
     {
         // Get initial time for later delaying
-        start = SDL_GetTicks64();
+        start = SDL_GetTicks();
 
         // Update
-        SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
+        SDL_SetRenderDrawColor(rend, 255, 0, 0, 0);
         SDL_RenderClear(rend);
 
-        isRunning = update(this);
         space->render();
         SDL_RenderPresent(rend);
-
+        
+        isRunning = update(this);
+        
         // Poll keyboard
         while (SDL_PollEvent(&event))
         {
@@ -68,7 +69,7 @@ void Window::mainLoop()
         mouseState = SDL_GetMouseState(&mousePos.x, &mousePos.y);
 
         // Delay if needed
-        end = SDL_GetTicks64();
+        end = SDL_GetTicks();
         if (end - start < delayTime)
         {
             cout << "Delaying " << delayTime - (end - start) << " ms\n";
@@ -106,4 +107,19 @@ void Window::add(Model &m)
 vector<Model> &Window::getModels() const
 {
     return space->models;
+}
+
+SDL_Window *Window::getWindow()
+{
+    return wind;
+}
+
+SDL_Renderer *Window::getRenderer()
+{
+    return rend;
+}
+
+Renderer *Window::getSpace()
+{
+    return space;
 }

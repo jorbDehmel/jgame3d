@@ -20,6 +20,9 @@ public:
     void add(Model &m);
 
     vector<Model> &getModels() const;
+    SDL_Window *getWindow();
+    SDL_Renderer *getRenderer();
+    Renderer *getSpace();
 
 protected:
     bool (*update)(Window *space);

@@ -207,6 +207,11 @@ void Renderer::render()
         }
     }
 
+    for (double z = renderMinZ; z < renderMaxZ; z += 1)
+    {
+        zBreakPoints.push_back(z);
+    }
+
     sort(zBreakPoints.begin(), zBreakPoints.end());
 
     for (int i = zBreakPoints.size() - 1; i > 0; i--)

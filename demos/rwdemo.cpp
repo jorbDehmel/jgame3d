@@ -74,13 +74,13 @@ void createCube(Model &obj)
     move(back, Point3D(-32, -32, -32));
 
     obj.polygons.push_back(right);
-    obj.polygons.push_back(left);
+    //obj.polygons.push_back(left);
 
-    obj.polygons.push_back(top);
-    obj.polygons.push_back(bottom);
+    //obj.polygons.push_back(top);
+    //obj.polygons.push_back(bottom);
 
-    obj.polygons.push_back(front);
-    obj.polygons.push_back(back);
+    //obj.polygons.push_back(front);
+    //obj.polygons.push_back(back);
 
     move(obj, Point3D(128, 128, 256));
 
@@ -120,6 +120,12 @@ bool update(Window *wind)
         rotate(cube, Rotation(0, .01, 0));
     if (wind->isKeyPressed(keys::leftArrow))
         rotate(cube, Rotation(0, 0, .01));
+    
+    if (wind->isKeyPressed(keys::p))
+    {
+        // Screenshot
+        SDL_SaveBMP(SDL_GetWindowSurface(wind->getSpace()->wind), "screenshot.bmp");
+    }
 
     return true;
 }
