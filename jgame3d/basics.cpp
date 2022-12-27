@@ -132,16 +132,8 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, const double z1, const doubl
         Point3D b = p.points[(i + 1) % (p.points.size())];
 
         // If line is before z1, continue
-        if (a.z < z1 && b.z < z1)
-        {
+        if ((a.z < z1 && b.z < z1) || (a.z > z2 && b.z > z2))
             continue;
-        }
-
-        // If line is after z2, continue
-        else if (a.z > z2 && b.z > z2)
-        {
-            continue;
-        }
 
         // If line is between z points, don't do anything
         if (a.z >= z1 && a.z <= z2 && b.z >= z1 && b.z <= z2)
@@ -151,29 +143,17 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, const double z1, const doubl
         else
         {
             // If passes through z1, fix
-            if (a.z < z1 && b.z > z1)
+            if ((a.z < z1 && b.z > z1) || (b.z < z1 && a.z > z1))
             {
                 points.push_back(projectPoint(getPointAtZBetween(a, b, z1)));
             }
             // If passes through z2, fix
-            if (a.z < z2 && b.z > z2)
-            {
-                points.push_back(projectPoint(getPointAtZBetween(a, b, z2)));
-            }
-
-            // If passes through z1, fix
-            if (b.z < z1 && a.z > z1)
-            {
-                points.push_back(projectPoint(getPointAtZBetween(a, b, z1)));
-            }
-            // If passes through z2, fix
-            if (b.z < z2 && a.z > z2)
+            if ((a.z < z2 && b.z > z2) || (b.z < z2 && a.z > z2))
             {
                 points.push_back(projectPoint(getPointAtZBetween(a, b, z2)));
             }
         }
-
-    } // End iterating over points
+    }
 
     if (!points.empty())
     {
@@ -185,8 +165,8 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, const double z1, const doubl
 
 void Renderer::render()
 {
-    // Prepare min and max
     vector<Polygon> polys;
+
     for (Model m : models)
     {
         for (Polygon p : m.polygons)

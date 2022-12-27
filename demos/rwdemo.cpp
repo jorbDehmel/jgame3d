@@ -24,7 +24,6 @@ void createCube(Model &obj)
         Point3D(0, 0, 0),
         Point3D(64, 0, 0),
         Point3D(64, 64, 0),
-        Point3D(32, 96, 0),
         Point3D(0, 64, 0)};
 
     Polygon top;
@@ -74,13 +73,13 @@ void createCube(Model &obj)
     move(back, Point3D(-32, -32, -32));
 
     obj.polygons.push_back(right);
-    //obj.polygons.push_back(left);
+    obj.polygons.push_back(left);
 
-    //obj.polygons.push_back(top);
-    //obj.polygons.push_back(bottom);
+    obj.polygons.push_back(top);
+    obj.polygons.push_back(bottom);
 
-    //obj.polygons.push_back(front);
-    //obj.polygons.push_back(back);
+    obj.polygons.push_back(front);
+    obj.polygons.push_back(back);
 
     move(obj, Point3D(128, 128, 256));
 
