@@ -120,12 +120,6 @@ bool update(Window *wind)
         rotate(cube, Rotation(0, .01, 0));
     if (wind->isKeyPressed(keys::leftArrow))
         rotate(cube, Rotation(0, 0, .01));
-    
-    if (wind->isKeyPressed(keys::p))
-    {
-        // Screenshot
-        SDL_SaveBMP(SDL_GetWindowSurface(wind->getSpace()->wind), "screenshot.bmp");
-    }
 
     return true;
 }

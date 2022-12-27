@@ -132,12 +132,12 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, const double z1, const doubl
         Point3D b = p.points[(i + 1) % (p.points.size())];
 
         // Make a.z less than b.z
-        if (a.z > b.z)
+        /*if (a.z > b.z)
         {
             Point3D temp = a;
             a = b;
             b = temp;
-        }
+        }*/
 
         // If line is before z1, continue
         if (a.z < z1 && b.z < z1)
@@ -165,15 +165,26 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, const double z1, const doubl
             {
                 points.push_back(projectPoint(getPointAtZBetween(a, b, z2)));
             }
+
+            // If passes through z1, fix
+            if (b.z < z1 && a.z > z1)
+            {
+                points.push_back(projectPoint(getPointAtZBetween(b, a, z1)));
+            }
+            // If passes through z2, fix
+            if (b.z < z2 && a.z > z2)
+            {
+                points.push_back(projectPoint(getPointAtZBetween(b, a, z2)));
+            }
         }
     } // End iterating over points
 
     if (!points.empty())
     {
-        //cout << "Points: (color " << (int)p.color.r << ' ' << (int)p.color.g << ' ' << (int)p.color.b << ' ' << (int)p.color.a << ")\n";
-        //for (auto p : points)
-        //    cout << p.x << '\t' << p.y << '\n';
-        //cout << '\n';
+        // cout << "Points: (color " << (int)p.color.r << ' ' << (int)p.color.g << ' ' << (int)p.color.b << ' ' << (int)p.color.a << ")\n";
+        // for (auto p : points)
+        //     cout << p.x << '\t' << p.y << '\n';
+        // cout << '\n';
 
         fillPolygon(rend, points, p.color);
     }
@@ -187,8 +198,8 @@ void Renderer::render()
     vector<Polygon> polys;
 
     vector<double> zBreakPoints;
-    zBreakPoints.push_back(renderMinZ);
-    zBreakPoints.push_back(renderMaxZ);
+    // zBreakPoints.push_back(renderMinZ);
+    // zBreakPoints.push_back(renderMaxZ);
 
     for (Model m : models)
     {
@@ -200,7 +211,6 @@ void Renderer::render()
             {
                 if (find(zBreakPoints.begin(), zBreakPoints.end(), point.z) == zBreakPoints.end())
                 {
-                    zBreakPoints.push_back(point.z);
                     zBreakPoints.push_back(point.z);
                 }
             }

@@ -40,14 +40,14 @@ void Window::mainLoop()
         start = SDL_GetTicks();
 
         // Update
-        SDL_SetRenderDrawColor(rend, 255, 0, 0, 0);
+        SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
         SDL_RenderClear(rend);
 
         space->render();
         SDL_RenderPresent(rend);
-        
+
         isRunning = update(this);
-        
+
         // Poll keyboard
         while (SDL_PollEvent(&event))
         {
@@ -72,8 +72,11 @@ void Window::mainLoop()
         end = SDL_GetTicks();
         if (end - start < delayTime)
         {
-            cout << "Delaying " << delayTime - (end - start) << " ms\n";
             SDL_Delay(delayTime - (end - start));
+        }
+        else
+        {
+            cout << "Update took " << end - start << " ms\n";
         }
     }
 }
