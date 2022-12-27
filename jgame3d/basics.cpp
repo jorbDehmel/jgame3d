@@ -131,28 +131,23 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, const double z1, const doubl
         Point3D a = p.points[i];
         Point3D b = p.points[(i + 1) % (p.points.size())];
 
-        // Make a.z less than b.z
-        /*if (a.z > b.z)
-        {
-            Point3D temp = a;
-            a = b;
-            b = temp;
-        }*/
-
         // If line is before z1, continue
         if (a.z < z1 && b.z < z1)
+        {
             continue;
+        }
 
         // If line is after z2, continue
         else if (a.z > z2 && b.z > z2)
+        {
             continue;
+        }
 
         // If line is between z points, don't do anything
-        else if (a.z >= z1 && a.z <= z2 && b.z >= z1 && b.z <= z2)
+        if (a.z >= z1 && a.z <= z2 && b.z >= z1 && b.z <= z2)
         {
             points.push_back(projectPoint(a));
         }
-
         else
         {
             // If passes through z1, fix
@@ -169,23 +164,19 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, const double z1, const doubl
             // If passes through z1, fix
             if (b.z < z1 && a.z > z1)
             {
-                points.push_back(projectPoint(getPointAtZBetween(b, a, z1)));
+                points.push_back(projectPoint(getPointAtZBetween(a, b, z1)));
             }
             // If passes through z2, fix
             if (b.z < z2 && a.z > z2)
             {
-                points.push_back(projectPoint(getPointAtZBetween(b, a, z2)));
+                points.push_back(projectPoint(getPointAtZBetween(a, b, z2)));
             }
         }
+
     } // End iterating over points
 
     if (!points.empty())
     {
-        // cout << "Points: (color " << (int)p.color.r << ' ' << (int)p.color.g << ' ' << (int)p.color.b << ' ' << (int)p.color.a << ")\n";
-        // for (auto p : points)
-        //     cout << p.x << '\t' << p.y << '\n';
-        // cout << '\n';
-
         fillPolygon(rend, points, p.color);
     }
 
@@ -196,42 +187,19 @@ void Renderer::render()
 {
     // Prepare min and max
     vector<Polygon> polys;
-
-    vector<double> zBreakPoints;
-    // zBreakPoints.push_back(renderMinZ);
-    // zBreakPoints.push_back(renderMaxZ);
-
     for (Model m : models)
     {
         for (Polygon p : m.polygons)
         {
             polys.push_back(p);
-
-            for (Point3D point : p.points)
-            {
-                if (find(zBreakPoints.begin(), zBreakPoints.end(), point.z) == zBreakPoints.end())
-                {
-                    zBreakPoints.push_back(point.z);
-                }
-            }
         }
     }
 
-    for (double z = renderMinZ; z < renderMaxZ; z += 1)
+    for (double z = renderMaxZ; z >= renderMinZ; z -= dz)
     {
-        zBreakPoints.push_back(z);
-    }
-
-    sort(zBreakPoints.begin(), zBreakPoints.end());
-
-    for (int i = zBreakPoints.size() - 1; i > 0; i--)
-    {
-        // cout << "Rendering between z " << zBreakPoints[i] << " and " << zBreakPoints[i - 1] << '\n';
-
-        // Iterate over
         for (int polygonIndex = 0; polygonIndex < polys.size(); polygonIndex++)
         {
-            renderBetweenZ(rend, polys[polygonIndex], zBreakPoints[i], zBreakPoints[i - 1]);
+            renderBetweenZ(rend, polys[polygonIndex], z, z - dz);
         }
     }
 
