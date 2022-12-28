@@ -2,6 +2,8 @@
 
 //////////////////////////////
 
+// Globals
+
 int FOVScalar = 200;
 Point3D horizon(100, 100, 100);
 
@@ -46,13 +48,13 @@ Point3D::Point3D(const double X, const double Y, const double Z)
     z = Z;
 }
 
+//////////////////////////////
+
 ostream &operator<<(ostream &stream, const Point3D &p)
 {
     stream << "(" << p.x << '\t' << p.y << '\t' << p.z << ")";
     return stream;
 }
-
-//////////////////////////////
 
 ostream &operator<<(ostream &stream, const Polygon &p)
 {
@@ -338,9 +340,6 @@ void rotate(Point3D &p, const Rotation &by)
     if (by.x != 0)
     {
         s = SDL_sinf(by.x), c = SDL_cosf(by.x);
-        assert(s == s);
-        assert(c == c);
-
         x = p.x, y = p.y, z = p.z;
 
         p.y = (c * y) - (s * z);
@@ -350,9 +349,6 @@ void rotate(Point3D &p, const Rotation &by)
     if (by.y != 0)
     {
         s = SDL_sinf(by.y), c = SDL_cosf(by.y);
-        assert(s == s);
-        assert(c == c);
-
         x = p.x, y = p.y, z = p.z;
 
         p.x = (c * x) + (s * z);
@@ -362,9 +358,6 @@ void rotate(Point3D &p, const Rotation &by)
     if (by.z != 0)
     {
         s = SDL_sinf(by.z), c = SDL_cosf(by.z);
-        assert(s == s);
-        assert(c == c);
-
         x = p.x, y = p.y, z = p.z;
 
         p.x = (c * x) - (s * y);

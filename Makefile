@@ -7,7 +7,7 @@ STEM = $(CC) $(ARGS) $(DEPS)
 
 #########################
 
-bin/demo.out:	build/basics.o build/window.o build/demo.o
+bin/demo.out:	bin/ build/ build/basics.o build/window.o build/demo.o
 	$(STEM) build/basics.o build/window.o build/demo.o -o bin/demo.out
 
 bin/stress.out: build/basics.o build/stress.o
@@ -27,6 +27,14 @@ build/window.o:	jgame3d/window.cpp jgame3d/window.hpp
 
 #########################
 
+bin/:
+	mkdir bin/
+
+build/:
+	mkdir build/
+
+#########################
+
 clean:
 	rm -f *.o
 	rm -f build/*
@@ -35,3 +43,5 @@ pclean:
 	rm -f *.out *.o
 	rm -f bin/*
 	rm -f build/*
+
+#########################
