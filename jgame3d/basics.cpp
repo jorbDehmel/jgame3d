@@ -127,6 +127,7 @@ SDL_FPoint projectPoint(const Point3D &p)
 void renderBetweenZ(SDL_Renderer *rend, Polygon &p, const double z1, const double z2)
 {
     vector<SDL_FPoint> points;
+    bool addBackwards = false;
 
     for (int i = 0; i < p.points.size(); i++)
     {
@@ -144,15 +145,33 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, const double z1, const doubl
         }
         else
         {
-            // If passes through z1, fix
-            if ((a.z < z1 && b.z > z1) || (b.z < z1 && a.z > z1))
+            if (!addBackwards)
             {
-                points.push_back(projectPoint(getPointAtZBetween(a, b, z1)));
+                // If passes through z1, fix
+                if ((a.z < z1 && b.z > z1) || (b.z < z1 && a.z > z1))
+                {
+                    points.push_back(projectPoint(getPointAtZBetween(a, b, z1)));
+                }
+                // If passes through z2, fix
+                if ((a.z < z2 && b.z > z2) || (b.z < z2 && a.z > z2))
+                {
+                    points.push_back(projectPoint(getPointAtZBetween(a, b, z2)));
+                }
+                addBackwards = true;
             }
-            // If passes through z2, fix
-            if ((a.z < z2 && b.z > z2) || (b.z < z2 && a.z > z2))
+            else
             {
-                points.push_back(projectPoint(getPointAtZBetween(a, b, z2)));
+                // If passes through z2, fix
+                if ((a.z < z2 && b.z > z2) || (b.z < z2 && a.z > z2))
+                {
+                    points.push_back(projectPoint(getPointAtZBetween(a, b, z2)));
+                }
+                // If passes through z1, fix
+                if ((a.z < z1 && b.z > z1) || (b.z < z1 && a.z > z1))
+                {
+                    points.push_back(projectPoint(getPointAtZBetween(a, b, z1)));
+                }
+                addBackwards = false;
             }
         }
     }
