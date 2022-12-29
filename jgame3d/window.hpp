@@ -19,7 +19,7 @@ public:
     void add(Polygon &p);
     void add(Model &m);
 
-    vector<Model> &getModels() const;
+    vector<Model> &getModels();
     SDL_Window *getWindow();
     SDL_Renderer *getRenderer();
     Renderer *getSpace();

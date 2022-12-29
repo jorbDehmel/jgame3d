@@ -125,7 +125,9 @@ bool update(Window *wind)
 
 int main()
 {
-    Window wind(512, 512, 8, update);
+    dz = 1;
+
+    Window wind(512, 512, 10, update);
 
     Model cube;
     createCube(cube);

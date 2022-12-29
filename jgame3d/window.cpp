@@ -107,7 +107,7 @@ void Window::add(Model &m)
     return;
 }
 
-vector<Model> &Window::getModels() const
+vector<Model> &Window::getModels()
 {
     return space->models;
 }

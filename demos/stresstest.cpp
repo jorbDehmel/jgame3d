@@ -1,4 +1,5 @@
 #include "../jgame3d/basics.hpp"
+#include "../jgame3d/window.hpp"
 #include "../jgame3d/keys.hpp"
 
 #include <set>
@@ -23,7 +24,6 @@ void createCube(Model &obj)
         Point3D(0, 0, 0),
         Point3D(64, 0, 0),
         Point3D(64, 64, 0),
-        Point3D(32, 96, 0),
         Point3D(0, 64, 0)};
 
     Polygon top;
@@ -88,125 +88,42 @@ void createCube(Model &obj)
 
 //////////////////////////////////////////////////
 
-bool hasKey(set<SDL_Keycode> &set, int keycode)
+bool update(Window *wind)
 {
-    return set.count(keycode) != 0;
+    vector<Model> &cubes = wind->getModels();
+    for (int i = 0; i < cubes.size(); i++)
+    {
+        rotate(cubes[i], getCenter(cubes[i]), Rotation((rand() % 100) / 1000.0, (rand() % 100) / 1000.0, (rand() % 100) / 1000.0));
+        move(cubes[i], Point3D((rand() % 10) - 5, (rand() % 10) - 5, (rand() % 10) - 5));
+    }
+
+    return !wind->isKeyPressed(keys::esc);
 }
 
 int main()
 {
-    int numCubes = 64;
+    int numCubes = 8;
     srand(time(NULL));
 
-    /*
-    cubes   ms/frame    apr. fps
-    1       5-10        100-200
-    2       5-15        67-200
-    4       10-20       50-100
-    8       20-50       20-50
-    16      50-70       15-20
-    32      90-130      8-11
-    */
-
-    //////////////////
-
-    set<SDL_Keycode> keys;
-
     dy = 1;
-    dz = 1;
+    dz = 5;
 
-    SDL_Window *wind;
-    SDL_Renderer *rend;
-
-    SDL_Init(SDL_INIT_EVERYTHING);
-
-    SDL_CreateWindowAndRenderer(512, 512, SDL_WINDOW_OPENGL, &wind, &rend);
-    SDL_SetWindowSize(wind, 1028, 1028);
-    SDL_RenderSetScale(rend, 4, 4);
-
-    horizon.x = horizon.y = 128;
-    horizon.z = 1000;
-
-    Renderer space(rend, wind);
-
-    Model cubes[numCubes];
+    Window wind(512, 512, 0, update);
 
     for (int i = 0; i < numCubes; i++)
     {
-        createCube(cubes[i]);
-        space.models.push_back(&cubes[i]);
-
-        move(cubes[i], Point3D(rand() % 256, rand() % 256, rand() % 256));
+        Model cubeTemp;
+        createCube(cubeTemp);
+        wind.add(cubeTemp);
     }
 
-    int delayTime = 0;
-    double stepSize = 1;
-
-    int timeA, timeB, ellapsed;
-
-    SDL_Event event;
-    bool isRunning = true;
-    while (isRunning)
+    vector<Model> &cubes = wind.getModels();
+    for (int i = 0; i < cubes.size(); i++)
     {
-        timeA = SDL_GetTicks();
-
-        SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
-        SDL_RenderClear(rend);
-
-        for (int i = 0; i < numCubes; i++)
-        {
-            rotate(cubes[i], Rotation((rand() % 100) / 1000.0, (rand() % 100) / 1000.0, (rand() % 100) / 1000.0));
-            move(cubes[i], Point3D((rand() % 10) - 5, (rand() % 10) - 5, (rand() % 10) - 5));
-        }
-
-        space.render();
-
-        SDL_RenderPresent(rend);
-
-        ///////////////////////////
-
-        while (SDL_PollEvent(&event))
-        {
-            switch (event.type)
-            {
-            case SDL_KEYDOWN:
-                keys.insert(event.key.keysym.sym);
-                break;
-            case SDL_KEYUP:
-                keys.erase(event.key.keysym.sym);
-                break;
-            }
-        }
-
-        //////////////////////////////
-
-        if (!keys.empty())
-        {
-            if (hasKey(keys, 27))
-            {
-                isRunning = false;
-                break;
-            }
-        }
-
-        //////////////////////////////
-
-        timeB = SDL_GetTicks();
-        ellapsed = timeB - timeA;
-
-        if (ellapsed < delayTime)
-        {
-            SDL_Delay(delayTime - ellapsed);
-        }
-        else
-        {
-            cout << "Update took " << ellapsed << " ms\n";
-        }
+        move(cubes[i], Point3D(rand() % 512, rand() % 512, rand() % 128));
     }
 
-    SDL_DestroyRenderer(rend);
-    SDL_DestroyWindow(wind);
-    SDL_Quit();
+    wind.mainLoop();
 
     return 0;
 }

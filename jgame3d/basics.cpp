@@ -139,10 +139,18 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, const double z1, const doubl
             continue;
 
         // If line is between z points, don't do anything
-        if (a.z >= z1 && a.z <= z2 && b.z >= z1 && b.z <= z2)
+        else if (a.z > z1 && a.z < z2 && b.z > z1 && b.z < z2)
         {
             points.push_back(projectPoint(a));
+
+            // Check for equal z-positions (or near equal)
+            if (abs(a.z - b.z) <= dz)
+            {
+                points.push_back(projectPoint(b));
+            }
         }
+
+        // Handle sloped lines in z-range
         else
         {
             if (!addBackwards)
