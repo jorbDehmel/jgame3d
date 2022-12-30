@@ -133,10 +133,18 @@ SDL_FPoint projectPoint(const Point3D &p)
     return out;
 }
 
-void renderBetweenZ(SDL_Renderer *rend, Polygon &p, const double z1, const double z2)
+void renderBetweenZ(SDL_Renderer *rend, Polygon &p, double z1, double z2)
 {
     vector<SDL_FPoint> points;
     bool addBackwards = false;
+
+    // Make z1 < z2
+    if (z1 > z2)
+    {
+        double temp = z1;
+        z1 = z2;
+        z2 = temp;
+    }
 
     for (int i = 0; i < p.points.size(); i++)
     {
@@ -213,7 +221,7 @@ void Renderer::render()
     {
         for (int polygonIndex = 0; polygonIndex < polys.size(); polygonIndex++)
         {
-            renderBetweenZ(rend, polys[polygonIndex], z, z - dz);
+            renderBetweenZ(rend, polys[polygonIndex], z - dz, z + dz);
         }
     }
 
