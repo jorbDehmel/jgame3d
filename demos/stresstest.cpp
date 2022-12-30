@@ -81,8 +81,6 @@ void createCube(Model &obj)
     obj.polygons.push_back(front);
     obj.polygons.push_back(back);
 
-    move(obj, Point3D(0, 0, 256));
-
     return;
 }
 
@@ -120,7 +118,7 @@ int main()
     vector<Model> &cubes = wind.getModels();
     for (int i = 0; i < cubes.size(); i++)
     {
-        move(cubes[i], Point3D(rand() % 512, rand() % 512, rand() % 128));
+        move(cubes[i], Point3D(rand() % 512, rand() % 512, (rand() % 256) + 256));
     }
 
     wind.mainLoop();

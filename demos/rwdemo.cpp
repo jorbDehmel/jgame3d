@@ -81,7 +81,7 @@ void createCube(Model &obj)
     obj.polygons.push_back(front);
     obj.polygons.push_back(back);
 
-    move(obj, Point3D(128, 128, 256));
+    move(obj, Point3D(64, 64, 256));
 
     return;
 }
@@ -125,13 +125,13 @@ bool update(Window *wind)
 
 int main()
 {
-    dz = 1;
+    dz = 5;
 
-    Window wind(512, 512, 10, update);
+    Window wind(128, 128, 10, update, SDL_WINDOW_OPENGL);
+    wind.setUpScaleFactor(4);
 
     Model cube;
     createCube(cube);
-
     wind.add(cube);
 
     wind.mainLoop();

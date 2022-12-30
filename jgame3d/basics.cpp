@@ -98,9 +98,18 @@ Point3D getPointAtZBetween(const Point3D &A, const Point3D &B, double z)
     Point3D out;
     out.z = z;
 
-    // Compute coords for out (along line)
-    out.x = z * ((B.x - A.x) / (B.z - A.z)) - A.z * ((B.x - A.x) / (B.z - A.z)) + A.x;
-    out.y = z * ((B.y - A.y) / (B.z - A.z)) - A.z * ((B.y - A.y) / (B.z - A.z)) + A.y;
+    if (A.z == B.z)
+    {
+        // Equivolence
+        out.x = A.x;
+        out.y = A.y;
+    }
+    else
+    {
+        // Compute coords for out (along line)
+        out.x = z * ((B.x - A.x) / (B.z - A.z)) - A.z * ((B.x - A.x) / (B.z - A.z)) + A.x;
+        out.y = z * ((B.y - A.y) / (B.z - A.z)) - A.z * ((B.y - A.y) / (B.z - A.z)) + A.y;
+    }
 
     return out;
 }
@@ -134,23 +143,19 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, const double z1, const doubl
         Point3D a = p.points[i];
         Point3D b = p.points[(i + 1) % (p.points.size())];
 
-        // If line is before z1, continue
+        // If line is out of z-range
         if ((a.z < z1 && b.z < z1) || (a.z > z2 && b.z > z2))
-            continue;
-
-        // If line is between z points, don't do anything
-        else if (a.z > z1 && a.z < z2 && b.z > z1 && b.z < z2)
         {
-            points.push_back(projectPoint(a));
-
-            // Check for equal z-positions (or near equal)
-            if (abs(a.z - b.z) <= dz)
-            {
-                points.push_back(projectPoint(b));
-            }
+            continue;
         }
 
-        // Handle sloped lines in z-range
+        // Handle lines fully in z-range
+        else if (a.z >= z1 && a.z <= z2 && b.z >= z1 && b.z <= z2)
+        {
+            points.push_back(projectPoint(a));
+        }
+
+        // Handle lines partially in z-range
         else
         {
             if (!addBackwards)

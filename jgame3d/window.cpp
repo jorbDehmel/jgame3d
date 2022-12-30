@@ -3,10 +3,11 @@
 SDL_Point mousePos;
 Uint32 mouseState = 0;
 
-Window::Window(int W, int H, int RefreshRate, bool (*Update)(Window *space))
+Window::Window(int W, int H, int RefreshRate, bool (*Update)(Window *space),
+               SDL_WindowFlags Flags)
 {
     SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_CreateWindowAndRenderer(W, H, SDL_WINDOW_OPENGL, &wind, &rend);
+    SDL_CreateWindowAndRenderer(W, H, Flags, &wind, &rend);
 
     update = Update;
 
@@ -26,6 +27,15 @@ Window::~Window()
     SDL_Quit();
 
     return;
+}
+
+void Window::setUpScaleFactor(const double upScaleBy)
+{
+    int w, h;
+    SDL_GetWindowSize(wind, &w, &h);
+
+    SDL_SetWindowSize(wind, w * upScaleBy, h * upScaleBy);
+    SDL_RenderSetScale(rend, upScaleBy, upScaleBy);
 }
 
 void Window::mainLoop()

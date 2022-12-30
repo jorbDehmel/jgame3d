@@ -10,8 +10,11 @@ extern Uint32 mouseState;
 class Window
 {
 public:
-    Window(int W, int H, int RefreshRate, bool (*Update)(Window *space));
+    Window(int W, int H, int RefreshRate, bool (*Update)(Window *space),
+           SDL_WindowFlags Flags = SDL_WINDOW_OPENGL);
     ~Window();
+
+    void setUpScaleFactor(const double upScaleBy);
 
     void mainLoop();
     bool isKeyPressed(const int &key) const;
