@@ -92,7 +92,7 @@ bool update(Window *wind)
     for (int i = 0; i < cubes.size(); i++)
     {
         rotate(cubes[i], getCenter(cubes[i]), Rotation((rand() % 100) / 1000.0, (rand() % 100) / 1000.0, (rand() % 100) / 1000.0));
-        move(cubes[i], Point3D((rand() % 10) - 5, (rand() % 10) - 5, (rand() % 10) - 5));
+        //move(cubes[i], Point3D((rand() % 4) - 2.0, (rand() % 4) - 2.0, (rand() % 4) - 2.0));
     }
 
     return !wind->isKeyPressed(keys::esc);
@@ -106,7 +106,8 @@ int main()
     dy = 1;
     dz = 5;
 
-    Window wind(512, 512, 0, update);
+    Window wind(128, 128, 30, update);
+    wind.setUpScaleFactor(4);
 
     for (int i = 0; i < numCubes; i++)
     {
@@ -118,7 +119,7 @@ int main()
     vector<Model> &cubes = wind.getModels();
     for (int i = 0; i < cubes.size(); i++)
     {
-        move(cubes[i], Point3D(rand() % 512, rand() % 512, (rand() % 256) + 256));
+        move(cubes[i], Point3D(rand() % 128, rand() % 128, (rand() % 128) + 512));
     }
 
     wind.mainLoop();
