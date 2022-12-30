@@ -17,6 +17,9 @@ build/basics.o:	build/ bin/ basics.cpp basics.hpp
 build/window.o:	build/ bin/ window.cpp window.hpp
 	$(STEM) -c window.cpp -o build/window.o
 
+build/resources.o:	build/ bin/ resources.cpp resources.hpp
+	$(STEM) -c resources.cpp -o build/resources.o
+
 build/:
 	mkdir build
 
