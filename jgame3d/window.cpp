@@ -16,10 +16,10 @@ Window::Window(int W, int H, int RefreshRate, bool (*Update)(Window *space),
     FOVScalar = 500;
     horizon.x = 500;
     horizon.y = 500;
-    horizon.z = W * 2;
+    horizon.z = 1000;
 
     renderMinX = renderMinY = renderMinZ = 0;
-    renderMaxX = renderMaxY = 1000;
+    renderMaxX = renderMaxY = renderMaxZ = 1000;
 
     space = new Slicer(rend, wind);
 
@@ -60,9 +60,8 @@ void Window::mainLoop()
         SDL_RenderClear(rend);
 
         space->render();
-        SDL_RenderPresent(rend);
-
         isRunning = update(this);
+        SDL_RenderPresent(rend);
 
         // Poll keyboard
         while (SDL_PollEvent(&event))
