@@ -1,3 +1,4 @@
+// SC_ARGS `sdl2-config --cflags --libs`
 #include "resources.hpp"
 
 namespace colors
@@ -21,12 +22,12 @@ namespace colors
     {
         return makeColor(0, 0, 0, 255);
     }
-    
+
     SDL_Color grey()
     {
         return makeColor(128, 128, 128, 255);
     }
-    
+
     SDL_Color white()
     {
         return makeColor(255, 255, 255, 255);

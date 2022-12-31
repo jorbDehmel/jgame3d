@@ -1,3 +1,4 @@
+// SC_ARGS `sdl2-config --cflags --libs`
 #include "basics.hpp"
 
 //////////////////////////////
@@ -148,52 +149,44 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, double z1, double z2)
 
     for (int i = 0; i < p.points.size(); i++)
     {
+        Point3D c = p.points[(i - 1) % (p.points.size())];
         Point3D a = p.points[i];
         Point3D b = p.points[(i + 1) % (p.points.size())];
 
-        // If line is out of z-range
-        if ((a.z < z1 && b.z < z1) || (a.z > z2 && b.z > z2))
+        if (a.z < z1 && b.z < z1 && c.z < z1)
+        {
+            continue;
+        }
+        else if (a.z > z2 && b.z > z2 && c.z > z2)
         {
             continue;
         }
 
-        // Handle lines fully in z-range
-        else if (a.z >= z1 && a.z <= z2 && b.z >= z1 && b.z <= z2)
+        if (a.z < z1)
         {
-            points.push_back(projectPoint(a));
+            if (c.z >= z1)
+            {
+                points.push_back(projectPoint(getPointAtZBetween(a, c, z1)));
+            }
+            if (b.z >= z1)
+            {
+                points.push_back(projectPoint(getPointAtZBetween(a, b, z1)));
+            }
         }
-
-        // Handle lines partially in z-range
+        else if (a.z > z2)
+        {
+            if (c.z <= z2)
+            {
+                points.push_back(projectPoint(getPointAtZBetween(a, c, z2)));
+            }
+            if (b.z <= z2)
+            {
+                points.push_back(projectPoint(getPointAtZBetween(a, b, z2)));
+            }
+        }
         else
         {
-            if (!addBackwards)
-            {
-                // If passes through z1, fix
-                if ((a.z < z1 && b.z > z1) || (b.z < z1 && a.z > z1))
-                {
-                    points.push_back(projectPoint(getPointAtZBetween(a, b, z1)));
-                }
-                // If passes through z2, fix
-                if ((a.z < z2 && b.z > z2) || (b.z < z2 && a.z > z2))
-                {
-                    points.push_back(projectPoint(getPointAtZBetween(a, b, z2)));
-                }
-                addBackwards = true;
-            }
-            else
-            {
-                // If passes through z2, fix
-                if ((a.z < z2 && b.z > z2) || (b.z < z2 && a.z > z2))
-                {
-                    points.push_back(projectPoint(getPointAtZBetween(a, b, z2)));
-                }
-                // If passes through z1, fix
-                if ((a.z < z1 && b.z > z1) || (b.z < z1 && a.z > z1))
-                {
-                    points.push_back(projectPoint(getPointAtZBetween(a, b, z1)));
-                }
-                addBackwards = false;
-            }
+            points.push_back(projectPoint(a));
         }
     }
 

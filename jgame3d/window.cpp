@@ -9,11 +9,16 @@ Window::Window(int W, int H, int RefreshRate, bool (*Update)(Window *space),
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_CreateWindowAndRenderer(W, H, Flags, &wind, &rend);
 
+    SDL_RenderSetLogicalSize(rend, 100, 100);
+
     update = Update;
 
     horizon.x = W / 2;
     horizon.y = H / 2;
     horizon.z = W * 2;
+
+    renderMinX = renderMinY = renderMinZ = 0;
+    renderMaxX = renderMaxY = 100;
 
     space = new Renderer(rend, wind);
 
