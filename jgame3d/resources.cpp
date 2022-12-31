@@ -34,59 +34,61 @@ namespace colors
     }
 };
 
-void createCube(Model &obj, vector<SDL_Color> &colors)
+void createCube(Model &obj, vector<SDL_Color> &colors, double sideLength)
 {
+    double moveBy = sideLength / 2;
+
     vector<Point3D> tbSquare = {
         Point3D(0, 0, 0),
-        Point3D(64, 0, 0),
-        Point3D(64, 64, 0),
-        Point3D(0, 64, 0)};
+        Point3D(sideLength, 0, 0),
+        Point3D(sideLength, sideLength, 0),
+        Point3D(0, sideLength, 0)};
 
     Polygon top;
     top.points = tbSquare;
     top.color = colors[0];
-    move(top, Point3D(-32, -32, 32));
+    move(top, Point3D(-moveBy, -moveBy, moveBy));
 
     Polygon bottom;
     bottom.points = tbSquare;
     bottom.color = colors[1];
-    move(bottom, Point3D(-32, -32, -32));
+    move(bottom, Point3D(-moveBy, -moveBy, -moveBy));
 
     /////////////////////////////
 
     vector<Point3D> lrSquare = {
         Point3D(0, 0, 0),
-        Point3D(0, 64, 0),
-        Point3D(0, 64, 64),
-        Point3D(0, 0, 64)};
+        Point3D(0, sideLength, 0),
+        Point3D(0, sideLength, sideLength),
+        Point3D(0, 0, sideLength)};
 
     Polygon right;
     right.points = lrSquare;
     right.color = colors[2];
-    move(right, Point3D(32, -32, -32));
+    move(right, Point3D(moveBy, -moveBy, -moveBy));
 
     Polygon left;
     left.points = lrSquare;
     left.color = colors[3];
-    move(left, Point3D(-32, -32, -32));
+    move(left, Point3D(-moveBy, -moveBy, -moveBy));
 
     ////////////////////
 
     vector<Point3D> fbSquare = {
         Point3D(0, 0, 0),
-        Point3D(64, 0, 0),
-        Point3D(64, 0, 64),
-        Point3D(0, 0, 64)};
+        Point3D(sideLength, 0, 0),
+        Point3D(sideLength, 0, sideLength),
+        Point3D(0, 0, sideLength)};
 
     Polygon front;
     front.points = fbSquare;
     front.color = colors[4];
-    move(front, Point3D(-32, 32, -32));
+    move(front, Point3D(-moveBy, moveBy, -moveBy));
 
     Polygon back;
     back.points = fbSquare;
     back.color = colors[5];
-    move(back, Point3D(-32, -32, -32));
+    move(back, Point3D(-moveBy, -moveBy, -moveBy));
 
     obj.polygons.push_back(right);
     obj.polygons.push_back(left);

@@ -7,9 +7,13 @@ STEM = $(CC) $(ARGS) $(DEPS)
 
 #########################
 
-install: build/basics.o build/window.o
-	sudo mkdir -p /usr/include/jgame3d
+install: build/ bin/ bin/jgame3d.a
+	sudo rm -rf /usr/include/jgame3d
+	sudo mkdir /usr/include/jgame3d
 	sudo cp -r ./* /usr/include/jgame3d
+
+bin/jgame3d.a:	build/ bin/ build/basics.o build/window.o build/resources.o
+	ar rcs bin/jgame3d.a build/basics.o build/window.o build/resources.o
 
 build/basics.o:	build/ bin/ basics.cpp basics.hpp
 	$(STEM) -c basics.cpp -o build/basics.o

@@ -21,7 +21,7 @@ Window::Window(int W, int H, int RefreshRate, bool (*Update)(Window *space),
     renderMinX = renderMinY = renderMinZ = 0;
     renderMaxX = renderMaxY = 1000;
 
-    space = new Renderer(rend, wind);
+    space = new Slicer(rend, wind);
 
     delayTime = RefreshRate;
 }
@@ -138,7 +138,7 @@ SDL_Renderer *Window::getRenderer()
     return rend;
 }
 
-Renderer *Window::getSpace()
+Slicer *Window::getSlicer()
 {
     return space;
 }

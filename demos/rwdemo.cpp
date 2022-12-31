@@ -1,10 +1,5 @@
-#include "../jgame3d/basics.hpp"
-#include "../jgame3d/keys.hpp"
-#include "../jgame3d/window.hpp"
-#include "../jgame3d/resources.hpp"
-
-#include <set>
-
+#include "../jgame3d/jgame3d.hpp"
+#include <iostream>
 using namespace std;
 
 //////////////////////////////////////////////////
@@ -50,6 +45,12 @@ bool update(Window *wind)
         rotate(cube, Rotation(0, .01, 0));
     if (wind->isKeyPressed(keys::leftArrow))
         rotate(cube, Rotation(0, 0, .01));
+
+    if (wind->isKeyPressed(keys::p))
+    {
+        cout << "Screenshotting...\n";
+        SDL_SaveBMP(SDL_GetWindowSurface(wind->getWindow()), "hiiiii.bmp");
+    }
 
     return true;
 }

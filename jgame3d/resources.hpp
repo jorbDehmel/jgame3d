@@ -4,6 +4,7 @@
 #include "basics.hpp"
 #include "window.hpp"
 
+// Functions returning SDL_Color objects of their names
 namespace colors
 {
     SDL_Color red();
@@ -15,6 +16,7 @@ namespace colors
     SDL_Color white();
 };
 
-void createCube(Model &obj, vector<SDL_Color> &colors);
+// Create a cube with colors 'colors', and side length 'sideLength'
+void createCube(Model &obj, vector<SDL_Color> &colors, double sideLength = 64);
 
 #endif

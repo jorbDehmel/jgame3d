@@ -1,4 +1,3 @@
-// SC_ARGS `sdl2-config --cflags --libs`
 #include "basics.hpp"
 
 //////////////////////////////
@@ -12,7 +11,7 @@ double dz = 1;
 double dy = 1;
 
 double renderMinX = 0, renderMinY = renderMinX;
-double renderMaxX = 512, renderMaxY = renderMaxX;
+double renderMaxX = 1000, renderMaxY = renderMaxX;
 double renderMinZ = 0;
 double renderMaxZ = 1028;
 
@@ -88,117 +87,13 @@ ostream &operator<<(ostream &stream, const Model &p)
 
 //////////////////////////////
 
-Renderer::Renderer(SDL_Renderer *&Rend, SDL_Window *&Wind)
+Slicer::Slicer(SDL_Renderer *&Rend, SDL_Window *&Wind)
 {
     rend = Rend;
     wind = Wind;
 }
 
-Point3D getPointAtZBetween(const Point3D &A, const Point3D &B, double z)
-{
-    Point3D out;
-    out.z = z;
-
-    if (A.z == B.z)
-    {
-        // Equivolence
-        out.x = A.x;
-        out.y = A.y;
-    }
-    else
-    {
-        // Compute coords for out (along line)
-        out.x = z * ((B.x - A.x) / (B.z - A.z)) - A.z * ((B.x - A.x) / (B.z - A.z)) + A.x;
-        out.y = z * ((B.y - A.y) / (B.z - A.z)) - A.z * ((B.y - A.y) / (B.z - A.z)) + A.y;
-    }
-
-    return out;
-}
-
-SDL_FPoint projectPoint(const Point3D &p)
-{
-    SDL_FPoint out;
-    out.x = p.x;
-    out.y = p.y;
-
-    // Project onto plane via z-coord
-    out.x -= horizon.x;
-    out.y -= horizon.y;
-
-    out.x *= (FOVScalar / p.z);
-    out.y *= (FOVScalar / p.z);
-
-    out.x += horizon.x;
-    out.y += horizon.y;
-
-    return out;
-}
-
-void renderBetweenZ(SDL_Renderer *rend, Polygon &p, double z1, double z2)
-{
-    vector<SDL_FPoint> points;
-    bool addBackwards = false;
-
-    // Make z1 < z2
-    if (z1 > z2)
-    {
-        double temp = z1;
-        z1 = z2;
-        z2 = temp;
-    }
-
-    for (int i = 0; i < p.points.size(); i++)
-    {
-        Point3D c = p.points[(i - 1) % (p.points.size())];
-        Point3D a = p.points[i];
-        Point3D b = p.points[(i + 1) % (p.points.size())];
-
-        if (a.z < z1 && b.z < z1 && c.z < z1)
-        {
-            continue;
-        }
-        else if (a.z > z2 && b.z > z2 && c.z > z2)
-        {
-            continue;
-        }
-
-        if (a.z < z1)
-        {
-            if (c.z >= z1)
-            {
-                points.push_back(projectPoint(getPointAtZBetween(a, c, z1)));
-            }
-            if (b.z >= z1)
-            {
-                points.push_back(projectPoint(getPointAtZBetween(a, b, z1)));
-            }
-        }
-        else if (a.z > z2)
-        {
-            if (c.z <= z2)
-            {
-                points.push_back(projectPoint(getPointAtZBetween(a, c, z2)));
-            }
-            if (b.z <= z2)
-            {
-                points.push_back(projectPoint(getPointAtZBetween(a, b, z2)));
-            }
-        }
-        else
-        {
-            points.push_back(projectPoint(a));
-        }
-    }
-
-    if (!points.empty())
-    {
-        fillPolygon(rend, points, p.color);
-    }
-
-    return;
-}
-
-void Renderer::render()
+void Slicer::render()
 {
     vector<Polygon> polys;
 
@@ -452,6 +347,111 @@ void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color)
         {
             SDL_RenderDrawLineF(rend, xValues[i], y, xValues[(i + 1) % (xValues.size())], y);
         }
+    }
+
+    return;
+}
+
+//////////////////////////////
+
+Point3D getPointAtZBetween(const Point3D &A, const Point3D &B, double z)
+{
+    Point3D out;
+    out.z = z;
+
+    if (A.z == B.z)
+    {
+        // Equivolence
+        out.x = A.x;
+        out.y = A.y;
+    }
+    else
+    {
+        // Compute coords for out (along line)
+        out.x = z * ((B.x - A.x) / (B.z - A.z)) - A.z * ((B.x - A.x) / (B.z - A.z)) + A.x;
+        out.y = z * ((B.y - A.y) / (B.z - A.z)) - A.z * ((B.y - A.y) / (B.z - A.z)) + A.y;
+    }
+
+    return out;
+}
+
+SDL_FPoint projectPoint(const Point3D &p)
+{
+    SDL_FPoint out;
+    out.x = p.x;
+    out.y = p.y;
+
+    // Project onto plane via z-coord
+    out.x -= horizon.x;
+    out.y -= horizon.y;
+
+    out.x *= (FOVScalar / p.z);
+    out.y *= (FOVScalar / p.z);
+
+    out.x += horizon.x;
+    out.y += horizon.y;
+
+    return out;
+}
+
+void renderBetweenZ(SDL_Renderer *rend, Polygon &p, double z1, double z2)
+{
+    vector<SDL_FPoint> points;
+
+    // Make z1 < z2
+    if (z1 > z2)
+    {
+        double temp = z1;
+        z1 = z2;
+        z2 = temp;
+    }
+
+    for (int i = 0; i < p.points.size(); i++)
+    {
+        Point3D c = p.points[(i - 1) % (p.points.size())];
+        Point3D a = p.points[i];
+        Point3D b = p.points[(i + 1) % (p.points.size())];
+
+        if (a.z < z1 && b.z < z1 && c.z < z1)
+        {
+            continue;
+        }
+        else if (a.z > z2 && b.z > z2 && c.z > z2)
+        {
+            continue;
+        }
+
+        if (a.z < z1)
+        {
+            if (c.z >= z1)
+            {
+                points.push_back(projectPoint(getPointAtZBetween(a, c, z1)));
+            }
+            if (b.z >= z1)
+            {
+                points.push_back(projectPoint(getPointAtZBetween(a, b, z1)));
+            }
+        }
+        else if (a.z > z2)
+        {
+            if (c.z <= z2)
+            {
+                points.push_back(projectPoint(getPointAtZBetween(a, c, z2)));
+            }
+            if (b.z <= z2)
+            {
+                points.push_back(projectPoint(getPointAtZBetween(a, b, z2)));
+            }
+        }
+        else
+        {
+            points.push_back(projectPoint(a));
+        }
+    }
+
+    if (!points.empty())
+    {
+        fillPolygon(rend, points, p.color);
     }
 
     return;

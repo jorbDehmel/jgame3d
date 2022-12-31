@@ -1,10 +1,5 @@
-#include "../jgame3d/basics.hpp"
-#include "../jgame3d/window.hpp"
-#include "../jgame3d/keys.hpp"
-#include "../jgame3d/resources.hpp"
-
-#include <set>
-
+#include <jgame3d/jgame3d.hpp>
+#include <iostream>
 using namespace std;
 
 //////////////////////////////////////////////////
@@ -33,14 +28,13 @@ bool update(Window *wind)
 
 int main()
 {
-    int numCubes = 8;
+    int numCubes = 32;
     srand(time(NULL));
 
     dy = 1;
     dz = 5;
 
-    Window wind(128, 128, 0, update);
-    wind.setUpScaleFactor(4);
+    Window wind(1028, 1028, 0, update);
 
     for (int i = 0; i < numCubes; i++)
     {
@@ -52,7 +46,7 @@ int main()
     vector<Model> &cubes = wind.getModels();
     for (int i = 0; i < cubes.size(); i++)
     {
-        move(cubes[i], Point3D(rand() % 128, rand() % 128, (rand() % 128) + 512));
+        move(cubes[i], Point3D(rand() % 1000, rand() % 1000, (rand() % 512) + 512));
     }
 
     wind.mainLoop();

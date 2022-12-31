@@ -2,21 +2,21 @@
 #define BASICS_H
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_test_font.h>
+
+#include <iostream>
 
 #include <cassert>
-#include <iostream>
 #include <algorithm>
 #include <chrono>
 
 #include <map>
 #include <vector>
-// #include <set>
 
 using namespace std;
 
 //////////////////////////////
 
+// Create an SDL_Color instance with the given rgba values
 SDL_Color makeColor(const Uint8 r, const Uint8 g, const Uint8 b, const Uint8 a);
 
 /*
@@ -33,6 +33,7 @@ public:
     double x, y, z;
 };
 
+// Insert the coordinated of the Point3D object into the stream and return
 ostream &operator<<(ostream &stream, const Point3D &p);
 
 /*
@@ -50,9 +51,13 @@ extern int FOVScalar;
 // Global horizon point used by rendering
 extern Point3D horizon;
 
-// Change in z and y for layered rendering
-extern double dz, dy;
+// Change in z for layered rendering
+extern double dz;
 
+// Change in y for filling polygons
+extern double dy;
+
+// The min and max coordinates to render
 extern double renderMinZ, renderMaxZ, renderMinY, renderMaxY, renderMinX, renderMaxX;
 
 //////////////////////////////
@@ -67,6 +72,7 @@ public:
     SDL_Color color;
 };
 
+// Insert the points in a polygon into a stream and return
 ostream &operator<<(ostream &stream, const Polygon &p);
 
 /*
@@ -78,19 +84,19 @@ public:
     vector<Polygon> polygons;
 };
 
+// Insert the polygons in a model into a stream and return
 ostream &operator<<(ostream &stream, const Model &p);
 
 //////////////////////////////
 
 /*
-A renderer for proper layering in space.
-Without this, things will only display in render order,
-but with this they are able to overlap eachother.
+A slicing renderer for proper layering in space.
+Handles overlapping polygons.
 */
-class Renderer
+class Slicer
 {
 public:
-    Renderer(SDL_Renderer *&rend, SDL_Window *&wind);
+    Slicer(SDL_Renderer *&rend, SDL_Window *&wind);
 
     void render();
 
@@ -102,8 +108,10 @@ public:
 
 //////////////////////////////
 
-// Get the center point of a model in 3D
+// Get the center point of a Model object
 Point3D getCenter(const Model &m);
+
+// Get the center point of a Polygon object
 Point3D getCenter(const Polygon &m);
 
 // Mode a model by a point
@@ -111,6 +119,8 @@ void move(Model &m, const Point3D &by);
 
 // Rotate a model about a point and by a rotation
 void rotate(Model &m, const Point3D &about, const Rotation &by);
+
+// Rotate a Model about its center by a rotation
 void rotate(Model &m, const Rotation &by);
 
 // Mode a polygon by a point
@@ -118,6 +128,8 @@ void move(Polygon &m, const Point3D &by);
 
 // Rotate a polygon about a point and by a rotation
 void rotate(Polygon &m, const Point3D &about, const Rotation &by);
+
+// Rotate a polygon about its center by a rotation
 void rotate(Polygon &m, const Rotation &by);
 
 // Rotate a point by a rotation
@@ -125,6 +137,17 @@ void rotate(Point3D &p, const Rotation &by);
 
 // Fill a 2D polygon with a color
 void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color);
+
+//////////////////////////////
+
+// Get the point along the line AB which has the given z value (for internal rendering)
+Point3D getPointAtZBetween(const Point3D &A, const Point3D &B, double z);
+
+// Project a point in 3D space onto the camera-plane (in 2D space) (for internal rendering)
+SDL_FPoint projectPoint(const Point3D &p);
+
+// Render only the sub-polygon which falls between z1 and z2 (for internal rendering)
+void renderBetweenZ(SDL_Renderer *rend, Polygon &p, double z1, double z2);
 
 //////////////////////////////
 
