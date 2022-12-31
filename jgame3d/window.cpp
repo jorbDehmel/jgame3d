@@ -9,16 +9,17 @@ Window::Window(int W, int H, int RefreshRate, bool (*Update)(Window *space),
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_CreateWindowAndRenderer(W, H, Flags, &wind, &rend);
 
-    SDL_RenderSetLogicalSize(rend, 100, 100);
+    SDL_RenderSetLogicalSize(rend, 1000, 1000);
 
     update = Update;
 
-    horizon.x = W / 2;
-    horizon.y = H / 2;
+    FOVScalar = 500;
+    horizon.x = 500;
+    horizon.y = 500;
     horizon.z = W * 2;
 
     renderMinX = renderMinY = renderMinZ = 0;
-    renderMaxX = renderMaxY = 100;
+    renderMaxX = renderMaxY = 1000;
 
     space = new Renderer(rend, wind);
 
@@ -91,7 +92,7 @@ void Window::mainLoop()
         }
         else
         {
-            cout << "Update took " << end - start << " ms\n";
+            cout << "Update took " << end - start << " ms (" << 1000 / (end - start) << " fps)\n";
         }
     }
 }

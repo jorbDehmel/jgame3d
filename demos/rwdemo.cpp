@@ -58,11 +58,11 @@ int main()
 {
     dz = 3;
 
-    Window wind(128, 128, 10, update, SDL_WINDOW_OPENGL);
-    wind.setUpScaleFactor(4);
+    Window wind(1028, 1028, 10, update, SDL_WINDOW_OPENGL);
 
     Model cube;
     createCube(cube, colorList);
+    move(cube, Point3D(500, 500, 250));
     wind.add(cube);
 
     wind.mainLoop();

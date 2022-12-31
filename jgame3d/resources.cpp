@@ -97,7 +97,5 @@ void createCube(Model &obj, vector<SDL_Color> &colors)
     obj.polygons.push_back(front);
     obj.polygons.push_back(back);
 
-    move(obj, Point3D(64, 64, 256));
-
     return;
 }
