@@ -56,7 +56,7 @@ bool update(Window *wind)
 
 int main()
 {
-    dz = 1;
+    dz = 3;
 
     Window wind(128, 128, 10, update, SDL_WINDOW_OPENGL);
     wind.setUpScaleFactor(4);

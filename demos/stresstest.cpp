@@ -39,7 +39,7 @@ int main()
     dy = 1;
     dz = 5;
 
-    Window wind(128, 128, 30, update);
+    Window wind(128, 128, 0, update);
     wind.setUpScaleFactor(4);
 
     for (int i = 0; i < numCubes; i++)
