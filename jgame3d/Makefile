@@ -13,7 +13,7 @@ install: build/ bin/ bin/jgame3d.a
 	sudo cp -r ./* /usr/include/jgame3d
 
 bin/jgame3d.a:	build/ bin/ build/basics.o build/window.o build/resources.o build/files.o
-	ar rcs bin/jgame3d.a build/basics.o build/window.o build/resources.o build/files.o
+	ar rsv bin/jgame3d.a build/basics.o build/window.o build/resources.o build/files.o
 
 build/basics.o:	build/ bin/ basics.cpp basics.hpp
 	$(STEM) -c basics.cpp -o build/basics.o

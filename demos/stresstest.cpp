@@ -36,10 +36,13 @@ int main()
 
     Window wind(1028, 1028, 0, update);
 
+    Model cube;
+    createCube(cube, colorList);
+    saveModel(cube, "cube.model");
+
     for (int i = 0; i < numCubes; i++)
     {
-        Model cubeTemp;
-        createCube(cubeTemp, colorList);
+        Model cubeTemp = loadModel("cube.model");
         wind.add(cubeTemp);
     }
 

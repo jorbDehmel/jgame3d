@@ -7,17 +7,24 @@ STEM = $(CC) $(ARGS) $(DEPS)
 
 #########################
 
-bin/demo.out:	bin/ build/ build/basics.o build/window.o build/demo.o build/resources.o build/files.o
-	$(STEM) build/basics.o build/window.o build/resources.o build/demo.o build/files.o -o bin/demo.out
+bin/demo.out:	bin/ build/ build/demo.o bin/jgame3d.a
+	$(STEM) -o bin/demo.out build/demo.o bin/jgame3d.a
 
-bin/stress.out: build/basics.o build/window.o build/stress.o build/resources.o build/files.o
-	$(STEM) build/basics.o build/window.o build/resources.o build/stress.o build/files.o -o bin/stress.out
+bin/stress.out: bin/ build/ build/stress.o bin/jgame3d.a
+	$(STEM) -o bin/stress.out build/stress.o bin/jgame3d.a
 
 build/demo.o:	demos/rwdemo.cpp
 	$(STEM) -c demos/rwdemo.cpp -o build/demo.o
 
 build/stress.o:	demos/stresstest.cpp
 	$(STEM) -c demos/stresstest.cpp -o build/stress.o
+
+#########################
+
+bin/jgame3d.a:	build/basics.o build/window.o build/resources.o build/files.o
+	ar rsv bin/jgame3d.a build/basics.o build/window.o build/resources.o build/files.o
+
+#########################
 
 build/basics.o:	jgame3d/basics.cpp jgame3d/basics.hpp
 	$(STEM) -c jgame3d/basics.cpp -o build/basics.o
