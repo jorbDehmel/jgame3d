@@ -55,11 +55,12 @@ void Window::mainLoop()
         start = SDL_GetTicks();
 
         // Update
+        isRunning = update(this);
+
         SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
         SDL_RenderClear(rend);
 
         space->render();
-        isRunning = update(this);
         SDL_RenderPresent(rend);
 
         // Poll keyboard

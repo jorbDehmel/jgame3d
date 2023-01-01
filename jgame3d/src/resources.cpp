@@ -100,3 +100,20 @@ void createCube(Model &obj, vector<SDL_Color> &colors, double sideLength)
 
     return;
 }
+
+void createSquare(Model &obj, SDL_Color color, double sideLength)
+{
+    vector<Point3D> square = {
+        Point3D(0, 0, 0),
+        Point3D(sideLength, 0, 0),
+        Point3D(sideLength, sideLength, 0),
+        Point3D(0, sideLength, 0)};
+
+    Polygon squarePolygon;
+    squarePolygon.color = color;
+    squarePolygon.points = square;
+
+    obj.polygons.push_back(squarePolygon);
+
+    return;
+}

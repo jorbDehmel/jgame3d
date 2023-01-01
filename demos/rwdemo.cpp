@@ -20,6 +20,10 @@ Point3D cubePos(0, 0, 0);
 
 bool update(Window *wind)
 {
+    SDL_SetRenderDrawColor(wind->getRenderer(), 255, 255, 255, 255);
+    SDL_RenderDrawLineF(wind->getRenderer(), 0, 0, 1000, 1000);
+    SDL_RenderDrawLineF(wind->getRenderer(), 0, 1000, 1000, 0);
+
     Model &cube = wind->getModels()[0];
 
     if (wind->isKeyPressed(keys::esc))
@@ -32,17 +36,10 @@ bool update(Window *wind)
         if (cube.polygons[0].points[0].y > renderMinY)
             move(cube, Point3D(0, -stepSize, 0));
     }
-    else
+    if (wind->isKeyPressed(keys::s))
     {
         if (cube.polygons[0].points[0].y < renderMaxY)
-        {
-            cube_dy += 1;
-            move(cube, Point3D(0, cube_dy, 0));
-        }
-        else
-        {
-            cube_dy = 0;
-        }
+            move(cube, Point3D(0, stepSize, 0));
     }
 
     if (wind->isKeyPressed(keys::q))
@@ -81,11 +78,11 @@ bool update(Window *wind)
     else if (wind->isKeyPressed(keys::f))
         FOVScalar -= 1;
 
-    if (cube_dx > 0 && cube.polygons[0].points[0].x + 64 < renderMaxX)
+    if (cube_dx > 0 && cube.polygons[0].points[0].x < renderMaxX)
     {
         move(cube, Point3D(cube_dx, 0, 0));
     }
-    else if (cube_dx < 0 && cube.polygons[0].points[0].x - 64 > renderMinX)
+    else if (cube_dx < 0 && cube.polygons[0].points[0].x > renderMinX)
     {
         move(cube, Point3D(cube_dx, 0, 0));
     }
@@ -98,7 +95,7 @@ bool update(Window *wind)
     {
         move(cube, Point3D(0, 0, cube_dz));
     }
-    else if (cube_dz < 0 && cube.polygons[0].points[0].z - 64 > renderMinZ)
+    else if (cube_dz < 0 && cube.polygons[0].points[0].z > renderMinZ)
     {
         move(cube, Point3D(0, 0, cube_dz));
     }
@@ -116,20 +113,23 @@ int main()
     Window wind(1028, 1028, 0, update, SDL_WINDOW_OPENGL);
 
     dz = 3;
-    FOVScalar = 300;
+    FOVScalar = 500;
 
     renderMinZ = FOVScalar;
     renderMaxZ += FOVScalar;
 
     Model cube;
     createCube(cube, colorList);
-
-    // saveModel(cube, "cube.model");
-    // cube = loadModel("cube.model");
-
     move(cube, Point3D(500, 500, 500));
 
+    Model ground;
+    createSquare(ground, makeColor(255, 255, 255, 255), 1000 + FOVScalar);
+
+    move(ground, Point3D(-(FOVScalar / 2), 600, 1000 + FOVScalar));
+    rotate(ground, Rotation(M_PI / 2, 0, 0));
+
     wind.add(cube);
+    wind.add(ground);
 
     wind.mainLoop();
 
