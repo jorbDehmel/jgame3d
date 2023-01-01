@@ -3,7 +3,7 @@
 jgame3d - Basic 3d game-building library for C++
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Jordan "Jorb" Dehmel, 2022
+Jordan "Jorb" Dehmel, 2022 - 2023
 jdehmel@outlook.com
 github.com/jorbDehmel/jgame3d
 also see github.com/jorbDehmel/jgame
