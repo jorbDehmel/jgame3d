@@ -1,4 +1,4 @@
-#include "window.hpp"
+#include "../window.hpp"
 
 SDL_Point mousePos;
 Uint32 mouseState = 0;

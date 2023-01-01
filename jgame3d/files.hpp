@@ -3,9 +3,10 @@
 
 #include "basics.hpp"
 #include "window.hpp"
+#include <fstream>
 
 // Save a model to a file
-bool saveModel(const Model &what, const char *where);;
+bool saveModel(const Model &what, const char *where);
 
 // Load a model from a file
 Model loadModel(const char *where);

@@ -16,6 +16,10 @@ include the following in your compilation command:
 
     `sdl2-config --cflags --libs`
 
+For example:
+
+    g++ `sdl2-config --cflags --libs` foo.cpp -o bar.out
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The Point3D, Polygon, and Model classes:

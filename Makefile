@@ -21,22 +21,8 @@ build/stress.o:	demos/stresstest.cpp
 
 #########################
 
-bin/jgame3d.a:	build/basics.o build/window.o build/resources.o build/files.o
-	ar rsv bin/jgame3d.a build/basics.o build/window.o build/resources.o build/files.o
-
-#########################
-
-build/basics.o:	jgame3d/basics.cpp jgame3d/basics.hpp
-	$(STEM) -c jgame3d/basics.cpp -o build/basics.o
-
-build/window.o:	jgame3d/window.cpp jgame3d/window.hpp
-	$(STEM) -c jgame3d/window.cpp -o build/window.o
-
-build/resources.o:	jgame3d/resources.cpp jgame3d/resources.hpp
-	$(STEM) -c jgame3d/resources.cpp -o build/resources.o
-
-build/files.o:	jgame3d/files.cpp jgame3d/files.hpp
-	$(STEM) -c jgame3d/files.cpp -o build/files.o
+bin/jgame3d.a:	/usr/include/jgame3d/bin/jgame3d.a
+	cp /usr/include/jgame3d/bin/jgame3d.a bin/jgame3d.a
 
 #########################
 

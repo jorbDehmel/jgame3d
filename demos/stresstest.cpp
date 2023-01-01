@@ -1,5 +1,4 @@
-#include <jgame3d/jgame3d.hpp>
-#include <iostream>
+#include "../jgame3d/jgame3d.hpp"
 using namespace std;
 
 //////////////////////////////////////////////////

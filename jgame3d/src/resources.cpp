@@ -1,5 +1,4 @@
-// SC_ARGS `sdl2-config --cflags --libs`
-#include "resources.hpp"
+#include "../resources.hpp"
 
 namespace colors
 {
