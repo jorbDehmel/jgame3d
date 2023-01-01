@@ -9,7 +9,24 @@ github.com/jorbDehmel/jgame3d
 also see github.com/jorbDehmel/jgame
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Installation:
+
+    This library only supports Linux. It requires SDL2,
+which will need to be required before this.
+
+    To install this library, open this folder in
+terminal and enter `make install`. From then on, you can
+use the following in your C++ files:
+
+    #include <jgame3d/jgame3d.hpp>
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Compiling:
+
+    You must include /usr/include/jgame3d/bin/jgame3d.a
+as the FINAL argument of your compilation command (this
+file will be created upon running `make install`).
 
     This library depends of SDL2, and therefor you must
 include the following in your compilation command:
@@ -18,7 +35,8 @@ include the following in your compilation command:
 
 For example:
 
-    g++ `sdl2-config --cflags --libs` foo.cpp -o bar.out
+g++ `sdl2-config --cflags --libs` foo.cpp -o b.out \
+    /usr/include/jgame3d/bin/jgame3d.a        
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
