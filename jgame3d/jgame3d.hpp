@@ -6,5 +6,6 @@
 #include "keys.hpp"
 #include "resources.hpp"
 #include "window.hpp"
+#include "files.hpp"
 
 #endif
