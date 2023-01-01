@@ -114,7 +114,9 @@ int main()
     Window wind(1028, 1028, 10, update, SDL_WINDOW_OPENGL);
 
     Model cube;
-    createCube(cube, colorList);
+    // createCube(cube, colorList);
+    // saveModel(cube, "cube.model");
+    cube = loadModel("cube.model");
 
     move(cube, Point3D(500, 500, 500));
 

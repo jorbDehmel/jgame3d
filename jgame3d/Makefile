@@ -12,8 +12,8 @@ install: build/ bin/ bin/jgame3d.a
 	sudo mkdir /usr/include/jgame3d
 	sudo cp -r ./* /usr/include/jgame3d
 
-bin/jgame3d.a:	build/ bin/ build/basics.o build/window.o build/resources.o
-	ar rcs bin/jgame3d.a build/basics.o build/window.o build/resources.o
+bin/jgame3d.a:	build/ bin/ build/basics.o build/window.o build/resources.o build/files.o
+	ar rcs bin/jgame3d.a build/basics.o build/window.o build/resources.o build/files.o
 
 build/basics.o:	build/ bin/ basics.cpp basics.hpp
 	$(STEM) -c basics.cpp -o build/basics.o
@@ -23,6 +23,9 @@ build/window.o:	build/ bin/ window.cpp window.hpp
 
 build/resources.o:	build/ bin/ resources.cpp resources.hpp
 	$(STEM) -c resources.cpp -o build/resources.o
+
+build/files.o:	build/ bin/ files.cpp files.hpp
+	$(STEM) -c files.cpp -o build/files.o
 
 build/:
 	mkdir build
