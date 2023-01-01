@@ -8,6 +8,7 @@ STEM = $(CC) $(ARGS) $(DEPS)
 #########################
 
 install: build/ bin/ bin/jgame3d.a
+	sudo apt install libsdl2-dev
 	sudo rm -rf /usr/include/jgame3d
 	sudo mkdir /usr/include/jgame3d
 	sudo cp -r ./* /usr/include/jgame3d

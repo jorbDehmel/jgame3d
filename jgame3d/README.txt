@@ -12,7 +12,7 @@ also see github.com/jorbDehmel/jgame
 Installation:
 
     This library only supports Linux. It requires SDL2,
-which will need to be required before this.
+which will be installed with this library.
 
     To install this library, open this folder in
 terminal and enter `make install`. From then on, you can
