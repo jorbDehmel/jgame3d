@@ -107,9 +107,9 @@ void Slicer::render()
 
     for (double z = renderMaxZ; z >= renderMinZ; z -= dz)
     {
-        for (int polygonIndex = 0; polygonIndex < polys.size(); polygonIndex++)
+        for (Polygon poly : polys)
         {
-            renderBetweenZ(rend, polys[polygonIndex], z - dz, z + dz);
+            renderBetweenZ(rend, poly, z - dz, z + dz);
         }
     }
 
@@ -408,44 +408,44 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, double z1, double z2)
 
     for (int i = 0; i < p.points.size(); i++)
     {
-        Point3D c = p.points[(i - 1) % (p.points.size())];
-        Point3D a = p.points[i];
-        Point3D b = p.points[(i + 1) % (p.points.size())];
+        Point3D prev = p.points[(i - 1) % (p.points.size())];
+        Point3D cur = p.points[i];
+        Point3D next = p.points[(i + 1) % (p.points.size())];
 
-        if (a.z < z1 && b.z < z1 && c.z < z1)
+        if (cur.z < z1 && next.z < z1 && prev.z < z1)
         {
             continue;
         }
-        else if (a.z > z2 && b.z > z2 && c.z > z2)
+        else if (cur.z > z2 && next.z > z2 && prev.z > z2)
         {
             continue;
         }
 
-        if (a.z < z1)
+        if (cur.z < z1)
         {
-            if (c.z >= z1)
+            if (prev.z >= z1)
             {
-                points.push_back(projectPoint(getPointAtZBetween(a, c, z1)));
+                points.push_back(projectPoint(getPointAtZBetween(cur, prev, z1)));
             }
-            if (b.z >= z1)
+            if (next.z >= z1)
             {
-                points.push_back(projectPoint(getPointAtZBetween(a, b, z1)));
+                points.push_back(projectPoint(getPointAtZBetween(cur, next, z1)));
             }
         }
-        else if (a.z > z2)
+        else if (cur.z > z2)
         {
-            if (c.z <= z2)
+            if (prev.z <= z2)
             {
-                points.push_back(projectPoint(getPointAtZBetween(a, c, z2)));
+                points.push_back(projectPoint(getPointAtZBetween(cur, prev, z2)));
             }
-            if (b.z <= z2)
+            if (next.z <= z2)
             {
-                points.push_back(projectPoint(getPointAtZBetween(a, b, z2)));
+                points.push_back(projectPoint(getPointAtZBetween(cur, next, z2)));
             }
         }
         else
         {
-            points.push_back(projectPoint(a));
+            points.push_back(projectPoint(cur));
         }
     }
 

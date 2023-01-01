@@ -13,10 +13,9 @@ Window::Window(int W, int H, int RefreshRate, bool (*Update)(Window *space),
 
     update = Update;
 
-    FOVScalar = 500;
     horizon.x = 500;
     horizon.y = 500;
-    horizon.z = 1000;
+    // horizon.z = 1000;
 
     renderMinX = renderMinY = renderMinZ = 0;
     renderMaxX = renderMaxY = renderMaxZ = 1000;

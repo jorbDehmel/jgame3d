@@ -32,8 +32,6 @@ bool update(Window *wind)
         if (cube.polygons[0].points[0].y > renderMinY)
             move(cube, Point3D(0, -stepSize, 0));
     }
-    else if (wind->isKeyPressed(keys::s))
-        move(cube, Point3D(0, stepSize, 0));
     else
     {
         if (cube.polygons[0].points[0].y < renderMaxY)
@@ -78,6 +76,11 @@ bool update(Window *wind)
     if (wind->isKeyPressed(keys::leftArrow))
         rotate(cube, Rotation(0, 0, .01));
 
+    if (wind->isKeyPressed(keys::r))
+        FOVScalar += 1;
+    else if (wind->isKeyPressed(keys::f))
+        FOVScalar -= 1;
+
     if (cube_dx > 0 && cube.polygons[0].points[0].x + 64 < renderMaxX)
     {
         move(cube, Point3D(cube_dx, 0, 0));
@@ -109,9 +112,14 @@ bool update(Window *wind)
 
 int main()
 {
-    dz = 3;
 
-    Window wind(1028, 1028, 10, update, SDL_WINDOW_OPENGL);
+    Window wind(1028, 1028, 0, update, SDL_WINDOW_OPENGL);
+
+    dz = 3;
+    FOVScalar = 300;
+
+    renderMinZ = FOVScalar;
+    renderMaxZ += FOVScalar;
 
     Model cube;
     createCube(cube, colorList);
