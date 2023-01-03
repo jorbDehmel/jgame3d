@@ -1,6 +1,6 @@
 #########################
 
-DEPS = `sdl2-config --cflags --libs`
+DEPS = `sdl2-config --cflags --libs` -lSDL_ttf
 CC = clang++
 ARGS = -pedantic -Wall
 STEM = $(CC) $(ARGS) $(DEPS)

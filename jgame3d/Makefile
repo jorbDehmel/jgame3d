@@ -1,6 +1,6 @@
 #########################
 
-DEPS = `sdl2-config --cflags --libs`
+DEPS = `sdl2-config --cflags --libs` -lSDL_ttf
 CC = clang++
 ARGS = -pedantic -Wall
 STEM = $(CC) $(ARGS) $(DEPS)
@@ -8,13 +8,13 @@ STEM = $(CC) $(ARGS) $(DEPS)
 #########################
 
 install: build/ bin/ bin/jgame3d.a
-	sudo apt install libsdl2-dev
+	sudo apt install libsdl2-dev libsdl2-ttf-dev
 	sudo rm -rf /usr/include/jgame3d
 	sudo mkdir /usr/include/jgame3d
 	sudo cp -r ./* /usr/include/jgame3d
 
-bin/jgame3d.a:	build/ bin/ build/basics.o build/window.o build/resources.o build/files.o
-	ar rsv bin/jgame3d.a build/basics.o build/window.o build/resources.o build/files.o
+bin/jgame3d.a:	build/ bin/ build/basics.o build/window.o build/resources.o build/files.o build/text.o
+	ar rsv bin/jgame3d.a build/basics.o build/window.o build/resources.o build/files.o build/text.o
 
 build/basics.o:	build/ bin/ src/basics.cpp basics.hpp
 	$(STEM) -c src/basics.cpp -o build/basics.o
@@ -27,6 +27,9 @@ build/resources.o:	build/ bin/ src/resources.cpp resources.hpp
 
 build/files.o:	build/ bin/ src/files.cpp files.hpp
 	$(STEM) -c src/files.cpp -o build/files.o
+
+build/text.o:	build/ bin/ src/text.cpp text.hpp
+	$(STEM) -c src/text.cpp -o build/text.o
 
 build/:
 	mkdir build

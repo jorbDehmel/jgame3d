@@ -112,6 +112,24 @@ function creates a cube with its specified parameters.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+The text.hpp file and the Writer class:
+
+    This file provides the Writer class, which is a
+user-friendly wrapper for the SDL_ttf library. To start:
+
+Writer writerObject(rend, "/usr/font.ttf", size);
+
+    After instantiation, you can write using:
+
+writerObject.write("text here", xPos, yPos, color);
+
+    The first time a Writer renders a phrase will be
+the most inefficient, as it must generate a new texture
+with the phrase. From there, the texture will be stored
+in memory and displaying it will be must cheaper.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 The Slicer class:
 
     This class is for internal use in the window class.
