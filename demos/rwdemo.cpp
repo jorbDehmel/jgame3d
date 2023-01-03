@@ -104,6 +104,8 @@ bool update(Window *wind)
         cube_dz = 0;
     }
 
+    wind->getSlicer()->cameraRot.y -= .001;
+
     return true;
 }
 

@@ -48,6 +48,16 @@ Point3D::Point3D(const double X, const double Y, const double Z)
     z = Z;
 }
 
+bool operator==(const Point3D &a, const Point3D &b)
+{
+    return (a.x == b.x) && (a.y == b.y) && (a.z == b.z);
+}
+
+bool operator!=(const Point3D &a, const Point3D &b)
+{
+    return !(a == b);
+}
+
 //////////////////////////////
 
 ostream &operator<<(ostream &stream, const Point3D &p)
@@ -102,6 +112,10 @@ void Slicer::render()
         for (Polygon p : m.polygons)
         {
             polys.push_back(p);
+
+            // Move polygon such that absolute coordinated are maintained, but still allign with camera junk
+            move(polys[polys.size() - 1], cameraPos);
+            rotate(polys[polys.size() - 1], Point3D(0, 0, 0), cameraRot);
         }
     }
 

@@ -33,6 +33,9 @@ public:
     double x, y, z;
 };
 
+bool operator==(const Point3D &a, const Point3D &b);
+bool operator!=(const Point3D &a, const Point3D &b);
+
 // Insert the coordinated of the Point3D object into the stream and return
 ostream &operator<<(ostream &stream, const Point3D &p);
 
@@ -104,6 +107,13 @@ public:
 
     SDL_Renderer *rend;
     SDL_Window *wind;
+
+    Point3D cameraPos;
+    Rotation cameraRot;
+
+protected:
+    Point3D oldCameraPos;
+    Rotation oldCameraRot;
 };
 
 //////////////////////////////
