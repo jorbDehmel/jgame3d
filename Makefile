@@ -1,6 +1,6 @@
 #########################
 
-DEPS = `sdl2-config --cflags --libs` -lSDL2_ttf
+DEPS = `jgame3d-flags`
 CC = clang++
 ARGS = -pedantic -Wall
 STEM = $(CC) $(ARGS) $(DEPS)
