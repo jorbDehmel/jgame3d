@@ -3,21 +3,22 @@
 DEPS = `jgame3d-flags`
 CC = clang++
 ARGS = -pedantic -Wall
-STEM = $(CC) $(ARGS) $(DEPS)
+STEM = $(CC) $(ARGS)
+SUFFIX = $(DEPS)
 
 #########################
 
 bin/demo.out:	bin/ build/ build/demo.o bin/jgame3d.a
-	$(STEM) -o bin/demo.out build/demo.o bin/jgame3d.a
+	$(STEM) -o bin/demo.out build/demo.o $(SUFFIX)
 
 bin/stress.out: bin/ build/ build/stress.o bin/jgame3d.a
-	$(STEM) -o bin/stress.out build/stress.o bin/jgame3d.a
+	$(STEM) -o bin/stress.out build/stress.o bin/jgame3d.a $(SUFFIX)
 
 build/demo.o:	demos/rwdemo.cpp
-	$(STEM) -c demos/rwdemo.cpp -o build/demo.o
+	$(STEM) -c demos/rwdemo.cpp -o build/demo.o $(SUFFIX)
 
 build/stress.o:	demos/stresstest.cpp
-	$(STEM) -c demos/stresstest.cpp -o build/stress.o
+	$(STEM) -c demos/stresstest.cpp -o build/stress.o $(SUFFIX)
 
 #########################
 
