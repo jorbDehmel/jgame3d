@@ -37,13 +37,8 @@ use the following in your C++ files:
 
 Compiling:
 
-    You must include /usr/include/jgame3d/bin/jgame3d.a
-as the FINAL argument of your compilation command (this
-file will be created upon running `make install`).
-
-    This library depends of SDL2, and therefor you must
-include the following AT THE END OF your compilation
-command:
+    You must include the following AT THE END OF your
+compilation command:
 
     `jgame3d-flags`
 
@@ -77,6 +72,26 @@ a line AB at a given z point.
 
     The renderBetweenZ() function renders a sub-polygon
 falling between two z positions.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The files.hpp file and saving models:
+
+    The files.hpp file includes several methods for
+saving and loading Model objects from files. Namely,
+there is:
+
+    saveModel(const Model &what, const char *where);
+
+For saving Models (in a as-of-now exclusive format, i.e.
+not compatible with anything else) to file, and the
+function:
+
+    loadModel(const char *where)
+
+    For the inverse. I use .model as the file extension,
+but it's basically plaintext so you can use whatever
+extension your heart desires.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
