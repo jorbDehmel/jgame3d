@@ -20,9 +20,9 @@ install: build/ bin/ bin/jgame3d.a /usr/bin/jgame3d-flags
 bin/jgame3d.a:	build/ bin/ build/basics.o build/window.o build/resources.o build/files.o build/text.o
 	ar rsv bin/jgame3d.a build/basics.o build/window.o build/resources.o build/files.o build/text.o
 
-/usr/bin/jgame3d-flags: jgame3d-flags.sh
-	chmod +x jgame3d-flags.sh
-	sudo cp jgame3d-flags.sh /usr/bin/jgame3d-flags
+/usr/bin/jgame3d-flags: jgame3d-flags.py
+	chmod +x jgame3d-flags.py
+	sudo cp jgame3d-flags.py /usr/bin/jgame3d-flags
 
 build/basics.o:	build/ bin/ src/basics.cpp basics.hpp
 	$(STEM) -c src/basics.cpp -o build/basics.o $(SUFFIX)
