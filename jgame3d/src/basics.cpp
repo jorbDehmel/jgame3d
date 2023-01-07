@@ -109,6 +109,11 @@ void Slicer::render()
 
     for (Model m : models)
     {
+        if (!m.doRender)
+        {
+            continue;
+        }
+
         for (Polygon p : m.polygons)
         {
             polys.push_back(p);
@@ -118,6 +123,9 @@ void Slicer::render()
             rotate(polys[polys.size() - 1], Point3D(0, 0, 0), cameraRot);
         }
     }
+
+    if (polys.empty())
+        return;
 
     for (double z = renderMaxZ; z >= renderMinZ; z -= dz)
     {
@@ -207,6 +215,8 @@ Point3D getCenter(const Polygon &p)
 
 void move(Model &m, const Point3D &by)
 {
+    m.doRender = false;
+
     Point3D *current;
     for (int shapeNum = 0; shapeNum < m.polygons.size(); shapeNum++)
     {
@@ -217,6 +227,20 @@ void move(Model &m, const Point3D &by)
             current->x += by.x;
             current->y += by.y;
             current->z += by.z;
+
+            if (!m.doRender)
+            {
+                if (current->x > renderMinX && current->x < renderMaxX)
+                {
+                    if (current->y > renderMinY && current->y < renderMaxY)
+                    {
+                        if (current->z > renderMinZ && current->z < renderMaxZ)
+                        {
+                            m.doRender = true;
+                        }
+                    }
+                }
+            }
         }
     }
     return;
@@ -382,8 +406,15 @@ Point3D getPointAtZBetween(const Point3D &A, const Point3D &B, double z)
     else
     {
         // Compute coords for out (along line)
-        out.x = z * ((B.x - A.x) / (B.z - A.z)) - A.z * ((B.x - A.x) / (B.z - A.z)) + A.x;
-        out.y = z * ((B.y - A.y) / (B.z - A.z)) - A.z * ((B.y - A.y) / (B.z - A.z)) + A.y;
+        if (B.x == A.x)
+            out.x = A.x;
+        else
+            out.x = z * ((B.x - A.x) / (B.z - A.z)) - A.z * ((B.x - A.x) / (B.z - A.z)) + A.x;
+
+        if (B.y == A.y)
+            out.y = A.y;
+        else
+            out.y = z * ((B.y - A.y) / (B.z - A.z)) - A.z * ((B.y - A.y) / (B.z - A.z)) + A.y;
     }
 
     return out;
@@ -391,6 +422,9 @@ Point3D getPointAtZBetween(const Point3D &A, const Point3D &B, double z)
 
 SDL_FPoint projectPoint(const Point3D &p)
 {
+    if (p.z == 0)
+        return SDL_FPoint{0.0, 0.0};
+
     SDL_FPoint out;
     out.x = p.x;
     out.y = p.y;
@@ -410,6 +444,9 @@ SDL_FPoint projectPoint(const Point3D &p)
 
 void renderBetweenZ(SDL_Renderer *rend, Polygon &p, double z1, double z2)
 {
+    if (p.points.empty())
+        return;
+
     vector<SDL_FPoint> points;
 
     // Make z1 < z2

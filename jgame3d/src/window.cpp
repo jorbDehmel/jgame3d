@@ -91,7 +91,10 @@ void Window::mainLoop()
         }
         else
         {
-            cout << "Update took " << end - start << " ms (" << 1000 / (end - start) << " fps)\n";
+            if (end == start)
+                cout << "Update took < 1 ms\n";
+            else
+                cout << "Update took " << end - start << " ms (" << 1000 / (end - start) << " fps)\n";
         }
     }
 }

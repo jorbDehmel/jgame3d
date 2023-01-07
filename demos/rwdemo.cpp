@@ -104,7 +104,7 @@ bool update(Window *wind)
         cube_dz = 0;
     }
 
-    wind->getSlicer()->cameraRot.y -= .001;
+    // wind->getSlicer()->cameraRot.y -= .001;
 
     return true;
 }
@@ -121,17 +121,10 @@ int main()
     renderMaxZ += FOVScalar;
 
     Model cube;
-    createCube(cube, colorList);
-    move(cube, Point3D(500, 500, 500));
-
-    Model ground;
-    createSquare(ground, makeColor(255, 255, 255, 255), 1000 + FOVScalar);
-
-    move(ground, Point3D(-(FOVScalar / 2), 600, 1000 + FOVScalar));
-    rotate(ground, Rotation(M_PI / 2, 0, 0));
+    createCube(cube, colorList, 128);
+    move(cube, Point3D(500, 500, 600));
 
     wind.add(cube);
-    wind.add(ground);
 
     wind.mainLoop();
 

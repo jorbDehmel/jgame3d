@@ -1,5 +1,7 @@
 #!/bin/python3
 
+# Rewritten in python because I know it better than bash
+
 import sys
 
 if __name__ == "__main__":

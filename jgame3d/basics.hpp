@@ -85,6 +85,7 @@ class Model
 {
 public:
     vector<Polygon> polygons;
+    bool doRender = true;
 };
 
 // Insert the polygons in a model into a stream and return
