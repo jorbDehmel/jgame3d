@@ -12,7 +12,20 @@ also see github.com/jorbDehmel/jgame
 Installation:
 
     This library only supports Linux. It requires SDL2,
-which will be installed with this library.
+which will need to be installed with this library. The
+following commands should work for their respective
+distros:
+
+Debian:
+    sudo apt-get install libsdl2-dev libsdl2-ttf-dev clang
+
+Arch:
+    sudo pacman -S sdl2 sdl2_ttf clang
+
+    With enough fiddling around, you could probably get
+this to work with macOS, and if you're really dedicated,
+maybe Windows, but it's guarenteed to work with Linux
+(WSL is a great resource).
 
     To install this library, open this folder in
 terminal and enter `make install`. From then on, you can
@@ -29,14 +42,17 @@ as the FINAL argument of your compilation command (this
 file will be created upon running `make install`).
 
     This library depends of SDL2, and therefor you must
-include the following in your compilation command:
+include the following AT THE END OF your compilation
+command:
 
-    `sdl2-config --cflags --libs`
+    `jgame3d-flags`
 
 For example:
 
-g++ `sdl2-config --cflags --libs` foo.cpp -o b.out \
-    /usr/include/jgame3d/bin/jgame3d.a        
+    g++ -o b.out foo.cpp `jgame3d-flags`
+
+    Note: For reasons I don't understand, this MUST MUST
+MUST be at the END of your compilation command!
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

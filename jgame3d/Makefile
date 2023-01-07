@@ -7,9 +7,12 @@ STEM = $(CC) $(ARGS)
 SUFFIX = $(DEPS)
 
 #########################
+# Installing dependencies:
+# Debian: 	sudo apt install libsdl2-dev libsdl2-ttf-dev clang
+# Arch:		sudo pacman -S sdl2 sdl2_ttf clang
+#########################
 
 install: build/ bin/ bin/jgame3d.a /usr/bin/jgame3d-flags
-	sudo apt install libsdl2-dev libsdl2-ttf-dev
 	sudo rm -rf /usr/include/jgame3d
 	sudo mkdir /usr/include/jgame3d
 	sudo cp -r ./* /usr/include/jgame3d
