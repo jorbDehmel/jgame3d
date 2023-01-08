@@ -1,4 +1,6 @@
 #include "../jgame3d/jgame3d.hpp"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
 #include <iostream>
 using namespace std;
 
@@ -111,8 +113,13 @@ bool update(Window *wind)
 
 int main()
 {
+    SDL_DisplayMode dm;
 
     Window wind(1028, 1028, 0, update, SDL_WINDOW_OPENGL);
+    
+    assert(SDL_GetCurrentDisplayMode(0, &dm) == 0);
+    
+    wind.setUpScaleFactor((dm.h * .7) / 1028);
 
     dz = 3;
     FOVScalar = 500;
