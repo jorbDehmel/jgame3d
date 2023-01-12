@@ -20,7 +20,7 @@ Window::Window(int W, int H, int RefreshRate, bool (*Update)(Window *space),
     renderMinX = renderMinY = renderMinZ = 0;
     renderMaxX = renderMaxY = renderMaxZ = 1000;
 
-    space = new Slicer(rend, wind);
+    space = new Slicer(rend);
 
     delayTime = RefreshRate;
 }

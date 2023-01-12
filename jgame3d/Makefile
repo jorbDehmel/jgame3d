@@ -17,8 +17,8 @@ install: build/ bin/ bin/jgame3d.a /usr/bin/jgame3d-flags
 	sudo mkdir /usr/include/jgame3d
 	sudo cp -r ./* /usr/include/jgame3d
 
-bin/jgame3d.a:	build/ bin/ build/basics.o build/window.o build/resources.o build/files.o build/text.o
-	ar rsv bin/jgame3d.a build/basics.o build/window.o build/resources.o build/files.o build/text.o
+bin/jgame3d.a:	build/ bin/ build/basics.o build/window.o build/resources.o build/files.o build/text.o build/scaling.o
+	ar rsv bin/jgame3d.a build/basics.o build/window.o build/resources.o build/files.o build/text.o build/scaling.o
 
 /usr/bin/jgame3d-flags: jgame3d-flags.py
 	chmod +x jgame3d-flags.py
@@ -38,6 +38,9 @@ build/files.o:	build/ bin/ src/files.cpp files.hpp
 
 build/text.o:	build/ bin/ src/text.cpp text.hpp
 	$(STEM) -c src/text.cpp -o build/text.o $(SUFFIX)
+
+build/scaling.o:	build/ bin/ src/scaling.cpp scaling.hpp
+	$(STEM) -c src/scaling.cpp -o build/scaling.o $(SUFFIX)
 
 build/:
 	mkdir build

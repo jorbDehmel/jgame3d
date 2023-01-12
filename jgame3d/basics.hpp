@@ -30,6 +30,12 @@ public:
     Point3D(const Point3D &other);
     Point3D(const double x, const double y, const double z);
 
+    Point3D operator=(const Point3D &other)
+    {
+        x = other.x, y = other.y, z = other.z;
+        return other;
+    }
+
     double x, y, z;
 };
 
@@ -100,14 +106,13 @@ Handles overlapping polygons.
 class Slicer
 {
 public:
-    Slicer(SDL_Renderer *&rend, SDL_Window *&wind);
+    Slicer(SDL_Renderer *&rend);
 
     void render();
 
     vector<Model> models;
 
     SDL_Renderer *rend;
-    SDL_Window *wind;
 
     Point3D cameraPos;
     Rotation cameraRot;

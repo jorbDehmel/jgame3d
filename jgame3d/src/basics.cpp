@@ -97,10 +97,9 @@ ostream &operator<<(ostream &stream, const Model &p)
 
 //////////////////////////////
 
-Slicer::Slicer(SDL_Renderer *&Rend, SDL_Window *&Wind)
+Slicer::Slicer(SDL_Renderer *&Rend)
 {
     rend = Rend;
-    wind = Wind;
 }
 
 void Slicer::render()

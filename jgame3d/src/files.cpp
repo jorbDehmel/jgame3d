@@ -26,7 +26,6 @@ bool saveModel(const Model &what, const char *where)
 
 Model loadModel(const char *where)
 {
-    // Todo: implement this
     ifstream file(where);
     if (!file.is_open())
         throw runtime_error("Cannot open output file\n");
