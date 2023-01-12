@@ -101,6 +101,74 @@ void createCube(Model &obj, vector<SDL_Color> &colors, double sideLength)
     return;
 }
 
+void createCube(Model &obj, SDL_Color &color, double sideLength)
+{
+    double moveBy = sideLength / 2;
+
+    vector<Point3D> tbSquare = {
+        Point3D(0, 0, 0),
+        Point3D(sideLength, 0, 0),
+        Point3D(sideLength, sideLength, 0),
+        Point3D(0, sideLength, 0)};
+
+    Polygon top;
+    top.points = tbSquare;
+    top.color = color;
+    move(top, Point3D(-moveBy, -moveBy, moveBy));
+
+    Polygon bottom;
+    bottom.points = tbSquare;
+    bottom.color = color;
+    move(bottom, Point3D(-moveBy, -moveBy, -moveBy));
+
+    /////////////////////////////
+
+    vector<Point3D> lrSquare = {
+        Point3D(0, 0, 0),
+        Point3D(0, sideLength, 0),
+        Point3D(0, sideLength, sideLength),
+        Point3D(0, 0, sideLength)};
+
+    Polygon right;
+    right.points = lrSquare;
+    right.color = color;
+    move(right, Point3D(moveBy, -moveBy, -moveBy));
+
+    Polygon left;
+    left.points = lrSquare;
+    left.color = color;
+    move(left, Point3D(-moveBy, -moveBy, -moveBy));
+
+    ////////////////////
+
+    vector<Point3D> fbSquare = {
+        Point3D(0, 0, 0),
+        Point3D(sideLength, 0, 0),
+        Point3D(sideLength, 0, sideLength),
+        Point3D(0, 0, sideLength)};
+
+    Polygon front;
+    front.points = fbSquare;
+    front.color = color;
+    move(front, Point3D(-moveBy, moveBy, -moveBy));
+
+    Polygon back;
+    back.points = fbSquare;
+    back.color = color;
+    move(back, Point3D(-moveBy, -moveBy, -moveBy));
+
+    obj.polygons.push_back(right);
+    obj.polygons.push_back(left);
+
+    obj.polygons.push_back(top);
+    obj.polygons.push_back(bottom);
+
+    obj.polygons.push_back(front);
+    obj.polygons.push_back(back);
+
+    return;
+}
+
 void createSquare(Model &obj, SDL_Color color, double sideLength)
 {
     vector<Point3D> square = {

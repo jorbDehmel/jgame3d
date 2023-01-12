@@ -18,6 +18,7 @@ namespace colors
 
 // Create a cube with colors 'colors', and side length 'sideLength'
 void createCube(Model &obj, vector<SDL_Color> &colors, double sideLength = 64);
+void createCube(Model &obj, SDL_Color &color, double sideLength = 64);
 
 void createSquare(Model &obj, SDL_Color color, double sideLength = 64);
 
