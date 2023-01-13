@@ -36,6 +36,12 @@ public:
         return other;
     }
 
+    void operator+=(const Point3D &other)
+    {
+        x += other.x, y += other.y, z += other.z;
+        return;
+    }
+
     double x, y, z;
 };
 
