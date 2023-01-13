@@ -99,6 +99,12 @@ ostream &operator<<(ostream &stream, const Model &p);
 
 //////////////////////////////
 
+enum SlicerModes
+{
+    Normal,
+    Wireframe
+};
+
 /*
 A slicing renderer for proper layering in space.
 Handles overlapping polygons.
@@ -116,6 +122,8 @@ public:
 
     Point3D cameraPos;
     Rotation cameraRot;
+
+    SlicerModes mode = Normal;
 
 protected:
     Point3D oldCameraPos;
@@ -153,6 +161,9 @@ void rotate(Point3D &p, const Rotation &by);
 
 // Fill a 2D polygon with a color
 void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color);
+
+// Wire a polygon wireframe
+void renderPolygon(SDL_Renderer *rend, const Polygon &p);
 
 //////////////////////////////
 

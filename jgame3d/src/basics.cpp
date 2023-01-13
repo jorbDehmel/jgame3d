@@ -126,11 +126,22 @@ void Slicer::render()
     if (polys.empty())
         return;
 
-    for (double z = renderMaxZ; z >= renderMinZ; z -= dz)
+    if (mode == Normal)
+    {
+        // Standard iterative-z rendering
+        for (double z = renderMaxZ; z >= renderMinZ; z -= dz)
+        {
+            for (Polygon poly : polys)
+            {
+                renderBetweenZ(rend, poly, z - dz, z + dz);
+            }
+        }
+    }
+    else if (mode == Wireframe)
     {
         for (Polygon poly : polys)
         {
-            renderBetweenZ(rend, poly, z - dz, z + dz);
+            renderPolygon(rend, poly);
         }
     }
 
@@ -503,6 +514,23 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, double z1, double z2)
     {
         fillPolygon(rend, points, p.color);
     }
+
+    return;
+}
+
+//////////////////////////////
+
+void renderPolygon(SDL_Renderer *rend, const Polygon &p)
+{
+    SDL_FPoint points[p.points.size() + 1];
+    for (int i = 0; i < p.points.size(); i++)
+    {
+        points[i] = projectPoint(p.points[i]);
+    }
+    points[p.points.size()] = points[0];
+
+    SDL_SetRenderDrawColor(rend, p.color.r, p.color.g, p.color.b, p.color.a);
+    SDL_RenderDrawLinesF(rend, points, p.points.size() + 1);
 
     return;
 }
