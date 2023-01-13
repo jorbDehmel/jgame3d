@@ -12,7 +12,7 @@ bin/demo.out:	bin/ build/ build/demo.o bin/jgame3d.a
 	$(STEM) -o bin/demo.out build/demo.o $(SUFFIX)
 
 bin/stress.out: bin/ build/ build/stress.o bin/jgame3d.a
-	$(STEM) -o bin/stress.out build/stress.o bin/jgame3d.a $(SUFFIX)
+	$(STEM) -o bin/stress.out build/stress.o $(SUFFIX)
 
 build/demo.o:	demos/rwdemo.cpp
 	$(STEM) -c demos/rwdemo.cpp -o build/demo.o $(SUFFIX)

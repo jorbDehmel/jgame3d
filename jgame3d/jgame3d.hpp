@@ -3,9 +3,11 @@
 
 // Include all other .hpp files
 #include "basics.hpp"
-#include "keys.hpp"
 #include "resources.hpp"
 #include "window.hpp"
 #include "files.hpp"
+#include "scaling.hpp"
+
+// #include "keys.hpp"
 
 #endif
