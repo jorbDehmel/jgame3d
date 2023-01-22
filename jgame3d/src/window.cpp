@@ -27,6 +27,8 @@ Window::Window(int W, int H, int RefreshRate, bool (*Update)(Window *space),
 
 Window::~Window()
 {
+    delete space;
+
     SDL_DestroyRenderer(rend);
     SDL_DestroyWindow(wind);
     SDL_Quit();
