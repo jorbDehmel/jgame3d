@@ -15,11 +15,14 @@ Writer::~Writer()
     TTF_CloseFont(font);
     TTF_Quit();
 
-    for (auto p : surfaces)
+    for (auto it = surfaces.begin(); it != surfaces.end(); it++)
     {
-        SDL_DestroyTexture(p.second);
+        if (it->second != nullptr)
+        {
+            SDL_DestroyTexture(it->second);
+            surfaces[it->first] = nullptr;
+        }
     }
-    surfaces.clear();
 
     return;
 }
@@ -30,6 +33,7 @@ void Writer::write(const string what, const double x, const double y, SDL_Color 
     {
         SDL_Surface *surf = TTF_RenderText_Solid(font, what.c_str(), color);
         surfaces[what] = SDL_CreateTextureFromSurface(rend, surf);
+        SDL_FreeSurface(surf);
     }
 
     int w = 0, h = 0;

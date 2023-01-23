@@ -169,7 +169,7 @@ void rotate(Point3D &p, const Rotation &by);
 void fillPolygon(SDL_Renderer *rend, vector<SDL_FPoint> &poly, SDL_Color color);
 
 // Wire a polygon wireframe
-void renderPolygon(SDL_Renderer *rend, const Polygon &p);
+void renderPolygon(SDL_Renderer *rend, Polygon &p);
 
 //////////////////////////////
 

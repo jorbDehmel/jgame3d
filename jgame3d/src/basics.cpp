@@ -520,7 +520,7 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, double z1, double z2)
 
 //////////////////////////////
 
-void renderPolygon(SDL_Renderer *rend, const Polygon &p)
+void renderPolygon(SDL_Renderer *rend, Polygon &p)
 {
     SDL_FPoint points[p.points.size() + 1];
     for (int i = 0; i < p.points.size(); i++)
