@@ -1,4 +1,5 @@
-#include "../jgame3d/jgame3d.hpp"
+#include "jgame3d/jgame3d.hpp"
+#include "jgame3d/keys.hpp"
 using namespace std;
 
 //////////////////////////////////////////////////

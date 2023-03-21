@@ -23,6 +23,8 @@ Window::Window(int W, int H, int RefreshRate, bool (*Update)(Window *space),
     space = new Slicer(rend);
 
     delayTime = RefreshRate;
+
+    return;
 }
 
 Window::~Window()
@@ -43,6 +45,8 @@ void Window::setUpScaleFactor(const double upScaleBy)
 
     SDL_SetWindowSize(wind, w * upScaleBy, h * upScaleBy);
     SDL_RenderSetScale(rend, upScaleBy, upScaleBy);
+
+    return;
 }
 
 void Window::mainLoop()
@@ -99,6 +103,8 @@ void Window::mainLoop()
                 cout << "Update took " << end - start << " ms (" << 1000 / (end - start) << " fps)\n";
         }
     }
+
+    return;
 }
 
 bool Window::isKeyPressed(const int &key) const

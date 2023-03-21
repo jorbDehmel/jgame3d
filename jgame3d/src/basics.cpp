@@ -32,6 +32,7 @@ SDL_Color makeColor(const Uint8 r, const Uint8 g, const Uint8 b, const Uint8 a)
 Point3D::Point3D()
 {
     x = y = z = 0;
+    return;
 }
 
 Point3D::Point3D(const Point3D &other)
@@ -39,6 +40,7 @@ Point3D::Point3D(const Point3D &other)
     x = other.x;
     y = other.y;
     z = other.z;
+    return;
 }
 
 Point3D::Point3D(const double X, const double Y, const double Z)
@@ -46,6 +48,7 @@ Point3D::Point3D(const double X, const double Y, const double Z)
     x = X;
     y = Y;
     z = Z;
+    return;
 }
 
 bool operator==(const Point3D &a, const Point3D &b)
@@ -100,6 +103,7 @@ ostream &operator<<(ostream &stream, const Model &p)
 Slicer::Slicer(SDL_Renderer *&Rend)
 {
     rend = Rend;
+    return;
 }
 
 void Slicer::render()

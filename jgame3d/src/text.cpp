@@ -8,6 +8,8 @@ Writer::Writer(SDL_Renderer *Rend, const char *Path, const int Points)
     TTF_Init();
 
     font = TTF_OpenFont(Path, Points);
+
+    return;
 }
 
 Writer::~Writer()

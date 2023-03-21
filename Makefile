@@ -8,6 +8,10 @@ SUFFIX = $(DEPS)
 
 #########################
 
+all: bin/demo.out bin/stress.out
+
+#########################
+
 bin/demo.out:	bin/ build/ build/demo.o
 	$(STEM) -o bin/demo.out build/demo.o $(SUFFIX)
 
@@ -22,7 +26,7 @@ build/stress.o:	demos/stresstest.cpp /usr/include/jgame3d/bin/jgame3d.a
 
 #########################
 
-/usr/include/jgame3d/bin/jgame3d.a:
+/usr/include/jgame3d/bin/jgame3d.a: jgame3d/bin/jgame3d.a
 	$(MAKE) -C jgame3d
 
 #########################
