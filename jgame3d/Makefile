@@ -15,7 +15,13 @@ SUFFIX = $(DEPS)
 install: build/ bin/ bin/jgame3d.a /usr/bin/jgame3d-flags
 	sudo rm -rf /usr/include/jgame3d
 	sudo mkdir /usr/include/jgame3d
-	sudo cp -r ./* /usr/include/jgame3d
+
+	sudo cp *.hpp /usr/include/jgame3d
+	sudo cp bin/jgame3d.a /usr/include/jgame3d/jgame3d.a
+
+uninstall:
+	sudo rm -rf /usr/include/jgame3d
+	sudo rm -rf /usr/bin/jgame3d-flags
 
 bin/jgame3d.a:	build/ bin/ build/basics.o build/window.o build/resources.o build/files.o build/text.o build/scaling.o
 	ar rsv bin/jgame3d.a build/basics.o build/window.o build/resources.o build/files.o build/text.o build/scaling.o
@@ -51,10 +57,6 @@ bin/:
 #########################
 
 clean:
-	rm -f *.o
-	rm -f build/*
-
-pclean:
 	rm -f *.out *.o
 	rm -f bin/*
 	rm -f build/*

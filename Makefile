@@ -8,22 +8,22 @@ SUFFIX = $(DEPS)
 
 #########################
 
-bin/demo.out:	bin/ build/ build/demo.o bin/jgame3d.a
+bin/demo.out:	bin/ build/ build/demo.o
 	$(STEM) -o bin/demo.out build/demo.o $(SUFFIX)
 
-bin/stress.out: bin/ build/ build/stress.o bin/jgame3d.a
+bin/stress.out: bin/ build/ build/stress.o
 	$(STEM) -o bin/stress.out build/stress.o $(SUFFIX)
 
-build/demo.o:	demos/rwdemo.cpp
+build/demo.o:	demos/rwdemo.cpp /usr/include/jgame3d/bin/jgame3d.a
 	$(STEM) -c demos/rwdemo.cpp -o build/demo.o $(SUFFIX)
 
-build/stress.o:	demos/stresstest.cpp
+build/stress.o:	demos/stresstest.cpp /usr/include/jgame3d/bin/jgame3d.a
 	$(STEM) -c demos/stresstest.cpp -o build/stress.o $(SUFFIX)
 
 #########################
 
-bin/jgame3d.a:	/usr/include/jgame3d/bin/jgame3d.a
-	cp /usr/include/jgame3d/bin/jgame3d.a bin/jgame3d.a
+/usr/include/jgame3d/bin/jgame3d.a:
+	$(MAKE) -C jgame3d
 
 #########################
 
@@ -36,10 +36,6 @@ build/:
 #########################
 
 clean:
-	rm -f *.o
-	rm -f build/*
-
-pclean:
 	rm -f *.out *.o
 	rm -f bin/*
 	rm -f build/*
