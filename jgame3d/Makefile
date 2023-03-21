@@ -1,10 +1,9 @@
 #########################
 
-DEPS = `sdl2-config --cflags --libs` -lSDL2_ttf
 CC = clang++
 ARGS = -pedantic -Wall
 STEM = $(CC) $(ARGS)
-SUFFIX = $(DEPS)
+C_SUFFIX = `sdl2-config --cflags`
 
 #########################
 # Installing dependencies:
@@ -30,23 +29,27 @@ bin/jgame3d.a:	build/ bin/ build/basics.o build/window.o build/resources.o build
 	chmod +x jgame3d-flags.py
 	sudo cp jgame3d-flags.py /usr/bin/jgame3d-flags
 
+#########################
+
 build/basics.o:	build/ bin/ src/basics.cpp basics.hpp
-	$(STEM) -c src/basics.cpp -o build/basics.o $(SUFFIX)
+	$(STEM) -c src/basics.cpp -o build/basics.o $(C_SUFFIX)
 
 build/window.o:	build/ bin/ src/window.cpp window.hpp
-	$(STEM) -c src/window.cpp -o build/window.o $(SUFFIX)
+	$(STEM) -c src/window.cpp -o build/window.o $(C_SUFFIX)
 
 build/resources.o:	build/ bin/ src/resources.cpp resources.hpp
-	$(STEM) -c src/resources.cpp -o build/resources.o $(SUFFIX)
+	$(STEM) -c src/resources.cpp -o build/resources.o $(C_SUFFIX)
 
 build/files.o:	build/ bin/ src/files.cpp files.hpp
-	$(STEM) -c src/files.cpp -o build/files.o $(SUFFIX)
+	$(STEM) -c src/files.cpp -o build/files.o $(C_SUFFIX)
 
 build/text.o:	build/ bin/ src/text.cpp text.hpp
-	$(STEM) -c src/text.cpp -o build/text.o $(SUFFIX)
+	$(STEM) -c src/text.cpp -o build/text.o $(C_SUFFIX)
 
 build/scaling.o:	build/ bin/ src/scaling.cpp scaling.hpp
-	$(STEM) -c src/scaling.cpp -o build/scaling.o $(SUFFIX)
+	$(STEM) -c src/scaling.cpp -o build/scaling.o $(C_SUFFIX)
+
+#########################
 
 build/:
 	mkdir build

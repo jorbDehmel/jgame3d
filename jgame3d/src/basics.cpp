@@ -526,7 +526,8 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, double z1, double z2)
 
 void renderPolygon(SDL_Renderer *rend, Polygon &p)
 {
-    SDL_FPoint points[p.points.size() + 1];
+    SDL_FPoint *points = new SDL_FPoint[p.points.size() + 1];
+
     for (int i = 0; i < p.points.size(); i++)
     {
         points[i] = projectPoint(p.points[i]);
@@ -535,6 +536,8 @@ void renderPolygon(SDL_Renderer *rend, Polygon &p)
 
     SDL_SetRenderDrawColor(rend, p.color.r, p.color.g, p.color.b, p.color.a);
     SDL_RenderDrawLinesF(rend, points, p.points.size() + 1);
+
+    delete[] points;
 
     return;
 }
