@@ -142,6 +142,8 @@ public:
 protected:
     Point3D oldCameraPos;
     Rotation oldCameraRot;
+
+    double minZ = 10000, maxZ = -10000;
 };
 
 //////////////////////////////

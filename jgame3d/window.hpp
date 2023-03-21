@@ -56,9 +56,12 @@ public:
     // Return the Slicer instance (modifiable)
     Slicer *getSlicer();
 
+    // The filter function, called once per frame after all other rendering
+    void (*filter)(Window *wind) = nullptr;
+
 protected:
     // The update function, called once per frame
-    bool (*update)(Window *space);
+    bool (*update)(Window *wind);
 
     // Underlying SDL2 window
     SDL_Window *wind;

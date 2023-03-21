@@ -97,6 +97,12 @@ void Window::mainLoop()
         // Update mouse position and state
         mouseState = SDL_GetMouseState(&mousePos.x, &mousePos.y);
 
+        // Call filter function
+        if (filter != nullptr)
+        {
+            filter(this);
+        }
+
         // Delay if needed
         end = SDL_GetTicks();
         if (end - start < delayTime)

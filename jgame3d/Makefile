@@ -22,7 +22,7 @@ uninstall:
 	sudo rm -rf /usr/include/jgame3d
 	sudo rm -rf /usr/bin/jgame3d-flags
 
-bin/jgame3d.a:	build/ bin/ build/basics.o build/window.o build/resources.o build/files.o build/text.o build/scaling.o
+bin/jgame3d.a:	build/basics.o build/window.o build/resources.o build/files.o build/text.o build/scaling.o
 	ar rsv bin/jgame3d.a build/basics.o build/window.o build/resources.o build/files.o build/text.o build/scaling.o
 
 /usr/bin/jgame3d-flags: jgame3d-flags.py
@@ -31,22 +31,22 @@ bin/jgame3d.a:	build/ bin/ build/basics.o build/window.o build/resources.o build
 
 #########################
 
-build/basics.o:	build/ bin/ src/basics.cpp basics.hpp
+build/basics.o:	src/basics.cpp basics.hpp
 	$(STEM) -c src/basics.cpp -o build/basics.o $(C_SUFFIX)
 
-build/window.o:	build/ bin/ src/window.cpp window.hpp
+build/window.o:	src/window.cpp window.hpp
 	$(STEM) -c src/window.cpp -o build/window.o $(C_SUFFIX)
 
-build/resources.o:	build/ bin/ src/resources.cpp resources.hpp
+build/resources.o:	src/resources.cpp resources.hpp
 	$(STEM) -c src/resources.cpp -o build/resources.o $(C_SUFFIX)
 
-build/files.o:	build/ bin/ src/files.cpp files.hpp
+build/files.o:	src/files.cpp files.hpp
 	$(STEM) -c src/files.cpp -o build/files.o $(C_SUFFIX)
 
-build/text.o:	build/ bin/ src/text.cpp text.hpp
+build/text.o:	src/text.cpp text.hpp
 	$(STEM) -c src/text.cpp -o build/text.o $(C_SUFFIX)
 
-build/scaling.o:	build/ bin/ src/scaling.cpp scaling.hpp
+build/scaling.o:	src/scaling.cpp scaling.hpp
 	$(STEM) -c src/scaling.cpp -o build/scaling.o $(C_SUFFIX)
 
 #########################

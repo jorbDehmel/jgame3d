@@ -118,6 +118,8 @@ void Slicer::render()
 {
     vector<Polygon> polys;
 
+    minZ = renderMaxZ;
+    maxZ = renderMinZ;
     for (Model m : models)
     {
         if (!m.doRender)
@@ -129,19 +131,48 @@ void Slicer::render()
         {
             polys.push_back(p);
 
-            // Move polygon such that absolute coordinated are maintained, but still allign with camera junk
-            move(polys[polys.size() - 1], cameraPos);
-            rotate(polys[polys.size() - 1], Point3D(0, 0, 0), cameraRot);
+            // Move polygon such that absolute coordinates are maintained, but still align with camera junk
+            move(polys.back(), cameraPos);
+            rotate(polys.back(), Point3D(renderMaxX / 2, renderMaxY, 0), cameraRot);
+
+            // Record min and max z values for later
+            for (auto point : polys.back().points)
+            {
+                if (point.z < minZ)
+                {
+                    minZ = point.z;
+                }
+                if (point.z > maxZ)
+                {
+                    maxZ = point.z;
+                }
+            }
         }
     }
 
     if (polys.empty())
+    {
         return;
+    }
 
     if (mode == Normal)
     {
+        double minBound, maxBound;
+
+        maxBound = (renderMaxZ < maxZ) ? renderMaxZ : maxZ;
+        minBound = (renderMinZ > minZ) ? renderMinZ : minZ;
+
+        if (minBound < 0)
+        {
+            minBound = 0;
+        }
+        if (maxBound <= 0)
+        {
+            return;
+        }
+
         // Standard iterative-z rendering
-        for (double z = renderMaxZ; z >= renderMinZ; z -= dz)
+        for (double z = maxBound; z >= minBound; z -= dz)
         {
             for (Polygon poly : polys)
             {
