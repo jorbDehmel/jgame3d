@@ -6,11 +6,9 @@ github.com/jorbDehmel
 GPLv3 held by author
 */
 
-#include "../jgame3d/jgame3d.hpp"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_video.h>
-#include "../jgame3d/keys.hpp"
 #include <iostream>
+#include "jgame3d/jgame3d.hpp"
+#include "jgame3d/keys.hpp"
 using namespace std;
 
 //////////////////////////////////////////////////
