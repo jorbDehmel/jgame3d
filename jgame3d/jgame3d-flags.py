@@ -1,5 +1,13 @@
 #!/bin/python3
 
+'''
+Jordan "Jorb" Dehmel
+jdehmel@outlook.com
+github.com/jorbDehmel
+2022 - present
+GPLv3 held by author
+'''
+
 # Rewritten in python because I know it better than bash
 
 import sys

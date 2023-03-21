@@ -1,3 +1,11 @@
+/*
+Jordan "Jorb" Dehmel
+jdehmel@outlook.com
+github.com/jorbDehmel
+2022 - present
+GPLv3 held by author
+*/
+
 #ifndef BASICS_H
 #define BASICS_H
 

@@ -1,3 +1,11 @@
+/*
+Jordan "Jorb" Dehmel
+jdehmel@outlook.com
+github.com/jorbDehmel
+2022 - present
+GPLv3 held by author
+*/
+
 #ifndef KEYS_H
 #define KEYS_H
 

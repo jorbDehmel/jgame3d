@@ -1,3 +1,11 @@
+/*
+Jordan "Jorb" Dehmel
+jdehmel@outlook.com
+github.com/jorbDehmel
+2022 - present
+GPLv3 held by author
+*/
+
 #include "jgame3d/jgame3d.hpp"
 #include "jgame3d/keys.hpp"
 using namespace std;
