@@ -43,24 +43,36 @@ bool update(Window *wind)
     if (wind->isKeyPressed(keys::w))
     {
         if (cube.polygons[0].points[0].y > renderMinY)
+        {
             move(cube, Point3D(0, -stepSize, 0));
+        }
     }
     if (wind->isKeyPressed(keys::s))
     {
         if (cube.polygons[0].points[0].y < renderMaxY)
+        {
             move(cube, Point3D(0, stepSize, 0));
+        }
     }
 
     if (wind->isKeyPressed(keys::q))
+    {
         cube_dz++;
+    }
     else if (wind->isKeyPressed(keys::e))
+    {
         cube_dz--;
+    }
     else
     {
         if (cube_dz < 0)
+        {
             cube_dz++;
+        }
         else if (cube_dz > 0)
+        {
             cube_dz--;
+        }
     }
 
     if (wind->isKeyPressed(keys::d))

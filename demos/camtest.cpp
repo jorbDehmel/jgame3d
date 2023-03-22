@@ -90,10 +90,11 @@ int main()
     wind.setUpScaleFactor((dm.h * .7) / 1028);
 
     dz = 3;
+    dy = 1;
     FOVScalar = 500;
 
-    renderMinZ = FOVScalar;
-    renderMaxZ += FOVScalar;
+    renderMinZ = FOVScalar / 2;
+    renderMaxZ += FOVScalar * 5;
 
     for (int x = 0; x < 256 * 8; x += 256)
     {
