@@ -116,7 +116,8 @@ ostream &operator<<(ostream &stream, const Model &p);
 enum SlicerModes
 {
     Normal,
-    Wireframe
+    Wireframe,
+    Experimental,
 };
 
 /*

@@ -114,6 +114,11 @@ Slicer::Slicer(SDL_Renderer *&Rend)
     return;
 }
 
+bool __backwards_sort(const double &A, const double &B)
+{
+    return B < A;
+}
+
 void Slicer::render()
 {
     vector<Polygon> polys;
@@ -174,10 +179,15 @@ void Slicer::render()
         // Standard iterative-z rendering
         for (double z = maxBound; z >= minBound; z -= dz)
         {
+            // auto start = chrono::high_resolution_clock::now();
             for (Polygon poly : polys)
             {
+                getCenter(poly);
                 renderBetweenZ(rend, poly, z - dz, z + dz);
             }
+            // auto end = chrono::high_resolution_clock::now();
+            // auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+            // cout << "On z-bound " << z - dz << " to " << z + dz << " ns: " << elapsed << '\n';
         }
     }
     else if (mode == Wireframe)
@@ -185,6 +195,50 @@ void Slicer::render()
         for (Polygon poly : polys)
         {
             renderPolygon(rend, poly);
+        }
+    }
+    else if (mode == Experimental)
+    {
+        double minBound, maxBound;
+
+        maxBound = (renderMaxZ < maxZ) ? renderMaxZ : maxZ;
+        minBound = (renderMinZ > minZ) ? renderMinZ : minZ;
+
+        if (minBound < 0)
+        {
+            minBound = 0;
+        }
+        if (maxBound <= 0)
+        {
+            return;
+        }
+
+        // Create sorted z-list
+        vector<double> zValues;
+        zValues.push_back(minBound);
+        zValues.push_back(maxBound);
+
+        for (Polygon poly : polys)
+        {
+            for (auto point : poly.points)
+            {
+                double z = point.z;
+                if (z > minBound && z < maxBound)
+                {
+                    zValues.push_back(z);
+                }
+            }
+        }
+
+        sort(zValues.begin(), zValues.end(), __backwards_sort);
+
+        for (int i = 1; i < zValues.size(); i++)
+        {
+            for (Polygon poly : polys)
+            {
+                getCenter(poly);
+                renderBetweenZ(rend, poly, zValues[i - 1], zValues[i]);
+            }
         }
     }
 
@@ -498,7 +552,9 @@ SDL_FPoint projectPoint(const Point3D &p)
 void renderBetweenZ(SDL_Renderer *rend, Polygon &p, double z1, double z2)
 {
     if (p.points.empty())
+    {
         return;
+    }
 
     vector<SDL_FPoint> points;
 
@@ -512,9 +568,9 @@ void renderBetweenZ(SDL_Renderer *rend, Polygon &p, double z1, double z2)
 
     for (int i = 0; i < p.points.size(); i++)
     {
-        Point3D prev = p.points[(i - 1) % (p.points.size())];
-        Point3D cur = p.points[i];
-        Point3D next = p.points[(i + 1) % (p.points.size())];
+        Point3D &prev = p.points[(i - 1) % (p.points.size())];
+        Point3D &cur = p.points[i];
+        Point3D &next = p.points[(i + 1) % (p.points.size())];
 
         if (cur.z < z1 && next.z < z1 && prev.z < z1)
         {

@@ -20,10 +20,6 @@ Point3D cubePos(0, 0, 0);
 
 bool update(Window *wind)
 {
-    SDL_SetRenderDrawColor(wind->getRenderer(), 255, 255, 255, 255);
-    SDL_RenderDrawLineF(wind->getRenderer(), 0, 0, 1000, 1000);
-    SDL_RenderDrawLineF(wind->getRenderer(), 0, 1000, 1000, 0);
-
     Slicer *slicer = wind->getSlicer();
 
     if (wind->isKeyPressed(keys::esc))
@@ -57,6 +53,14 @@ bool update(Window *wind)
     {
         slicer->cameraRot.y -= 0.01;
     }
+    if (wind->isKeyPressed(keys::upArrow))
+    {
+        slicer->cameraRot.x -= 0.01;
+    }
+    if (wind->isKeyPressed(keys::downArrow))
+    {
+        slicer->cameraRot.x += 0.01;
+    }
 
     if (wind->isKeyPressed(keys::r))
     {
@@ -81,13 +85,15 @@ bool update(Window *wind)
 
 int main()
 {
+    srand(time(NULL));
+
     SDL_DisplayMode dm;
 
-    Window wind(1028, 1028, 0, update, SDL_WINDOW_OPENGL);
+    Window wind(256, 256, 0, update, SDL_WINDOW_OPENGL);
 
     assert(SDL_GetCurrentDisplayMode(0, &dm) == 0);
 
-    wind.setUpScaleFactor((dm.h * .7) / 1028);
+    wind.setUpScaleFactor((dm.h * .7) / 256);
 
     dz = 3;
     dy = 1;
@@ -103,12 +109,17 @@ int main()
             Model tile;
             createSquare(tile, makeColor(255 - (y / 8), 255 - (y / 8), 255 - (y / 8), 255 - (y / 8)), 255);
             rotate(tile, Rotation(M_PI / 2, 0, 0));
-            move(tile, Point3D(x, 800, y));
+            move(tile, Point3D(x, 300 + (rand() % 500), y));
 
             wind.add(tile);
         }
     }
 
+    // Normal: About 7-30 fps
+    // Experimental mode: About 15-60 fps
+    // Wireframe: About 100-300 fps
+
+    wind.getSlicer()->mode = SlicerModes::Wireframe;
     wind.mainLoop();
 
     return 0;
