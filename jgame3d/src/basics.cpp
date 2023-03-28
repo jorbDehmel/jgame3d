@@ -222,8 +222,8 @@ void Slicer::render()
         {
             for (auto point : poly.points)
             {
-                double z = point.z;
-                if (z > minBound && z < maxBound)
+                double z = dz * (int)(point.z / dz);
+                if (z > minBound && z < maxBound && find(zValues.begin(), zValues.end(), z) == zValues.end())
                 {
                     zValues.push_back(z);
                 }
@@ -237,7 +237,7 @@ void Slicer::render()
             for (Polygon poly : polys)
             {
                 getCenter(poly);
-                renderBetweenZ(rend, poly, zValues[i - 1], zValues[i]);
+                renderBetweenZ(rend, poly, zValues[i - 1], zValues[i] - dz);
             }
         }
     }

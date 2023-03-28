@@ -101,13 +101,14 @@ int main()
 
     renderMinZ = FOVScalar / 2;
     renderMaxZ += FOVScalar * 5;
+    renderMaxX *= 2;
 
     for (int x = 0; x < 256 * 8; x += 256)
     {
         for (int y = 0; y < 256 * 8; y += 256)
         {
             Model tile;
-            createSquare(tile, makeColor(255 - (y / 8), 255 - (y / 8), 255 - (y / 8), 255 - (y / 8)), 255);
+            createSquare(tile, makeColor(255 - (x / 8), 255 - (y / 8), 255 - (x / 8), 255), 255);
             rotate(tile, Rotation(M_PI / 2, 0, 0));
             move(tile, Point3D(x, 300 + (rand() % 500), y));
 
@@ -115,11 +116,7 @@ int main()
         }
     }
 
-    // Normal: About 7-30 fps
-    // Experimental mode: About 15-60 fps
-    // Wireframe: About 100-300 fps
-
-    wind.getSlicer()->mode = SlicerModes::Wireframe;
+    wind.getSlicer()->mode = SlicerModes::Experimental;
     wind.mainLoop();
 
     return 0;
