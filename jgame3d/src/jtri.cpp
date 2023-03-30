@@ -12,10 +12,10 @@ double dy = 1;
 double h = 512;
 double w = 512;
 double FOVScalar = 200;
-Point focus{w / 2, h / 2, 500};
+Point focus{w / 2, h / 2, 2000};
 
-double renderMinX = -100, renderMinY = -100;
-double renderMaxX = w + 100, renderMaxY = h + 100;
+double renderMinX = -500, renderMinY = -500;
+double renderMaxX = w + 500, renderMaxY = h + 500;
 Uint32 windowFlags = SDL_WINDOW_OPENGL;
 
 Camera::Camera() : cameraRot{0, 0, 0}, cameraPos{0, 0, 0}
@@ -46,13 +46,16 @@ void Camera::present()
     return;
 }
 
-bool isSafe(const Point2D &P)
+bool isSafe(const Point &P)
 {
     if (P.x > renderMinX && P.x < renderMaxX)
     {
         if (P.y > renderMinY && P.y < renderMaxY)
         {
-            return true;
+            if (P.z > 0 && P.z < focus.z)
+            {
+                return true;
+            }
         }
     }
     return false;
@@ -79,12 +82,17 @@ void Camera::update()
             toRender = t;
 
             // Object location
-            // toRender = rotate(toRender, Point{0, 0, 0}, o.rot);
-            // toRender = move(toRender, o.offset);
+            toRender = rotate(toRender, Point{0, 0, 0}, o.rot);
+            toRender = move(toRender, o.offset);
 
             // Camera location
             toRender = move(toRender, cameraPos);
+
             toRender = rotate(toRender, Point{w / 2, h, 0}, cameraRot);
+            if (!isSafe(toRender.a) || !isSafe(toRender.b) || !isSafe(toRender.c))
+            {
+                continue;
+            }
 
             // Add to our priority queue
             triangles.push(toRender);
@@ -97,10 +105,7 @@ void Camera::update()
         projected = project(triangles.top());
         triangles.pop();
 
-        if (isSafe(projected.a) && isSafe(projected.b) && isSafe(projected.c))
-        {
-            render(projected, rend);
-        }
+        render(projected, rend);
     }
 
     return;
@@ -246,9 +251,9 @@ Object move(const Object &What, const Point &By)
 
 Point2D project(const Point &What)
 {
-    if (What.z <= 0)
+    if (!isSafe(What))
     {
-        return Point2D{0, 0};
+        return Point2D{renderMinX - 1, renderMinY - 1};
     }
 
     Point2D out{What.x - focus.x, What.y - focus.y};
@@ -276,6 +281,11 @@ Triangle2D project(const Triangle &What)
 // For constant C, height h, and dy
 void render(const Triangle2D &What, SDL_Renderer *With)
 {
+    if (What.a.y == What.b.y && What.a.y == What.c.y)
+    {
+        return;
+    }
+
     SDL_SetRenderDrawColor(With, What.color.r, What.color.g, What.color.b, What.color.a);
 
     // Assuming
@@ -369,30 +379,33 @@ void render(const Triangle2D &What, SDL_Renderer *With)
 
     // Iterate over a through b
     int i = 0;
-    SDL_FRect toFill;
+    SDL_FRect *rects = new SDL_FRect[2 + (int)(tri.c.y - tri.a.y) / dy];
+
     for (double y = tri.a.y; y < tri.b.y; y += dy, i++)
     {
-        toFill.y = y;
-        toFill.h = dy;
+        rects[i].y = y;
+        rects[i].h = dy;
 
-        toFill.x = tri.a.x + (i * dxA);              // A to B
-        toFill.w = (tri.a.x + (i * dxB)) - toFill.x; // (A to C) - (A to B)
-
-        SDL_RenderFillRectF(With, &toFill);
+        rects[i].x = tri.a.x + (i * dxA);
+        rects[i].w = (tri.a.x + (i * dxB)) - rects[i].x;
     }
 
     // Iterate over b through c
     int j = 0;
     for (double y = tri.b.y; y < tri.c.y; y += dy, i++, j++)
     {
-        toFill.y = y;
-        toFill.h = dy;
+        rects[i].y = y;
+        rects[i].h = dy;
 
-        toFill.x = tri.b.x + (j * dxC);              // B to C
-        toFill.w = (tri.a.x + (i * dxB)) - toFill.x; // (A to C) - (B to C)
-
-        SDL_RenderFillRectF(With, &toFill);
+        rects[i].x = tri.b.x + (j * dxC);
+        rects[i].w = (tri.a.x + (i * dxB)) - rects[i].x;
     }
+
+    // Otherwise we will have had a undetected segfault
+    assert(i <= 2 + (int)(tri.c.y - tri.a.y) / dy);
+    SDL_RenderFillRectsF(With, rects, i);
+
+    delete[] rects;
 
     return;
 }

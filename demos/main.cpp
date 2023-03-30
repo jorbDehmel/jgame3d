@@ -29,7 +29,7 @@ int main()
     {
         for (int j = 0; j < 16; j++)
         {
-            curY += (rand() % 100) - 50;
+            curY += (rand() % 51) - 25;
             c.objects.push_back(move(tile, Point{(double)50 * i, (double)curY, (double)50 * j}));
         }
     }
@@ -44,8 +44,12 @@ int main()
     // Render
     SDL_Event event;
     bool running = true;
+
+    int frames = 0;
+    int startTime = time(NULL);
     while (running)
     {
+        frames++;
         // auto start = chrono::high_resolution_clock::now();
 
         c.clear(SDL_Color{128, 128, 255, 255});
@@ -102,6 +106,10 @@ int main()
             }
         }
     }
+    int elapsedSeconds = time(NULL) - startTime;
+    cout << "Frames: " << frames << '\n'
+         << "Seconds: " << elapsedSeconds << '\n'
+         << "Average FPS over session: " << (double)frames / elapsedSeconds << '\n';
 
     return 0;
 }
