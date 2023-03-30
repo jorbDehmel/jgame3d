@@ -1,8 +1,10 @@
+old/
 .vscode/
-*.o
-*.out
 bin/
 build/
 legacy/
 .build/
+
+*.o
+*.out
 *.model

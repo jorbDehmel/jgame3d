@@ -6,7 +6,7 @@ github.com/jorbDehmel
 GPLv3 held by author
 */
 
-#include "jtri.hpp"
+#include "../jtri.hpp"
 
 double dy = 1;
 double h = 512;

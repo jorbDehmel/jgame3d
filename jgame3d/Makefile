@@ -5,6 +5,8 @@ ARGS = -pedantic -Wall
 STEM = $(CC) $(ARGS)
 C_SUFFIX = `sdl2-config --cflags`
 
+OBJECTS = build/jtri.o build/files.o build/text.o build/scaling.o
+
 #########################
 # Installing dependencies:
 # Debian: 	sudo apt install libsdl2-dev libsdl2-ttf-dev clang
@@ -22,8 +24,8 @@ uninstall:
 	sudo rm -rf /usr/include/jgame3d
 	sudo rm -rf /usr/bin/jgame3d-flags
 
-bin/jgame3d.a:	build/basics.o build/window.o build/resources.o build/files.o build/text.o build/scaling.o
-	ar rsv bin/jgame3d.a build/basics.o build/window.o build/resources.o build/files.o build/text.o build/scaling.o
+bin/jgame3d.a:	$(OBJECTS)
+	ar rsv bin/jgame3d.a $(OBJECTS)
 
 /usr/bin/jgame3d-flags: jgame3d-flags.py
 	chmod +x jgame3d-flags.py
@@ -31,14 +33,8 @@ bin/jgame3d.a:	build/basics.o build/window.o build/resources.o build/files.o bui
 
 #########################
 
-build/basics.o:	src/basics.cpp basics.hpp
-	$(STEM) -c src/basics.cpp -o build/basics.o $(C_SUFFIX)
-
-build/window.o:	src/window.cpp window.hpp
-	$(STEM) -c src/window.cpp -o build/window.o $(C_SUFFIX)
-
-build/resources.o:	src/resources.cpp resources.hpp
-	$(STEM) -c src/resources.cpp -o build/resources.o $(C_SUFFIX)
+build/jtri.o:	src/jtri.cpp jtri.hpp
+	$(STEM) -c src/jtri.cpp -o build/jtri.o $(C_SUFFIX)
 
 build/files.o:	src/files.cpp files.hpp
 	$(STEM) -c src/files.cpp -o build/files.o $(C_SUFFIX)

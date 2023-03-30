@@ -9,12 +9,12 @@ GPLv3 held by author
 #ifndef SCALING_HPP
 #define SCALING_HPP
 
-#include "basics.hpp"
+#include "jtri.hpp"
 
 // Scale a model about a point by a factor
-void scaleBy(Model &m, const double by, const Point3D &about);
+void scaleBy(Object &m, const double by, const Point &about);
 
 // Scale a polygon about a point by a factor
-void scaleBy(Polygon &p, const double by, const Point3D &about);
+void scaleBy(Triangle &p, const double by, const Point &about);
 
 #endif

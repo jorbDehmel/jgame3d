@@ -8,57 +8,48 @@ GPLv3 held by author
 
 #include "../files.hpp"
 
-bool saveModel(const Model &what, const char *where)
+bool saveModel(const Object &what, const char *where)
 {
     ofstream file(where);
     if (!file.is_open())
         return false;
 
-    for (auto polygon : what.polygons)
+    file << what.triangles.size() << '\n';
+    for (auto tri : what.triangles)
     {
-        file << polygon.points.size() << " "
-             << polygon.color.r << " " << polygon.color.g << " "
-             << polygon.color.b << " " << polygon.color.a << '\n';
+        file << tri.color.r << " " << tri.color.g << " "
+             << tri.color.b << " " << tri.color.a << '\n';
 
-        for (auto point : polygon.points)
-        {
-            file << point.x << " " << point.y << " " << point.z << " ";
-        }
+        file << tri.a.x << ' ' << tri.a.y << ' ' << tri.a.z << '\n'
+             << tri.b.x << ' ' << tri.b.y << ' ' << tri.b.z << '\n'
+             << tri.c.x << ' ' << tri.c.y << ' ' << tri.c.z << '\n';
 
-        file << "\n\n";
+        file << "\n";
     }
 
     file.close();
     return true;
 }
 
-Model loadModel(const char *where)
+Object loadModel(const char *where)
 {
     ifstream file(where);
     if (!file.is_open())
-        throw runtime_error("Cannot open output file\n");
+        throw runtime_error("Cannot open input file\n");
 
-    Model out;
-    while (!file.eof())
+    Object out;
+
+    int numTriangles;
+    file >> numTriangles;
+    for (int i = 0; i < numTriangles; i++)
     {
-        int num;
-        Polygon poly;
+        Triangle toAdd;
+        file >> toAdd.color.r >> toAdd.color.g >> toAdd.color.b >> toAdd.color.a;
+        file >> toAdd.a.x >> toAdd.a.y >> toAdd.a.z >> toAdd.b.x >> toAdd.b.y >> toAdd.b.z >> toAdd.c.x >> toAdd.c.y >> toAdd.c.z;
 
-        file >> num;
-        file >> poly.color.r >> poly.color.g >> poly.color.b >> poly.color.a;
-
-        for (int i = 0; i < num; i++)
-        {
-            Point3D point;
-            file >> point.x >> point.y >> point.z;
-            poly.points.push_back(point);
-        }
-
-        out.polygons.push_back(poly);
-
-        if (file.eof())
-            break;
+        out.triangles.push_back(toAdd);
     }
+
     file.close();
 
     return out;

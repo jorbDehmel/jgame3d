@@ -1,5 +1,4 @@
-#include "../jtri.hpp"
-#include "../../jgame3d/keys.hpp"
+#include "../jgame3d/jgame3d.hpp"
 #include <iostream>
 #include <chrono>
 using namespace std;

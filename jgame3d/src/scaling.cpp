@@ -8,28 +8,40 @@ GPLv3 held by author
 
 #include "../scaling.hpp"
 
-void scaleBy(Model &m, const double by, const Point3D &about)
+void scaleBy(Object &m, const double by, const Point &about)
 {
-    for (int i = 0; i < m.polygons.size(); i++)
+    for (int i = 0; i < m.triangles.size(); i++)
     {
-        scaleBy(m.polygons[i], by, about);
+        scaleBy(m.triangles[i], by, about);
     }
 
     return;
 }
 
-void scaleBy(Polygon &p, const double by, const Point3D &about)
+Point scalePoint(const Point &What, const double &By, const Point &About)
 {
-    for (int i = 0; i < p.points.size(); i++)
-    {
-        Point3D newPoint = p.points[i];
+    Point out = What;
 
-        newPoint.x -= about.x, newPoint.y -= about.y, newPoint.z -= about.z;
-        newPoint.x *= by, newPoint.y *= by, newPoint.z *= by;
-        newPoint.x += about.x, newPoint.y += about.y, newPoint.z += about.z;
+    out.x -= About.x;
+    out.y -= About.y;
+    out.z -= About.z;
 
-        p.points[i] = newPoint;
-    }
+    out.x *= By;
+    out.y *= By;
+    out.z *= By;
+
+    out.x += About.x;
+    out.y += About.y;
+    out.z += About.z;
+
+    return out;
+}
+
+void scaleBy(Triangle &p, const double by, const Point &about)
+{
+    p.a = scalePoint(p.a, by, about);
+    p.b = scalePoint(p.b, by, about);
+    p.c = scalePoint(p.c, by, about);
 
     return;
 }
