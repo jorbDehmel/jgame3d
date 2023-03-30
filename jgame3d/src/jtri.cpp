@@ -281,7 +281,7 @@ Triangle2D project(const Triangle &What)
 // For constant C, height h, and dy
 void render(const Triangle2D &What, SDL_Renderer *With)
 {
-    if (What.a.y == What.b.y && What.a.y == What.c.y)
+    if ((int)What.a.y == (int)What.b.y && (int)What.a.y == (int)What.c.y)
     {
         return;
     }
@@ -416,6 +416,19 @@ Object merge(const Object &A, const Object &B)
     for (auto t : B.triangles)
     {
         out.triangles.push_back(t);
+    }
+    return out;
+}
+
+Object merge(const vector<Object> &Objects)
+{
+    Object out = Objects[0];
+    for (int i = 1; i < Objects.size(); i++)
+    {
+        for (auto t : Objects[i].triangles)
+        {
+            out.triangles.push_back(t);
+        }
     }
     return out;
 }
