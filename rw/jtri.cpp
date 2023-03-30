@@ -75,13 +75,15 @@ void Camera::update()
     {
         for (auto t : o.triangles)
         {
+            toRender = t;
+
             // Object location
-            toRender = rotate(t, Point{0, 0, 0}, o.rot);
-            toRender = move(toRender, o.offset);
+            // toRender = rotate(toRender, Point{0, 0, 0}, o.rot);
+            // toRender = move(toRender, o.offset);
 
             // Camera location
             toRender = move(toRender, cameraPos);
-            toRender = rotate(toRender, Point{w / 2, h / 2, 0}, cameraRot);
+            toRender = rotate(toRender, Point{w / 2, h, 0}, cameraRot);
 
             // Add to our priority queue
             triangles.push(toRender);
@@ -105,39 +107,44 @@ void Camera::update()
 
 Point rotate(const Point &What, const Point &About, const Rotation &By)
 {
+    // cout << "Rot: " << By.x << '\t' << By.y << '\t' << By.z << '\n';
+
     Point out{What};
 
     out.x -= About.x;
     out.y -= About.y;
     out.z -= About.z;
 
-    double c, s;
+    double c = 0, s = 0;
 
     if (By.x != 0)
     {
         c = SDL_cosf(By.x);
         s = SDL_sinf(By.x);
+        double y = out.y, z = out.z;
 
-        out.y = out.y * c - out.z * s;
-        out.z = out.y * s + out.z * c;
+        out.y = y * c - z * s;
+        out.z = y * s + z * c;
     }
 
     if (By.y != 0)
     {
         c = SDL_cosf(By.y);
         s = SDL_sinf(By.y);
+        double x = out.x, z = out.z;
 
-        out.x = out.x * c + out.z * s;
-        out.z = -out.x * s + out.z * c;
+        out.x = x * c + z * s;
+        out.z = -x * s + z * c;
     }
 
     if (By.z != 0)
     {
         c = SDL_cosf(By.z);
         s = SDL_sinf(By.z);
+        double x = out.x, y = out.y;
 
-        out.x = out.x * c - out.y * s;
-        out.y = out.x * s + out.y * c;
+        out.x = x * c - y * s;
+        out.y = x * s + y * c;
     }
 
     out.x += About.x;

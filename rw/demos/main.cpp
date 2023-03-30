@@ -21,7 +21,7 @@ int main()
     o.triangles.back().color.g = 255;
     o.offset.z = 500;
 
-    Object tile = rotate(o, Point{50, 50, 0}, Rotation{0 * M_PI / 2, 0.01, 0});
+    Object tile = rotate(o, Point{50, 50, 0}, Rotation{M_PI / 2, 0.01, 0});
     c.objects.push_back(move(tile, Point{0, -50, 0}));
 
     for (int i = 0; i < 16; i++)
