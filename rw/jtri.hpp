@@ -15,6 +15,7 @@ GPLv3 held by author
 #include <vector>
 #include <iostream>
 #include <cassert>
+#include <queue>
 using namespace std;
 
 extern double dy;

@@ -11,13 +11,13 @@ GPLv3 held by author
 double dy = 1;
 double h = 512;
 double w = 512;
-double FOVScalar = 512;
+double FOVScalar = 200;
 Point focus{w / 2, h / 2, 500};
 
 double renderMinX = -100, renderMinY = -100;
 double renderMaxX = w + 100, renderMaxY = h + 100;
 
-Camera::Camera() : cameraPos{0, 0, 0}, cameraRot{0, 0, 0}
+Camera::Camera() : cameraRot{0, 0, 0}, cameraPos{0, 0, 0}
 {
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_CreateWindowAndRenderer(w, h, 0, &wind, &rend);
@@ -45,32 +45,58 @@ void Camera::present()
     return;
 }
 
+bool isSafe(const Point2D &P)
+{
+    if (P.x > renderMinX && P.x < renderMaxX)
+    {
+        if (P.y > renderMinY && P.y < renderMaxY)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+struct __sortByZ
+{
+    bool operator()(const Triangle l, const Triangle r) const
+    {
+        return max(max(r.a.z, r.b.z), r.c.z) > max(max(l.a.z, l.b.z), l.c.z);
+    }
+};
+
 void Camera::update()
 {
-    Triangle2D projected;
+    Triangle toRender;
+
+    priority_queue<Triangle, vector<Triangle>, __sortByZ> triangles;
+
     for (auto o : objects)
     {
         for (auto t : o.triangles)
         {
-            Triangle toRender = t;
-
             // Object location
-            toRender = move(rotate(t, Point{0, 0, 0}, o.rot), o.offset);
-            // toRender = rotate(move(t, o.offset), Point{0, 0, 0}, o.rot);
+            toRender = rotate(t, Point{0, 0, 0}, o.rot);
+            toRender = move(toRender, o.offset);
 
             // Camera location
-            toRender = rotate(move(toRender, cameraPos), Point{focus.x, focus.y, 0}, cameraRot);
-            // toRender = move(rotate(toRender, Point{focus.x, focus.y, 0}, cameraRot), cameraPos);
+            toRender = move(toRender, cameraPos);
+            toRender = rotate(toRender, Point{w / 2, h / 2, 0}, cameraRot);
 
-            projected = project(toRender);
+            // Add to our priority queue
+            triangles.push(toRender);
+        }
+    }
 
-            if (projected.a.x > renderMinX && projected.a.x < renderMaxX)
-            {
-                if (projected.a.y > renderMinY && projected.a.y < renderMaxY)
-                {
-                    render(projected, rend);
-                }
-            }
+    Triangle2D projected;
+    while (!triangles.empty())
+    {
+        projected = project(triangles.top());
+        triangles.pop();
+
+        if (isSafe(projected.a) && isSafe(projected.b) && isSafe(projected.c))
+        {
+            render(projected, rend);
         }
     }
 
@@ -91,7 +117,6 @@ Point rotate(const Point &What, const Point &About, const Rotation &By)
     {
         c = SDL_cosf(By.x);
         s = SDL_sinf(By.x);
-        assert(c == c && s == s);
 
         out.y = out.y * c - out.z * s;
         out.z = out.y * s + out.z * c;
@@ -101,7 +126,6 @@ Point rotate(const Point &What, const Point &About, const Rotation &By)
     {
         c = SDL_cosf(By.y);
         s = SDL_sinf(By.y);
-        assert(c == c && s == s);
 
         out.x = out.x * c + out.z * s;
         out.z = -out.x * s + out.z * c;
@@ -111,7 +135,6 @@ Point rotate(const Point &What, const Point &About, const Rotation &By)
     {
         c = SDL_cosf(By.z);
         s = SDL_sinf(By.z);
-        assert(c == c && s == s);
 
         out.x = out.x * c - out.y * s;
         out.y = out.x * s + out.y * c;
@@ -310,14 +333,36 @@ void render(const Triangle2D &What, SDL_Renderer *With)
 
     // Per unit of change in y
     double dxA, dxB, dxC;
-    dxA = (tri.b.x - tri.a.x) / (tri.b.y - tri.a.y);
-    dxB = (tri.c.x - tri.a.x) / (tri.c.y - tri.a.y);
-    dxC = (tri.c.x - tri.b.x) / (tri.c.y - tri.b.y);
+    if (tri.b.y != tri.a.y)
+    {
+        dxA = (tri.b.x - tri.a.x) / (tri.b.y - tri.a.y);
+    }
+    else
+    {
+        dxA = 0;
+    }
+
+    if (tri.c.y != tri.a.y)
+    {
+        dxB = (tri.c.x - tri.a.x) / (tri.c.y - tri.a.y);
+    }
+    else
+    {
+        dxB = 0;
+    }
+    if (tri.c.y != tri.b.y)
+    {
+        dxC = (tri.c.x - tri.b.x) / (tri.c.y - tri.b.y);
+    }
+    else
+    {
+        dxC = 0;
+    }
 
     // Iterate over a through b
     int i = 0;
     SDL_FRect toFill;
-    for (double y = tri.a.y; y < tri.b.y; y += dy, i++)
+    for (double y = tri.a.y; y <= tri.b.y; y += dy, i++)
     {
         toFill.y = y;
         toFill.h = dy;
@@ -330,7 +375,7 @@ void render(const Triangle2D &What, SDL_Renderer *With)
 
     // Iterate over b through c
     int j = 0;
-    for (double y = tri.b.y; y < tri.c.y; y += dy, i++, j++)
+    for (double y = tri.b.y; y <= tri.c.y; y += dy, i++, j++)
     {
         toFill.y = y;
         toFill.h = dy;

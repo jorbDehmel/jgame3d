@@ -21,7 +21,8 @@ int main()
     o.triangles.back().color.g = 255;
     o.offset.z = 500;
 
-    Object tile = rotate(o, Point{50, 50, 0}, Rotation{M_PI, 0, 0});
+    Object tile = rotate(o, Point{50, 50, 0}, Rotation{0 * M_PI / 2, 0.01, 0});
+    c.objects.push_back(move(tile, Point{0, -50, 0}));
 
     for (int i = 0; i < 16; i++)
     {
@@ -63,36 +64,31 @@ int main()
                     break;
                 case 'w':
                     c.cameraPos.z -= 10;
+                    break;
                 case 's':
                     c.cameraPos.z += 10;
+                    break;
                 case 'a':
                     c.cameraPos.x += 10;
+                    break;
                 case 'd':
                     c.cameraPos.x -= 10;
+                    break;
                 case keys::leftArrow:
                     c.cameraRot.y += 0.01;
-                }
-
-                else if (event.key.keysym.sym == keys::leftArrow)
-                {
-                    c.cameraRot.y += 0.01;
-                }
-                else if (event.key.keysym.sym == keys::rightArrow)
-                {
+                    break;
+                case keys::rightArrow:
                     c.cameraRot.y -= 0.01;
-                }
-                else if (event.key.keysym.sym == keys::upArrow)
-                {
+                    break;
+                case keys::upArrow:
                     c.cameraRot.x -= 0.01;
-                }
-                else if (event.key.keysym.sym == keys::downArrow)
-                {
+                    break;
+                case keys::downArrow:
                     c.cameraRot.x += 0.01;
-                }
-
-                else
-                {
-                    cout << "Unrecognized key " << (int)event.key.keysym.sym << '\n';
+                    break;
+                default:
+                    cout << "Error: Unrecognized key " << event.key.keysym.sym << '\n';
+                    break;
                 }
             }
         }
