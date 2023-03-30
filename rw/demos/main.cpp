@@ -17,11 +17,22 @@ int main()
 
     Object o;
     o.triangles.push_back(tri);
+    o.triangles.push_back(rotate(tri, Point{50, 50, 0}, Rotation{0, 0, M_PI}));
+    o.triangles.back().color.g = 255;
     o.offset.z = 500;
 
-    c.objects.push_back(o);
+    Object tile = rotate(o, Point{50, 50, 0}, Rotation{M_PI, 0, 0});
+
+    for (int i = 0; i < 16; i++)
+    {
+        for (int j = 0; j < 16; j++)
+        {
+            c.objects.push_back(move(tile, Point{(double)50 * i, (double)i, (double)50 * j}));
+        }
+    }
 
     // Render
+    SDL_Event event;
     bool running = true;
     while (running)
     {
@@ -33,64 +44,50 @@ int main()
 
         // auto end = chrono::high_resolution_clock::now();
         // double elapsed = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
-
         // cout << "ns: " << elapsed << " fps: " << 1'000'000'000 / elapsed << '\n';
 
-        SDL_Event event;
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_KEYDOWN)
             {
-                if (event.key.keysym.sym == 27)
+                switch (event.key.keysym.sym)
                 {
+                case 27:
                     running = false;
-                }
-                else if (event.key.keysym.sym == ' ')
-                {
-                    c.cameraPos.x = c.cameraPos.y = c.cameraPos.z = 0;
-                    c.cameraRot.x = c.cameraRot.y = c.cameraRot.z = 0;
-                }
-
-                else if (event.key.keysym.sym == 'e')
-                {
-                    c.cameraPos.z += 10;
-                    cout << c.cameraPos.z << '\n';
-                }
-                else if (event.key.keysym.sym == 'q')
-                {
-                    c.cameraPos.z -= 10;
-                    cout << c.cameraPos.z << '\n';
-                }
-                else if (event.key.keysym.sym == 'w')
-                {
-                    c.cameraPos.y -= 10;
-                }
-                else if (event.key.keysym.sym == 's')
-                {
+                    break;
+                case 'e':
                     c.cameraPos.y += 10;
-                }
-                else if (event.key.keysym.sym == 'a')
-                {
-                    c.cameraPos.x -= 10;
-                }
-                else if (event.key.keysym.sym == 'd')
-                {
+                    break;
+                case 'q':
+                    c.cameraPos.y -= 10;
+                    break;
+                case 'w':
+                    c.cameraPos.z -= 10;
+                case 's':
+                    c.cameraPos.z += 10;
+                case 'a':
                     c.cameraPos.x += 10;
+                case 'd':
+                    c.cameraPos.x -= 10;
+                case keys::leftArrow:
+                    c.cameraRot.y += 0.01;
                 }
 
                 else if (event.key.keysym.sym == keys::leftArrow)
                 {
-                    c.objects[0].rot.x += 0.01;
-                    cout << c.objects[0].rot.x << '\n';
-                    // c.cameraRot.x += 0.001;
-                    // cout << c.cameraRot.x << '\n';
+                    c.cameraRot.y += 0.01;
                 }
                 else if (event.key.keysym.sym == keys::rightArrow)
                 {
-                    c.objects[0].rot.x -= 0.01;
-                    cout << c.objects[0].rot.x << '\n';
-                    // c.cameraRot.x -= 0.001;
-                    // cout << c.cameraRot.x << '\n';
+                    c.cameraRot.y -= 0.01;
+                }
+                else if (event.key.keysym.sym == keys::upArrow)
+                {
+                    c.cameraRot.x -= 0.01;
+                }
+                else if (event.key.keysym.sym == keys::downArrow)
+                {
+                    c.cameraRot.x += 0.01;
                 }
 
                 else

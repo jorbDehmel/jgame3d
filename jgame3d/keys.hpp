@@ -13,55 +13,55 @@ GPLv3 held by author
 // Use like this: if (KEYS[keys::esc]) {...}
 namespace keys
 {
-    int esc = 27;
-    int enter = 13;
+    const int esc = 27;
+    const int enter = 13;
 
-    int a = 'a';
-    int b = 'b';
-    int c = 'c';
-    int d = 'd';
-    int e = 'e';
-    int f = 'f';
-    int g = 'g';
-    int h = 'h';
-    int i = 'i';
-    int j = 'j';
-    int k = 'k';
-    int l = 'l';
-    int m = 'm';
-    int n = 'n';
-    int o = 'o';
-    int p = 'p';
-    int q = 'q';
-    int r = 'r';
-    int s = 's';
-    int t = 't';
-    int u = 'u';
-    int v = 'v';
-    int w = 'w';
-    int x = 'x';
-    int y = 'y';
-    int z = 'z';
+    const int a = 'a';
+    const int b = 'b';
+    const int c = 'c';
+    const int d = 'd';
+    const int e = 'e';
+    const int f = 'f';
+    const int g = 'g';
+    const int h = 'h';
+    const int i = 'i';
+    const int j = 'j';
+    const int k = 'k';
+    const int l = 'l';
+    const int m = 'm';
+    const int n = 'n';
+    const int o = 'o';
+    const int p = 'p';
+    const int q = 'q';
+    const int r = 'r';
+    const int s = 's';
+    const int t = 't';
+    const int u = 'u';
+    const int v = 'v';
+    const int w = 'w';
+    const int x = 'x';
+    const int y = 'y';
+    const int z = 'z';
 
-    int zero = '0';
-    int one = '1';
-    int two = '2';
-    int three = '3';
-    int four = '4';
-    int five = '5';
-    int six = '6';
-    int seven = '7';
-    int eight = '8';
-    int nine = '9';
+    const int zero = '0';
+    const int one = '1';
+    const int two = '2';
+    const int three = '3';
+    const int four = '4';
+    const int five = '5';
+    const int six = '6';
+    const int seven = '7';
+    const int eight = '8';
+    const int nine = '9';
 
-    int space = ' ';
+    const int space = ' ';
 
-    int leftArrow = 1073741904;
-    int rightArrow = 1073741903;
-    int upArrow = 1073741906;
-    int downArrow = 1073741905;
+    const int leftArrow = 1073741904;
+    const int rightArrow = 1073741903;
+    const int upArrow = 1073741906;
+    const int downArrow = 1073741905;
 
-    int shift = 1073742053;
+    const int shift = 1073742053;
 }
 
 #endif

@@ -165,6 +165,16 @@ Triangle2D rotate(const Triangle2D &What, const Point2D &About, const double &By
     return out;
 }
 
+Object rotate(const Object &What, const Point &About, const Rotation &By)
+{
+    Object out = What;
+    for (int i = 0; i < out.triangles.size(); i++)
+    {
+        out.triangles[i] = rotate(out.triangles[i], About, By);
+    }
+    return out;
+}
+
 Point move(const Point &What, const Point &By)
 {
     return Point{What.x + By.x, What.y + By.y, What.z + By.z};
@@ -190,6 +200,16 @@ Triangle2D move(const Triangle2D &What, const Point2D &By)
     out.a = move(What.a, By);
     out.b = move(What.b, By);
     out.c = move(What.c, By);
+    return out;
+}
+
+Object move(const Object &What, const Point &By)
+{
+    Object out = What;
+    for (int i = 0; i < out.triangles.size(); i++)
+    {
+        out.triangles[i] = move(out.triangles[i], By);
+    }
     return out;
 }
 

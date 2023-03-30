@@ -83,10 +83,14 @@ Point2D rotate(const Point2D &What, const Point2D &About, const double &By);
 Triangle rotate(const Triangle &What, const Point &About, const Rotation &By);
 Triangle2D rotate(const Triangle2D &What, const Point2D &About, const double &By);
 
+Object rotate(const Object &What, const Point &About, const Rotation &By);
+
 Point move(const Point &What, const Point &By);
 Point2D move(const Point2D &What, const Point2D &By);
 Triangle move(const Triangle &What, const Point &By);
 Triangle2D move(const Triangle2D &What, const Point2D &By);
+
+Object move(const Object &What, const Point &By);
 
 Point2D project(const Point &What);
 Triangle2D project(const Triangle &What);
