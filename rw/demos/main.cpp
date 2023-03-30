@@ -6,6 +6,8 @@ using namespace std;
 
 int main()
 {
+    srand(time(NULL));
+
     Camera c;
     c.cameraPos.z = 500;
 
@@ -28,7 +30,7 @@ int main()
     {
         for (int j = 0; j < 16; j++)
         {
-            c.objects.push_back(move(tile, Point{(double)50 * i, (double)i, (double)50 * j}));
+            c.objects.push_back(move(tile, Point{(double)50 * i, (double)(rand() % 100), (double)50 * j}));
         }
     }
 
@@ -39,7 +41,7 @@ int main()
     {
         // auto start = chrono::high_resolution_clock::now();
 
-        c.clear();
+        c.clear(SDL_Color{128, 128, 255, 255});
         c.update();
         c.present();
 

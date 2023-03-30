@@ -24,6 +24,7 @@ extern double w;
 extern double FOVScalar;
 extern double renderMinX, renderMinY;
 extern double renderMaxX, renderMaxY;
+extern Uint32 windowFlags;
 
 struct Point
 {
@@ -67,7 +68,7 @@ public:
     Camera();
     ~Camera();
 
-    void clear();
+    void clear(const SDL_Color &BGC = {0, 0, 0, 0});
     void update();
     void present();
 

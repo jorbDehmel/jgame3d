@@ -16,11 +16,12 @@ Point focus{w / 2, h / 2, 500};
 
 double renderMinX = -100, renderMinY = -100;
 double renderMaxX = w + 100, renderMaxY = h + 100;
+Uint32 windowFlags = SDL_WINDOW_OPENGL;
 
 Camera::Camera() : cameraRot{0, 0, 0}, cameraPos{0, 0, 0}
 {
     SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_CreateWindowAndRenderer(w, h, 0, &wind, &rend);
+    SDL_CreateWindowAndRenderer(w, h, windowFlags, &wind, &rend);
     return;
 }
 
@@ -32,9 +33,9 @@ Camera::~Camera()
     return;
 }
 
-void Camera::clear()
+void Camera::clear(const SDL_Color &BGC)
 {
-    SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
+    SDL_SetRenderDrawColor(rend, BGC.r, BGC.g, BGC.b, BGC.a);
     SDL_RenderClear(rend);
     return;
 }
@@ -369,7 +370,7 @@ void render(const Triangle2D &What, SDL_Renderer *With)
     // Iterate over a through b
     int i = 0;
     SDL_FRect toFill;
-    for (double y = tri.a.y; y <= tri.b.y; y += dy, i++)
+    for (double y = tri.a.y; y < tri.b.y; y += dy, i++)
     {
         toFill.y = y;
         toFill.h = dy;
@@ -382,7 +383,7 @@ void render(const Triangle2D &What, SDL_Renderer *With)
 
     // Iterate over b through c
     int j = 0;
-    for (double y = tri.b.y; y <= tri.c.y; y += dy, i++, j++)
+    for (double y = tri.b.y; y < tri.c.y; y += dy, i++, j++)
     {
         toFill.y = y;
         toFill.h = dy;
