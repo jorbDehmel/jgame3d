@@ -21,6 +21,8 @@ extern double dy;
 extern double h;
 extern double w;
 extern double FOVScalar;
+extern double renderMinX, renderMinY;
+extern double renderMaxX, renderMaxY;
 
 struct Point
 {

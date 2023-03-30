@@ -14,6 +14,9 @@ double w = 512;
 double FOVScalar = 512;
 Point focus{w / 2, h / 2, 500};
 
+double renderMinX = -100, renderMinY = -100;
+double renderMaxX = w + 100, renderMaxY = h + 100;
+
 Camera::Camera() : cameraPos{0, 0, 0}, cameraRot{0, 0, 0}
 {
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -53,12 +56,21 @@ void Camera::update()
 
             // Object location
             toRender = move(rotate(t, Point{0, 0, 0}, o.rot), o.offset);
+            // toRender = rotate(move(t, o.offset), Point{0, 0, 0}, o.rot);
 
             // Camera location
             toRender = rotate(move(toRender, cameraPos), Point{focus.x, focus.y, 0}, cameraRot);
+            // toRender = move(rotate(toRender, Point{focus.x, focus.y, 0}, cameraRot), cameraPos);
 
             projected = project(toRender);
-            render(projected, rend);
+
+            if (projected.a.x > renderMinX && projected.a.x < renderMaxX)
+            {
+                if (projected.a.y > renderMinY && projected.a.y < renderMaxY)
+                {
+                    render(projected, rend);
+                }
+            }
         }
     }
 
@@ -78,7 +90,7 @@ Point rotate(const Point &What, const Point &About, const Rotation &By)
     if (By.x != 0)
     {
         c = SDL_cosf(By.x);
-        s = SDL_cosf(By.x);
+        s = SDL_sinf(By.x);
         assert(c == c && s == s);
 
         out.y = out.y * c - out.z * s;
@@ -88,7 +100,7 @@ Point rotate(const Point &What, const Point &About, const Rotation &By)
     if (By.y != 0)
     {
         c = SDL_cosf(By.y);
-        s = SDL_cosf(By.y);
+        s = SDL_sinf(By.y);
         assert(c == c && s == s);
 
         out.x = out.x * c + out.z * s;
@@ -98,7 +110,7 @@ Point rotate(const Point &What, const Point &About, const Rotation &By)
     if (By.z != 0)
     {
         c = SDL_cosf(By.z);
-        s = SDL_cosf(By.z);
+        s = SDL_sinf(By.z);
         assert(c == c && s == s);
 
         out.x = out.x * c - out.y * s;
