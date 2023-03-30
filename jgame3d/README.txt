@@ -52,27 +52,22 @@ MUST be at the END of your compilation command!
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The Point3D, Polygon, and Model classes:
+The jtri.hpp file and its classes
 
-    The Point3D class represents a point in 3D space.
-A Polygon is a collection of Point3D objects, as well as
-an associated color. A Model is a colleciton of Polygons
-(this is what is usually used for rendering).
+    This file makes up the core of jgame3d. The basic
+building block classes are as follows.
 
-    The move() and rotate() functions will work on the
-later two classes and represent their respective 
-transformations in 3D space. The fillPolygon() function
-will fill a 2D polygon (represented by a vector of
-Point3D objects) with a color.
+Point: A point in 3d space.
 
-    The getPointAtZBetween() function gets a point along
-a line AB at a given z point.
+Triangle: A triangle in 3d space, made up of 3
+    points.
 
-    The projectPoint() function projects a 3D point into
-2D space (namely the camera plane).
+Object: A associated group of triangles.
 
-    The renderBetweenZ() function renders a sub-polygon
-falling between two z positions.
+Camera: The rendering engine, holding a list of objects.
+
+    All of the remaining classes are for internal
+rendering and you don't need to worry about them.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -82,7 +77,7 @@ The files.hpp file and saving models:
 saving and loading Model objects from files. Namely,
 there is:
 
-    saveModel(const Model &what, const char *where);
+    saveModel(const Object &what, const char *where);
 
 For saving Models (in a as-of-now exclusive format, i.e.
 not compatible with anything else) to file, and the
@@ -93,54 +88,6 @@ function:
     For the inverse. I use .model as the file extension,
 but it's basically plaintext so you can use whatever
 extension your heart desires.
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The Window class:
-
-    The window class as defined in window.hpp is an
-overlay for SDL2's sometimes clunky processes. At
-instantiation, it initializes the needed SDL2 systems,
-sets all rendering global variables as needed, makes a
-Slicer object for rendering, and creates an SDL2 window.
-Upon destruction, it closes the window, frees all
-associated memory, and shuts down SDL2.
-
-    Note: the function passed at instantiation as
-"Update" will be called once per frame. It needs only
-make changes to the positions, color, or amount of
-added polygons. The actual clearing, rendering, timing,
-and event handling will be handled by the Window class.
-The return boolean from this will be used to determine
-if the program should continue (true) or halt (false).
-
-    The mainLoop method calls the Update function, then
-renders all polygons. It then polls any keyboard events,
-updates the mouse state and position globals, and delays
-such that the frame update takes at minimum RefreshRate
-milliseconds. It does this until the update function
-returns false.
-
-    The add methods insert a model or polygon into the
-window's slicer's rendering order. The getter functions
-getModels, getWindow, getSlicer, and getRenderer can all
-be used to modify the internals of the Window for
-rendering.
-
-    The isKeyPressed method takes a key index and
-returns whether or not that key is currently pressed.
-The setUpScaleFactor method sets the upscaling of the
-window (such that the rendering will occur at the
-original resolution, but will be upscaled at display).
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The resources.hpp file:
-
-    This file provides some useful functions. The color
-namespace holds functions which return SDL_Color objects
-representing their associated names. The createCube()
-function creates a cube with its specified parameters.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -159,23 +106,5 @@ writerObject.write("text here", xPos, yPos, color);
 the most inefficient, as it must generate a new texture
 with the phrase. From there, the texture will be stored
 in memory and displaying it will be must cheaper.
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The Slicer class:
-
-    This class is for internal use in the window class.
-From a user's standpoint, you don't need to know about
-this, but I spent a lot of time on it so I'm gonna put
-it in the readme.
-
-    This handles the rendering of polygons in the
-context of 3D space. Any model on its list of models
-will be broken down into its polygons upon calling
-render(). These polygons will be sliced along the z axis
-by increments of dz. These slices are then rendered from
-furthest away to closest, such that any overlapping
-polygons are rendered correctly according to their
-z positions.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

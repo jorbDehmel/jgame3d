@@ -99,4 +99,6 @@ Triangle2D project(const Triangle &What);
 
 void render(const Triangle2D &What, SDL_Renderer *With);
 
+Object merge(const Object &A, const Object &B);
+
 #endif

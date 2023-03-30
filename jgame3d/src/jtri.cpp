@@ -396,3 +396,13 @@ void render(const Triangle2D &What, SDL_Renderer *With)
 
     return;
 }
+
+Object merge(const Object &A, const Object &B)
+{
+    Object out = A;
+    for (auto t : B.triangles)
+    {
+        out.triangles.push_back(t);
+    }
+    return out;
+}

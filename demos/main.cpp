@@ -14,24 +14,32 @@ int main()
     tri.a = Point{0, 0, 0};
     tri.c = Point{100, 0, 0};
     tri.b = Point{100, 100, 0};
-    tri.color = SDL_Color{255, 0, 0, 0};
+    tri.color = SDL_Color{128, 128, 128, 255};
 
     Object o;
     o.triangles.push_back(tri);
     o.triangles.push_back(rotate(tri, Point{50, 50, 0}, Rotation{0, 0, M_PI}));
-    o.triangles.back().color.g = 255;
+    o.triangles.back().color.r = o.triangles.back().color.g = o.triangles.back().color.b = 64;
     o.offset.z = 500;
 
     Object tile = rotate(o, Point{50, 50, 0}, Rotation{M_PI / 2, 0.01, 0});
-    c.objects.push_back(move(tile, Point{0, -50, 0}));
 
+    double curY = 0;
     for (int i = 0; i < 16; i++)
     {
         for (int j = 0; j < 16; j++)
         {
-            c.objects.push_back(move(tile, Point{(double)50 * i, (double)(rand() % 100), (double)50 * j}));
+            curY += (rand() % 100) - 50;
+            c.objects.push_back(move(tile, Point{(double)50 * i, (double)curY, (double)50 * j}));
         }
     }
+
+    int numTriangles = 0;
+    for (auto o : c.objects)
+    {
+        numTriangles += o.triangles.size();
+    }
+    cout << "Number of triangles: " << numTriangles << '\n';
 
     // Render
     SDL_Event event;
