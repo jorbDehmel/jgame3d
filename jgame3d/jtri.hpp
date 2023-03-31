@@ -26,6 +26,8 @@ extern double renderMinX, renderMinY;
 extern double renderMaxX, renderMaxY;
 extern Uint32 windowFlags;
 
+double drand(const double &Min, const double &Max);
+
 struct Point
 {
     double x, y, z;
@@ -101,5 +103,7 @@ void render(const Triangle2D &What, SDL_Renderer *With);
 
 Object merge(const Object &A, const Object &B);
 Object merge(const vector<Object> &Objects);
+
+Object mergeProject(const vector<Object> &Objects);
 
 #endif

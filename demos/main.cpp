@@ -31,14 +31,20 @@ int main()
         {
             curY += (rand() % 51) - 25;
             c.objects.push_back(move(tile, Point{(double)50 * i, (double)curY, (double)50 * j}));
+            c.objects.back().rot = Rotation{drand(0, M_PI), drand(0, M_PI), drand(0, M_PI)};
         }
     }
+
+    Object floor = mergeProject(c.objects);
+    c.objects.clear();
+    c.objects.push_back(floor);
 
     int numTriangles = 0;
     for (auto o : c.objects)
     {
         numTriangles += o.triangles.size();
     }
+    cout << "Number of objects: " << c.objects.size() << '\n';
     cout << "Number of triangles: " << numTriangles << '\n';
 
     // Render

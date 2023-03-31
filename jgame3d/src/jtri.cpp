@@ -18,6 +18,11 @@ double renderMinX = -500, renderMinY = -500;
 double renderMaxX = w + 500, renderMaxY = h + 500;
 Uint32 windowFlags = SDL_WINDOW_OPENGL;
 
+double drand(const double &Min, const double &Max)
+{
+    return Min + (double)rand() / (RAND_MAX) * (Max - Min);
+}
+
 Camera::Camera() : cameraRot{0, 0, 0}, cameraPos{0, 0, 0}
 {
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -428,6 +433,19 @@ Object merge(const vector<Object> &Objects)
         for (auto t : Objects[i].triangles)
         {
             out.triangles.push_back(t);
+        }
+    }
+    return out;
+}
+
+Object mergeProject(const vector<Object> &Objects)
+{
+    Object out = Objects[0];
+    for (int i = 1; i < Objects.size(); i++)
+    {
+        for (auto t : Objects[i].triangles)
+        {
+            out.triangles.push_back(move(rotate(t, Point{0, 0, 0}, Objects[i].rot), Objects[i].offset));
         }
     }
     return out;
