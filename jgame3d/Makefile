@@ -1,7 +1,7 @@
 #########################
 
 CC = clang++
-ARGS = -pedantic -Wall
+ARGS = -pedantic -Wall -O3
 STEM = $(CC) $(ARGS)
 C_SUFFIX = `sdl2-config --cflags`
 

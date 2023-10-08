@@ -302,9 +302,9 @@ void render(const Triangle2D &What, SDL_Renderer *With)
     // (This should work in the general case)
 
     // Structure as diagram above
-    Triangle2D tri = {What};
-    bool usedMax[3] = {false};
-    bool usedMin[3] = {false};
+    Triangle2D tri = What;
+    bool usedMax[3] = {false, false, false};
+    bool usedMin[3] = {false, false, false};
 
     // find top (a)
     usedMax[0] = true;
@@ -373,6 +373,7 @@ void render(const Triangle2D &What, SDL_Renderer *With)
     {
         dxB = 0;
     }
+
     if (tri.c.y != tri.b.y)
     {
         dxC = (tri.c.x - tri.b.x) / (tri.c.y - tri.b.y);
